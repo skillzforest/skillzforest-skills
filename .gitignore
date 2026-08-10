@@ -1,0 +1,35 @@
+# Secrets — ne jamais committer
+.env
+.env.*
+*.pem
+credentials.json
+token.json
+
+# Node (scripts futurs, ex. génération de CR)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Fichiers temporaires de génération
+answers.json
+*.docx
+*.pdf
+tmp/
+temp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Python (au cas où)
+.venv/
+__pycache__/
+*.pyc
