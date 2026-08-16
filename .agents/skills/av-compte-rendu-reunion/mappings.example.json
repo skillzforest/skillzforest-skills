@@ -1,0 +1,7 @@
+{
+  "placeholders": {
+    "{{MEETING_DATE}}": "date",
+    "{{ATTENDEES}}": "participants"
+  },
+  "notes": "DOCX masters: replace placeholders. For repeated items, use a small script to expand sections."
+}

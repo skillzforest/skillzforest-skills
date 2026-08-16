@@ -1,0 +1,5 @@
+{
+  "Sheet1!A1": "project",
+  "Sheet1!B2": "client",
+  "notes": "XLSX masters: use 'Sheet!Cell' keys mapping to field names."
+}

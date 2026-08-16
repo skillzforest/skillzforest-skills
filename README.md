@@ -1,6 +1,6 @@
 # AI Factory
 
-Suite de skills Cursor pour automatiser les workflows **Likyly** — avant-vente, delivery et opérations internes.
+Suite de skills Cursor pour automatiser les workflows d'avant-vente, delivery et opérations internes.
 
 ## Avant-vente (`av-`)
 
@@ -9,7 +9,7 @@ Skills dédiés à l'embarquement et au suivi des prospects avant signature.
 | Skill | Fichier | Rôle |
 |---|---|---|
 | `av-init-projet` | `av-init-projet.skill` | Initialise l'arborescence Google Drive d'un nouveau projet sous `02_PROSPECTS` et copie les documents modèles (cadrage fonctionnel, cadrage plateforme, compte rendu). |
-| `av-compte-rendu-reunion` | `av-compte-rendu-reunion.skill` | Rédige un compte rendu de réunion à la charte Likyly et le dépose dans le dossier `03_Comptes rendus` du projet. |
+| `av-compte-rendu-reunion` | `av-compte-rendu-reunion.skill` | Rédige un compte rendu de réunion à la charte et le dépose dans le dossier `03_Comptes rendus` du projet. |
 
 ### Chaîne avant-vente
 

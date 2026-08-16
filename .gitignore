@@ -17,6 +17,13 @@ answers.json
 *.pdf
 tmp/
 temp/
+# Dossiers de sortie/artefacts (niveaux multiples)
+out/
+**/out/**
+
+# Node modules (ignore partout)
+node_modules/
+**/node_modules/
 
 # OS
 .DS_Store

@@ -1,0 +1,163 @@
+<!--
+  DOCUMENT 5 — SCHEMA D'ARCHITECTURE TECHNIQUE (style "web application diagram")
+  Utilisateurs = Navigateur Web. Application mobile branchée DIRECTEMENT sur l'API Métier (headless).
+  Assets JS/CSS servis par le Frontend ; Assets médias = brique dédiée sous les Données.
+  Le CDN diffuse les deux. API Métier = surcouche des API tierces. Capacités = Worker, IA, Webhook.
+-->
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Architecture technique</title>
+<style>
+  :root{--indigo:#3B3F7B;--violet:#5742DE;--gris:#6B6A85;--fond:#F3F2FB;--texte:#2B2B3A;--lav:#9C9AD6;--ind-b:#C9C7EC;--card:#FFFFFF}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Calibri','Segoe UI',system-ui,sans-serif;background:var(--fond);color:var(--texte);line-height:1.3;padding:30px 34px}
+  .mono{font-family:'Cascadia Code',Consolas,monospace}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+  .brand{font-size:27px;font-weight:700;color:var(--indigo)}.brand span{color:var(--texte)}
+  .subtitle{font-style:italic;color:var(--gris);font-size:15px;margin-top:5px}
+  .h-right{text-align:right}.author{font-weight:700;font-size:17px}
+  .tags{color:var(--gris);font-size:13px;margin-top:5px}.tags b{color:var(--violet)}
+  .version{display:inline-block;margin-top:7px;background:#E6E6EC;color:#5A5A72;font-size:12px;padding:3px 9px;border-radius:6px}
+  .status{display:inline-block;margin-top:7px;margin-left:6px;background:#FDF4E7;color:#B9761E;font-size:11.5px;padding:3px 9px;border-radius:6px;font-weight:600}
+  .status .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#E4A853;margin-right:6px;vertical-align:middle}
+  .worknote{margin:16px auto 0;font-style:italic;color:var(--gris);font-size:12px;text-align:center;border-top:1px dashed #dcdce4;padding-top:11px;line-height:1.5;max-width:1160px}
+  .divider{height:1px;background:#E2E1F0;margin:14px 0 8px}
+  .canvas{position:relative;width:1160px;height:600px;margin:0 auto}
+  .svg-layer{position:absolute;inset:0;overflow:visible;z-index:0}
+  .node{position:absolute;background:var(--card);border:1.6px solid var(--ind-b);border-radius:14px;z-index:1;padding:25px 9px 9px;text-align:center;box-shadow:0 1px 4px rgba(59,63,123,.06)}
+  .node .t{font-weight:700;font-size:12.5px;color:var(--indigo)}
+  .node .s{font-size:9.5px;color:#6a6a7e;margin-top:3px;line-height:1.25}
+  .node .items{margin-top:7px;display:flex;flex-direction:column;gap:5px}
+  .node .it{background:var(--fond);border-radius:8px;padding:4px 6px;font-size:10.5px;font-weight:600;color:#3b3b52}
+  .node.core{border-color:var(--violet);border-width:2px}
+  .badge{position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:40px;height:40px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(87,66,222,.28)}
+  .badge .ic{width:20px;height:20px;stroke:#fff;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .floatbox{position:absolute;background:var(--card);border:1.8px solid var(--indigo);border-radius:14px;z-index:1;padding:11px 13px}
+  .pill{display:inline-block;background:var(--violet);color:#fff;font-size:11px;font-weight:700;padding:3px 11px;border-radius:8px;margin-bottom:9px}
+  .subpills{display:flex;flex-wrap:wrap;gap:6px}
+  .subpill{background:var(--fond);border:1px solid #dcdaf1;border-radius:8px;padding:4px 9px;font-size:11px;font-weight:600;color:#3b3b52;display:flex;align-items:center;gap:5px}
+  .subpill .ic{width:14px;height:14px;stroke:var(--violet);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .clabel{font-size:10px;fill:var(--gris);font-style:italic;font-family:'Calibri',sans-serif}
+</style></head><body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M9 20h6M12 16v4"/></symbol>
+  <symbol id="i-mobile" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+  <symbol id="i-lb" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 12h4M11 12l6-6M11 12l6 6M11 12h6"/></symbol>
+  <symbol id="i-window" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M6.5 6.5h.01"/></symbol>
+  <symbol id="i-api" viewBox="0 0 24 24"><path d="M8 4c-2 0-2 3-2 4s0 3-2 4c2 1 2 3 2 4s0 4 2 4M16 4c2 0 2 3 2 4s0 3 2 4c-2 1-2 3-2 4s0 4-2 4"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5-5-9 9"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+  <symbol id="i-ai" viewBox="0 0 24 24"><path d="M12 3l1.7 4.5L18 9l-4.3 1.5L12 15l-1.7-4.5L6 9l4.3-1.5z"/><path d="M18 14l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
+  <symbol id="i-webhook" viewBox="0 0 24 24"><circle cx="7" cy="17" r="2.2"/><circle cx="17" cy="17" r="2.2"/><circle cx="12" cy="7" r="2.2"/><path d="M12 9.2l-3.4 6M12 9.2l3.4 6M9.2 17h5.6"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M6 15h4"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-4 3v-3H4z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M2 20h20"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M10 21v-3h4v3"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 5.5a3 3 0 0 1 0 5M15.5 20a6 6 0 0 1 5.5-3"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-archive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11h14V8M10 12h4"/></symbol>
+</defs></svg>
+
+<header>
+  <div><div class="brand"><span>[Marque]</span> — Architecture logique</div>
+  <div class="subtitle">Architecture logique de déploiement, générique et réutilisable</div></div>
+  <div class="h-right"><div class="author">Arnaud BRETON</div>
+  <div class="tags">Schéma · architecture logique</div>
+  <div class="version mono">v0.1</div><div class="status"><span class="dot"></span>Proposition · document de travail</div></div>
+</header>
+<div class="divider"></div>
+
+<div class="canvas">
+  <svg class="svg-layer" viewBox="0 0 1160 600" preserveAspectRatio="none">
+    <defs><marker id="arr" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6 z" fill="#7C79C9"/></marker></defs>
+    <g fill="none" stroke="#9C9AD6" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arr)">
+      <path d="M170,254 L203,254"/>
+      <path d="M310,254 L338,254"/>
+      <path d="M485,254 L518,255"/>
+      <path d="M670,255 L698,255"/>
+      <path d="M875,270 L903,270"/>
+      <path d="M170,384 L690,384 L690,272 L700,272"/>
+      <path d="M830,120 L830,203"/>
+      <path d="M495,120 L495,200"/>
+      <path d="M787,305 L565,438"/>
+      <path d="M787,305 L695,438"/>
+      <path d="M787,305 L845,438"/>
+      <path d="M560,305 L432,438"/>
+      <path d="M1012,335 L1012,438"/>
+      <path d="M1042,535 L1042,572 L415,572 L415,537"/>
+      <path d="M338,487 L100,295"/>
+    </g>
+    <text class="clabel" x="838" y="168">surcouche</text>
+    <text class="clabel" x="500" y="162">supervise</text>
+    <text class="clabel" x="250" y="378">application mobile → API (headless)</text>
+    <text class="clabel" x="452" y="372">JS / CSS</text>
+    <text class="clabel" x="690" y="566">médias</text>
+  </svg>
+
+  <div class="floatbox" style="left:330px;top:8px;width:330px;height:112px">
+    <span class="pill">Exploitation</span>
+    <div class="subpills">
+      <span class="subpill"><svg class="ic"><use href="#i-activity"/></svg>Monitoring</span>
+      <span class="subpill"><svg class="ic"><use href="#i-list"/></svg>Logging</span>
+      <span class="subpill"><svg class="ic"><use href="#i-bell"/></svg>Alerting</span>
+      <span class="subpill"><svg class="ic"><use href="#i-archive"/></svg>Sauvegardes</span>
+    </div>
+  </div>
+  <div class="floatbox" style="left:700px;top:8px;width:440px;height:112px">
+    <span class="pill">API tierces · surcouche</span>
+    <div class="subpills">
+      <span class="subpill"><svg class="ic"><use href="#i-ai"/></svg>IA</span>
+      <span class="subpill"><svg class="ic"><use href="#i-card"/></svg>Paiement</span>
+      <span class="subpill"><svg class="ic"><use href="#i-mail"/></svg>Email</span>
+      <span class="subpill"><svg class="ic"><use href="#i-chat"/></svg>SMS</span>
+      <span class="subpill"><svg class="ic"><use href="#i-chart"/></svg>Analytics</span>
+    </div>
+  </div>
+
+  <div class="node" style="left:20px;top:215px;width:150px;height:78px">
+    <div class="badge"><svg class="ic"><use href="#i-monitor"/></svg></div><div class="t">Navigateur Web</div>
+  </div>
+  <div class="node" style="left:20px;top:345px;width:150px;height:78px">
+    <div class="badge"><svg class="ic"><use href="#i-mobile"/></svg></div><div class="t">Application mobile</div><div class="s">se branche à l'API</div>
+  </div>
+  <div class="node" style="left:205px;top:223px;width:105px;height:62px">
+    <div class="badge"><svg class="ic"><use href="#i-globe"/></svg></div><div class="t">DNS</div>
+  </div>
+  <div class="node" style="left:340px;top:223px;width:145px;height:62px">
+    <div class="badge"><svg class="ic"><use href="#i-lb"/></svg></div><div class="t">Répartiteur de charge</div>
+  </div>
+  <div class="node" style="left:520px;top:205px;width:150px;height:100px">
+    <div class="badge"><svg class="ic"><use href="#i-window"/></svg></div><div class="t">Frontend</div><div class="s">SSR<br>JS / CSS / HTML</div>
+  </div>
+  <div class="node core" style="left:700px;top:205px;width:175px;height:100px">
+    <div class="badge"><svg class="ic"><use href="#i-api"/></svg></div><div class="t">API Métier</div><div class="s">point d'entrée unique · surcouche des API tierces</div>
+  </div>
+  <div class="node" style="left:905px;top:205px;width:215px;height:130px">
+    <div class="badge"><svg class="ic"><use href="#i-db"/></svg></div><div class="t">Données</div>
+    <div class="items"><div class="it">Base relationnelle</div><div class="it">Cache</div><div class="it">Stockage objet</div></div>
+  </div>
+
+  <div class="node" style="left:340px;top:440px;width:150px;height:95px">
+    <div class="badge"><svg class="ic"><use href="#i-globe"/></svg></div><div class="t">CDN (cache)</div><div class="s">diffuse JS/CSS + médias</div>
+  </div>
+  <div class="node" style="left:510px;top:440px;width:110px;height:95px">
+    <div class="badge"><svg class="ic"><use href="#i-ai"/></svg></div><div class="t">IA</div><div class="s">modèle LLM</div>
+  </div>
+  <div class="node" style="left:640px;top:440px;width:110px;height:95px">
+    <div class="badge"><svg class="ic"><use href="#i-gear"/></svg></div><div class="t">Worker</div><div class="s">asynchrone / batch</div>
+  </div>
+  <div class="node" style="left:770px;top:440px;width:150px;height:95px">
+    <div class="badge"><svg class="ic"><use href="#i-webhook"/></svg></div><div class="t">Webhook</div><div class="s">ingestion · à définir</div>
+  </div>
+  <div class="node" style="left:940px;top:440px;width:205px;height:95px">
+    <div class="badge"><svg class="ic"><use href="#i-image"/></svg></div><div class="t">Assets médias</div><div class="s">images, vidéos</div>
+  </div>
+
+</div>
+
+<div class="worknote">Architecture technique générique. Le Navigateur passe par le Frontend ; l'Application mobile se branche directement sur l'API Métier (headless). Les assets JS/CSS sont servis par le Frontend, les assets médias par une brique dédiée sous les Données ; le CDN diffuse les deux. L'API Métier encapsule les API tierces. Base d'échange, amenée à évoluer par itérations.</div>
+</body></html>

@@ -1,0 +1,174 @@
+<!--
+  TEMPLATE — INFRASTRUCTURE PHYSIQUE (serveurs, capacités, IP, logiciels, flux)
+  LB et frontaux centrés (flèches symétriques). Worker en retrait à droite (file d'attente, hors LB).
+  VIP au-dessus de l'espace entre les deux bases (pas dans le bloc primaire). Multi-tenant hybride.
+  Réplication primaire <-> réplica. Cache = Varnish sur les frontaux. Redondance = pointillés.
+-->
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><title>Infrastructure physique</title>
+<style>
+  :root{--indigo:#3B3F7B;--violet:#5742DE;--gris:#6B6A85;--fond:#F3F2FB;--texte:#2B2B3A;--lav:#9C9AD6;--ind-b:#C9C7EC;
+    --amber-b:#E4A853;--amber-bg:#FDF4E7;--amber-t:#B9761E;--green-b:#6FBF83;--green-bg:#EBF7EE;--green-t:#3E9457;
+    --violet-b:#9385E6;--violet-bg:#F1EFFC;--violet-t:#5742DE}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Calibri','Segoe UI',system-ui,sans-serif;background:var(--fond);color:var(--texte);line-height:1.3;padding:30px 34px}
+  .mono{font-family:'Cascadia Code',Consolas,monospace}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+  .brand{font-size:27px;font-weight:700;color:var(--indigo)}.brand span{color:var(--texte)}
+  .subtitle{font-style:italic;color:var(--gris);font-size:15px;margin-top:5px}
+  .h-right{text-align:right}.author{font-weight:700;font-size:17px}
+  .tags{color:var(--gris);font-size:13px;margin-top:5px}.tags b{color:var(--violet)}
+  .version{display:inline-block;margin-top:7px;background:#E6E6EC;color:#5A5A72;font-size:12px;padding:3px 9px;border-radius:6px}
+  .status{display:inline-block;margin-top:7px;margin-left:6px;background:#FDF4E7;color:#B9761E;font-size:11.5px;padding:3px 9px;border-radius:6px;font-weight:600}
+  .status .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#E4A853;margin-right:6px;vertical-align:middle}
+  .worknote{margin:16px auto 0;font-style:italic;color:var(--gris);font-size:12px;text-align:center;border-top:1px dashed #dcdce4;padding-top:11px;line-height:1.5;max-width:1160px}
+  .divider{height:1px;background:#E2E1F0;margin:14px 0 12px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--gris);margin-bottom:14px;align-items:center;max-width:1160px;margin-left:auto;margin-right:auto}
+  .legend b{color:var(--texte);font-weight:600}
+  .ipb{display:inline-block;font-size:10.5px;padding:1px 7px;border-radius:5px;font-weight:600;font-family:'Cascadia Code',monospace}
+  .ip-priv{background:#E4DFFA;color:#4534B0}.ip-pub{background:#DCE8FB;color:#2E5AB8}
+  .canvas{position:relative;width:1200px;height:1195px;margin:0 auto}
+  .zone{position:absolute;border:2px solid;border-radius:16px}
+  .zh{position:absolute;font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;z-index:2}
+  .znet{position:absolute;font-size:10.5px;color:var(--gris);font-family:'Cascadia Code',monospace;z-index:2}
+  .z-amber{border-color:var(--amber-b);background:var(--amber-bg)}
+  .z-green{border-color:var(--green-b);background:var(--green-bg)}
+  .z-violet{border-color:var(--violet-b);background:var(--violet-bg)}
+  .vip-pill{position:absolute;font-size:11px;font-weight:700;color:#8A5A16;background:#FDF4E7;border:1px solid #E4A853;border-radius:7px;padding:2px 9px;z-index:3;white-space:nowrap}
+  .svg-layer{position:absolute;inset:0;overflow:visible;z-index:1}
+  .clabel{font-size:10.5px;fill:var(--gris);font-style:italic;font-family:'Calibri',sans-serif}
+  .srv{position:absolute;background:#fff;border:1.6px solid var(--ind-b);border-radius:12px;padding:11px 12px 11px;z-index:2}
+  .srv.redond{border-style:dashed;border-color:var(--amber-b);background:#FFFDF9}
+  .srv .badge{width:34px;height:34px;border-radius:50%;background:var(--violet);display:flex;align-items:center;justify-content:center;margin-bottom:7px}
+  .srv.redond .badge{background:var(--amber-b)}
+  .srv .badge .ic{width:18px;height:18px;stroke:#fff;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .srv .role{font-weight:700;font-size:12.5px;color:var(--indigo)}
+  .srv .id{font-size:10.5px;color:var(--gris);font-family:'Cascadia Code',monospace}
+  .srv .cap{font-size:11.5px;color:#3b3b52;margin-top:5px}
+  .srv .ips{margin-top:6px;display:flex;flex-wrap:wrap;gap:5px}
+  .srv .note{font-size:9.5px;color:var(--gris);font-style:italic;margin-top:6px}
+  .srv .sw{margin-top:8px;border-top:1px dashed #E2E1F0;padding-top:7px}
+  .srv .sw-l{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--gris);font-weight:700;margin-bottom:5px}
+  .srv .sw-p{display:flex;flex-wrap:wrap;gap:4px}
+  .swp{font-family:'Cascadia Code',Consolas,monospace;font-size:10px;background:var(--fond);border:1px solid #dcdaf1;border-radius:5px;padding:1px 6px;color:#4a4a63}
+  .mt{margin-top:8px;border-top:1px dashed #E2E1F0;padding-top:7px}
+  .mt-l{font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--violet-t);font-weight:700;margin-bottom:5px}
+  .mt-p{display:flex;flex-wrap:wrap;gap:4px}
+  .tnt{font-family:'Cascadia Code',Consolas,monospace;font-size:10px;background:#F1EFFC;border:1px solid #cfc8f2;border-radius:5px;padding:1px 6px;color:#4534B0}
+  .rtag{position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;text-transform:uppercase;color:#8A5A16;background:#FBE8D2;border-radius:5px;padding:1px 6px}
+</style></head><body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-lb" viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="19" cy="18" r="2"/><path d="M7 12h4M11 12l6-6M11 12l6 6M11 12h6"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M7.5 7.5h.01M7.5 16.5h.01"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></symbol>
+  <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></symbol>
+</defs></svg>
+
+<header>
+  <div><div class="brand"><span>[Marque]</span> — Infrastructure physique</div>
+  <div class="subtitle">Serveurs : rôle, capacité, adressage, composants logiciels et flux</div></div>
+  <div class="h-right"><div class="author">Arnaud BRETON</div>
+  <div class="tags">Schéma · serveurs, IP, logiciels, multi-tenant</div>
+  <div class="version mono">v0.1</div><div class="status"><span class="dot"></span>Proposition · document de travail</div></div>
+</header>
+<div class="divider"></div>
+
+<div class="legend">
+  <span><b>IP</b> : <span class="ipb ip-priv">privée</span> <span class="ipb ip-pub">publique</span></span>
+  <span><b>Frontaux</b> : plusieurs serveurs actifs répartis par le LB</span>
+  <span><b>Redondance</b> (pointillés) : masquable pour une version sans redondance</span>
+  <span><b>Capacité</b> : vCPU · RAM · disque</span>
+</div>
+
+<div class="canvas">
+  <svg class="svg-layer" viewBox="0 0 1200 1195" preserveAspectRatio="none">
+    <defs><marker id="arr" markerWidth="9" markerHeight="9" refX="6.5" refY="3" orient="auto-start-reverse"><path d="M0,0 L6.5,3 L0,6 z" fill="#7C79C9"/></marker></defs>
+    <g fill="none" stroke="#9C9AD6" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arr)">
+      <path d="M535,316 L468,392"/>
+      <path d="M665,316 L732,392"/>
+      <path d="M837,512 L911,600"/>
+      <path d="M475,627 L462,882"/>
+      <path d="M725,627 L738,882"/>
+      <path d="M1020,767 L1020,882"/>
+    </g>
+    <path d="M572,985 L628,985" fill="none" stroke="#9C9AD6" stroke-width="2" stroke-dasharray="5 4" marker-start="url(#arr)" marker-end="url(#arr)"/>
+    <text class="clabel" x="600" y="345" text-anchor="middle">Répartition sur les frontaux (utile dès 2 VMs)</text>
+    <text class="clabel" x="875" y="484" text-anchor="middle">file d'attente</text>
+    <text class="clabel" x="600" y="978" text-anchor="middle">réplication</text>
+    <text class="clabel" x="1052" y="830">médias</text>
+  </svg>
+
+  <!-- ZONE DMZ -->
+  <div class="zone z-amber" style="left:20px;top:50px;width:1160px;height:270px"></div>
+  <div class="zh" style="left:35px;top:58px;color:#B9761E">Zone publique · DMZ</div>
+  <div class="znet" style="left:1045px;top:59px">10.0.0.0/24</div>
+  <div class="srv" style="left:470px;top:86px;width:260px">
+    <div class="badge"><svg class="ic"><use href="#i-lb"/></svg></div>
+    <div class="role">Load Balancer / reverse proxy</div><div class="id">srv-lb</div>
+    <div class="cap">2 vCPU · 4 Go · 40 Go</div>
+    <div class="ips"><span class="ipb ip-pub">203.0.113.10</span><span class="ipb ip-priv">10.0.0.10</span></div>
+    <div class="sw"><div class="sw-l">Composants logiciels</div><div class="sw-p"><span class="swp">Nginx</span><span class="swp">WAF</span></div></div>
+    <div class="note">Utile uniquement à partir de 2 frontaux ; répartit la charge entre eux.</div>
+  </div>
+
+  <!-- ZONE APPLICATIVE -->
+  <div class="zone z-green" style="left:20px;top:355px;width:1160px;height:460px"></div>
+  <div class="zh" style="left:35px;top:363px;color:#3E9457">Zone applicative privée</div>
+  <div class="znet" style="left:1045px;top:364px">10.0.1.0/24</div>
+  <div class="srv" style="left:365px;top:395px;width:220px">
+    <div class="badge"><svg class="ic"><use href="#i-server"/></svg></div>
+    <div class="role">Serveur frontal (applicatif)</div><div class="id">srv-app-1</div>
+    <div class="cap">8 vCPU · 16 Go · 100 Go SSD</div>
+    <div class="ips"><span class="ipb ip-priv">10.0.1.11</span></div>
+    <div class="sw"><div class="sw-l">Composants logiciels</div><div class="sw-p"><span class="swp">Docker</span><span class="swp">Node.js</span><span class="swp">API Métier</span><span class="swp">Frontend SSR</span><span class="swp">Varnish</span></div></div>
+  </div>
+  <div class="srv" style="left:615px;top:395px;width:220px">
+    <div class="badge"><svg class="ic"><use href="#i-server"/></svg></div>
+    <div class="role">Serveur frontal (applicatif)</div><div class="id">srv-app-2</div>
+    <div class="cap">8 vCPU · 16 Go · 100 Go SSD</div>
+    <div class="ips"><span class="ipb ip-priv">10.0.1.12</span></div>
+    <div class="sw"><div class="sw-l">Composants logiciels</div><div class="sw-p"><span class="swp">Docker</span><span class="swp">Node.js</span><span class="swp">API Métier</span><span class="swp">Frontend SSR</span><span class="swp">Varnish</span></div></div>
+  </div>
+  <div class="srv" style="left:915px;top:520px;width:225px">
+    <div class="badge"><svg class="ic"><use href="#i-gear"/></svg></div>
+    <div class="role">Serveur worker (asynchrone)</div><div class="id">srv-worker-1</div>
+    <div class="cap">4 vCPU · 8 Go · 50 Go SSD</div>
+    <div class="ips"><span class="ipb ip-priv">10.0.1.21</span></div>
+    <div class="sw"><div class="sw-l">Composants logiciels</div><div class="sw-p"><span class="swp">Docker</span><span class="swp">Node.js</span><span class="swp">Worker</span><span class="swp">File d'attente</span></div></div>
+    <div class="note">Non exposé, sans LB, sans redondance. Traite les tâches de la file.</div>
+  </div>
+
+  <!-- ZONE DONNEES -->
+  <div class="zone z-violet" style="left:20px;top:845px;width:1160px;height:335px"></div>
+  <div class="zh" style="left:35px;top:853px;color:#5742DE">Zone données privée</div>
+  <div class="znet" style="left:1045px;top:854px">10.0.2.0/24</div>
+  <div class="vip-pill" style="left:527px;top:845px">VIP base 10.0.2.10</div>
+  <div class="srv" style="left:350px;top:885px;width:220px">
+    <div class="badge"><svg class="ic"><use href="#i-db"/></svg></div>
+    <div class="role">Base de données · primaire</div><div class="id">srv-db-1</div>
+    <div class="cap">8 vCPU · 32 Go · 200 Go SSD</div>
+    <div class="ips"><span class="ipb ip-priv">10.0.2.11</span></div>
+    <div class="sw"><div class="sw-l">Composants logiciels</div><div class="sw-p"><span class="swp">PostgreSQL</span></div></div>
+    <div class="mt"><div class="mt-l">Multi-tenant hybride · 1 base, 1 schéma / tenant</div><div class="mt-p"><span class="tnt">tenant_1</span><span class="tnt">tenant_2</span><span class="tnt">tenant_3</span><span class="tnt">…</span></div></div>
+  </div>
+  <div class="srv redond" style="left:630px;top:885px;width:220px"><span class="rtag">redondance</span>
+    <div class="badge"><svg class="ic"><use href="#i-db"/></svg></div>
+    <div class="role">Base de données · réplica</div><div class="id">srv-db-2</div>
+    <div class="cap">8 vCPU · 32 Go · 200 Go SSD</div>
+    <div class="ips"><span class="ipb ip-priv">10.0.2.12</span></div>
+    <div class="sw"><div class="sw-l">Composants logiciels</div><div class="sw-p"><span class="swp">PostgreSQL</span><span class="swp">réplication</span></div></div>
+    <div class="note">Réplica du primaire (mêmes schémas). Bascule via la VIP.</div>
+  </div>
+  <div class="srv" style="left:910px;top:885px;width:220px">
+    <div class="badge"><svg class="ic"><use href="#i-box"/></svg></div>
+    <div class="role">Stockage objet / médias</div><div class="id">service managé</div>
+    <div class="cap">endpoint (pas de VM dédiée)</div>
+    <div class="ips"><span class="ipb ip-priv">endpoint privé</span></div>
+    <div class="sw"><div class="sw-l">Composants logiciels</div><div class="sw-p"><span class="swp">S3-compatible</span></div></div>
+  </div>
+
+</div>
+
+<div class="worknote">Load balancer et frontaux alignés sur le même axe : la charge est répartie symétriquement entre les frontaux (utile dès 2 VMs). Le worker est en retrait, non exposé, hors LB, et traite la file d'attente. La VIP est l'adresse d'entrée partagée du cluster de bases. Base unique en multi-tenant hybride (un schéma par tenant), avec réplication vers un réplica. Cache assuré par Varnish sur les frontaux. Capacités et IP indicatives, à confirmer.</div>
+</body></html>

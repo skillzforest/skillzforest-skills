@@ -1,0 +1,4 @@
+{
+  "topology_key": "value",
+  "notes": "JSON masters: map top-level keys to fields or use a transformation script."
+}

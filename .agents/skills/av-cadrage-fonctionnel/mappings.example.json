@@ -1,0 +1,7 @@
+{
+  "placeholders": {
+    "{{PROJECT_NAME}}": "projet",
+    "{{CLIENT_NAME}}": "client"
+  },
+  "notes": "For DOCX/PPTX use placeholder replacement. For XLSX use 'Sheet!A1' keys mapping to field names."
+}

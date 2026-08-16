@@ -1,0 +1,7 @@
+{
+  "placeholders": {
+    "{{PROJECT_TITLE}}": "titre",
+    "{{SUMMARY}}": "resume"
+  },
+  "notes": "PPTX masters: replace slide placeholders or use a library to modify slides."
+}

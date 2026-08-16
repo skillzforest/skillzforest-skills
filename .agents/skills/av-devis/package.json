@@ -1,0 +1,14 @@
+{
+  "name": "av-devis",
+  "version": "0.1.0",
+  "description": "Local tooling to copy and fill Devis master for av-devis skill",
+  "main": "scripts/fill_devis.js",
+  "scripts": {
+    "fill": "node scripts/fill_devis.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.3.0",
+    "fs-extra": "^11.1.1",
+    "minimist": "^1.2.8"
+  }
+}

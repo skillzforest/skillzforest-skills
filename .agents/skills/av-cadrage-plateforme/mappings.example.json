@@ -1,0 +1,7 @@
+{
+  "placeholders": {
+    "{{PROJECT_NAME}}": "projet",
+    "{{PLATFORM}}": "plateforme"
+  },
+  "notes": "Use placeholder replacements for DOCX/PPTX. For JSON masters, map top-level keys to field names."
+}
