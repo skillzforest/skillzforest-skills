@@ -1,0 +1,18 @@
+{
+  "id": "ai-factory-av",
+  "name": "AI Factory AV Suite",
+  "version": "0.1.0",
+  "description": "Bundle de skills Avant-Vente pour AI Factory (devis, cadrage, CR, présentation, schémas)",
+  "skills": [
+    "av-devis",
+    "av-devis-tma",
+    "av-cadrage-fonctionnel",
+    "av-cadrage-plateforme",
+    "av-compte-rendu-reunion",
+    "av-init-projet",
+    "av-parcours-miro",
+    "av-presentation-client",
+    "av-schema-logique",
+    "av-schema-physique"
+  ]
+}
