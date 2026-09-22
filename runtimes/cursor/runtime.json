@@ -1,0 +1,9 @@
+{
+  "id": "cursor",
+  "name": "Cursor",
+  "type": "unknown",
+  "supportsAgentSkills": null,
+  "installStrategy": "manual",
+  "status": "unknown",
+  "notes": "Cursor's own skill/rule format is not confirmed. No verified install path or adapter exists yet."
+}

@@ -1,0 +1,9 @@
+{
+  "id": "claude-ai",
+  "name": "Claude.ai",
+  "type": "remote",
+  "supportsAgentSkills": true,
+  "installStrategy": "upload",
+  "status": "verified",
+  "notes": "Claude.ai / Claude Desktop's custom Skills feature imports a zipped SKILL.md folder unmodified. This repo previously shipped these zips by hand under skills-claude/; they are now generated on demand."
+}

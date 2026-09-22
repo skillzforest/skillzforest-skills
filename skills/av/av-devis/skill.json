@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "av-devis",
+  "name": "Devis modulaire du projet",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "pre-sales",
+  "description": "Produit le devis modulaire forfaitaire d'un projet à partir du master Devis_Modulaire.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "native",
+    "codex": "supported",
+    "gemini": "supported",
+    "mistral": "supported",
+    "perplexity": "supported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

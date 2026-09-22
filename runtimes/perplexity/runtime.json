@@ -1,0 +1,9 @@
+{
+  "id": "perplexity",
+  "name": "Perplexity",
+  "type": "remote",
+  "supportsAgentSkills": false,
+  "installStrategy": "manual-bundle",
+  "status": "supported",
+  "notes": "Perplexity has no file-based skill loading. 'Installing' a skill here means generating one self-contained Markdown file (SKILL.md's content plus instructions) that the user pastes into a Perplexity Space's custom instructions. Real and usable, but manual by nature — see runtimes/perplexity/README.md."
+}

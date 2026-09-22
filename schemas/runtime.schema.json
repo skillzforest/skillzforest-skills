@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://skillzforest.ai/schemas/runtime.schema.json",
+  "title": "Runtime manifest (runtime.json)",
+  "type": "object",
+  "required": ["id", "name", "type", "installStrategy", "status"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "type": {
+      "type": "string",
+      "description": "'filesystem' for a local install directory, 'remote' for a hosted/cloud product, 'unknown' if not yet confirmed."
+    },
+    "supportsAgentSkills": {
+      "type": ["boolean", "null"],
+      "description": "Whether the runtime natively understands the Agent Skills SKILL.md format. null when not verified."
+    },
+    "installStrategy": {
+      "type": "string",
+      "enum": ["filesystem", "upload", "manual-bundle", "plugin", "manual"],
+      "description": "Which adapter in scripts/lib/adapters.js builds a distribution for this runtime. 'filesystem': plain folder copy to paths.user. 'upload': zip for a web upload flow. 'manual-bundle': a single copy-pasteable file for runtimes with no file-based loading (e.g. a chat product's custom instructions). 'plugin'/'manual': no adapter implemented yet."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["verified", "supported", "unknown"],
+      "description": "'verified': the install mechanism has actually been tested end-to-end. 'supported': implemented against a documented/confirmed convention but not independently lab-tested. 'unknown': no confirmed mechanism at all."
+    },
+    "paths": {
+      "type": "object",
+      "description": "Filesystem targets for installStrategy 'filesystem'. Required in that case so no path is ever hardcoded in the installer app.",
+      "properties": {
+        "user": { "type": "string", "description": "Per-user install root, e.g. '~/.claude/skills'. '~' is expanded to the OS home directory." }
+      }
+    },
+    "detection": {
+      "type": "object",
+      "description": "Reasonable, non-invasive signals the SkillzForest Installer uses to guess whether this runtime is present on the machine. Optional — omitted for runtimes with no useful local signal (remote products, unconfirmed formats).",
+      "properties": {
+        "configDir": { "type": "string", "description": "A config/state directory whose presence suggests the runtime is installed, e.g. '~/.claude'. '~' expands to the OS home directory." },
+        "executable": { "type": "string", "description": "A binary name to look up on PATH, e.g. 'claude'." }
+      }
+    },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": true
+}

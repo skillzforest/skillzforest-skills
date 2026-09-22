@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://skillzforest.ai/schemas/distribution.schema.json",
+  "title": "Distribution manifest (distribution.json)",
+  "description": "Written by scripts/build-skill.js next to every generated dist/skills/<skill>/<runtime>/ output. Records what was built and from what, so a distribution can never silently diverge from its source.",
+  "type": "object",
+  "required": ["schemaVersion", "skill", "runtime", "compatibility", "sourceVersion", "generatedAt"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "skill": { "type": "string" },
+    "runtime": { "type": "string" },
+    "compatibility": {
+      "type": "string",
+      "enum": ["native", "supported", "adapted", "unsupported", "unknown"]
+    },
+    "sourceVersion": {
+      "type": "string",
+      "description": "skill.json version this distribution was generated from."
+    },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "files": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Relative paths of the files this distribution contains."
+    }
+  },
+  "additionalProperties": true
+}

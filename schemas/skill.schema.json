@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://skillzforest.ai/schemas/skill.schema.json",
+  "title": "Skill manifest (skill.json)",
+  "type": "object",
+  "required": ["schemaVersion", "id", "name", "publisher", "version", "category", "description"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": {
+      "type": "string",
+      "description": "Canonical skill id, matching its folder name under skills/<family>/. Never runtime-specific (e.g. 'dev-seo', never 'claude-dev-seo').",
+      "pattern": "^[a-z][a-z0-9]*-[a-z0-9-]+$"
+    },
+    "name": { "type": "string" },
+    "publisher": { "type": "string" },
+    "version": { "type": "string" },
+    "category": {
+      "type": "string",
+      "description": "Human-readable category matching the skill's family (e.g. 'pre-sales' for av-*, 'development' for dev-*)."
+    },
+    "description": { "type": "string" },
+    "compatibility": {
+      "type": "object",
+      "description": "Map of runtime id -> declared compatibility. Only include a runtime here once its status has actually been checked; omit rather than guess.",
+      "additionalProperties": { "$ref": "#/definitions/compatibilityStatus" }
+    }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "compatibilityStatus": {
+      "type": "string",
+      "enum": ["native", "supported", "adapted", "unsupported", "unknown"],
+      "description": "native: runtime consumes SKILL.md unmodified via a verified, documented mechanism. supported: works through a known but distinct install path, not fully verified. adapted: requires a script-generated transformation. unsupported: verified not to work. unknown: not yet verified."
+    }
+  }
+}

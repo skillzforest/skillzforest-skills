@@ -1,0 +1,9 @@
+{
+  "id": "chatgpt",
+  "name": "ChatGPT",
+  "type": "remote",
+  "supportsAgentSkills": false,
+  "installStrategy": "plugin",
+  "status": "unknown",
+  "notes": "ChatGPT does not consume the Agent Skills SKILL.md format natively. Reaching it would require building and maintaining a separate plugin / Custom GPT integration, which doesn't exist yet — no adapter is implemented."
+}

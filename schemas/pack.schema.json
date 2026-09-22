@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://skillzforest.ai/schemas/pack.schema.json",
+  "title": "Pack manifest (pack.json)",
+  "type": "object",
+  "required": ["schemaVersion", "id", "name", "publisher", "version", "description", "skills"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "publisher": { "type": "string" },
+    "version": { "type": "string" },
+    "description": { "type": "string" },
+    "license": { "type": "string" },
+    "tags": { "type": "array", "items": { "type": "string" } },
+    "skills": {
+      "type": "array",
+      "description": "Skill ids referenced by name only. A pack must never embed a skill's own files — see the 'no embedded skill copy' rule enforced by scripts/validate.js.",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    }
+  },
+  "additionalProperties": true
+}

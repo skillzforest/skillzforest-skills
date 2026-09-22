@@ -1,0 +1,16 @@
+{
+  "id": "gemini",
+  "name": "Gemini",
+  "type": "filesystem",
+  "supportsAgentSkills": true,
+  "installStrategy": "filesystem",
+  "status": "supported",
+  "paths": {
+    "user": "~/.gemini/skills"
+  },
+  "detection": {
+    "configDir": "~/.gemini",
+    "executable": "gemini"
+  },
+  "notes": "Refers to Gemini CLI, which reads local project/user configuration from ~/.gemini/. Skills are installed as a plain SKILL.md folder under ~/.gemini/skills/<skill-name>/, mirroring the Claude Code / Codex convention. Not independently lab-tested against a live Gemini CLI install, so skill.json compatibility is 'supported' rather than 'native'. Does not apply to the remote Gemini web app, which has no file-based skill loading."
+}

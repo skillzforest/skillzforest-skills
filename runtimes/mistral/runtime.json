@@ -1,0 +1,9 @@
+{
+  "id": "mistral",
+  "name": "Mistral",
+  "type": "remote",
+  "supportsAgentSkills": false,
+  "installStrategy": "manual-bundle",
+  "status": "supported",
+  "notes": "Mistral (Le Chat / API) has no file-based skill loading. 'Installing' a skill here means generating one self-contained Markdown file (SKILL.md's content plus instructions) that the user pastes into Le Chat's custom instructions or a system prompt. Real and usable, but manual by nature — see runtimes/mistral/README.md."
+}

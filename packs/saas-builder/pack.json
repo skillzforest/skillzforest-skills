@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "saas-builder",
+  "name": "SaaS Builder Pack",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "description": "Skills for designing, building and validating SaaS products.",
+  "skills": []
+}

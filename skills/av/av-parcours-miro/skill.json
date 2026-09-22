@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "av-parcours-miro",
+  "name": "Parcours utilisateurs (user story mapping) sur Miro",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "pre-sales",
+  "description": "Construit le user story mapping des parcours utilisateurs sur Miro à partir du cadrage fonctionnel.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "native",
+    "codex": "supported",
+    "gemini": "supported",
+    "mistral": "supported",
+    "perplexity": "supported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

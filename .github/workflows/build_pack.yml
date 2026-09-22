@@ -1,0 +1,46 @@
+name: Build and release Pre-Sales pack
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read pack version
+        id: get_version
+        run: |
+          echo "version=$(python3 -c "import json;print(json.load(open('packs/presales/pack.json'))['version'])")" >> $GITHUB_OUTPUT
+
+      - name: Validate skills and packs
+        run: node scripts/validate.js
+
+      - name: Build presales pack (per-runtime distributions)
+        run: node scripts/build-pack.js presales
+
+      - name: Archive all runtime distributions into one release asset
+        run: |
+          cd dist/packs/presales
+          zip -r "../../../skillzforest-presales-${{ steps.get_version.outputs.version }}.zip" .
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.version }}
+          release_name: "SkillzForest Pre-Sales Pack ${{ steps.get_version.outputs.version }}"
+          body: "Automated pack release — contains one subfolder per compatible runtime (see runtimes/)."
+          draft: false
+          prerelease: false
+
+      - name: Upload pack zip
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: skillzforest-presales-${{ steps.get_version.outputs.version }}.zip
+          asset_name: skillzforest-presales-${{ steps.get_version.outputs.version }}.zip
+          asset_content_type: application/zip

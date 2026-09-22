@@ -13,17 +13,29 @@ pnpm-debug.log*
 
 # Fichiers temporaires de génération
 answers.json
-*.docx
-*.pdf
 tmp/
 temp/
 # Dossiers de sortie/artefacts (niveaux multiples)
 out/
 **/out/**
+# Documents générés depuis les masters (jamais les masters eux-mêmes,
+# qui vivent sous skills/**/masters/ et sont versionnés avec la skill)
+**/out/*.docx
+**/out/*.pdf
 
 # Node modules (ignore partout)
 node_modules/
 **/node_modules/
+
+# Build artifacts
+dist/
+
+# Rust (installer/src-tauri)
+target/
+installer/src-tauri/gen/
+
+# Bac à sable local (fixtures de test manuelles, non versionnées)
+templates/projet/
 
 # OS
 .DS_Store

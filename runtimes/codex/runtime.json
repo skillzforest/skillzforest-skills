@@ -1,0 +1,16 @@
+{
+  "id": "codex",
+  "name": "Codex",
+  "type": "filesystem",
+  "supportsAgentSkills": true,
+  "installStrategy": "filesystem",
+  "status": "supported",
+  "paths": {
+    "user": "~/.agents/skills"
+  },
+  "detection": {
+    "configDir": "~/.agents",
+    "executable": "codex"
+  },
+  "notes": "Reads project/user skills from a plain SKILL.md folder under ~/.agents/skills/<skill-name>/, the same shape Claude Code uses. Implemented against this documented convention; not independently lab-tested against a live Codex install, so skill.json compatibility is 'supported' rather than 'native'."
+}

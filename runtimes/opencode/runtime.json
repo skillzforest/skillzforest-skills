@@ -1,0 +1,9 @@
+{
+  "id": "opencode",
+  "name": "OpenCode",
+  "type": "unknown",
+  "supportsAgentSkills": null,
+  "installStrategy": "manual",
+  "status": "unknown",
+  "notes": "No verified integration mechanism for Agent Skills exists yet. No adapter is implemented."
+}

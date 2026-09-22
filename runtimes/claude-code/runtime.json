@@ -1,0 +1,16 @@
+{
+  "id": "claude-code",
+  "name": "Claude Code",
+  "type": "filesystem",
+  "supportsAgentSkills": true,
+  "installStrategy": "filesystem",
+  "status": "verified",
+  "paths": {
+    "user": "~/.claude/skills"
+  },
+  "detection": {
+    "configDir": "~/.claude",
+    "executable": "claude"
+  },
+  "notes": "Skills in this repo are authored directly in the Agent Skills SKILL.md format and load natively in Claude Code — no adaptation needed."
+}

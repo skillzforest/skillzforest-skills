@@ -27,6 +27,18 @@ function copyMaster(src, dest) {
   console.log('Copied master to', dest);
 }
 
+// Skills live under skills/<family>/<skill-name>/ — find the family folder
+// that actually contains this skill instead of hardcoding one.
+function findSkillDir(skill) {
+  const skillsRoot = path.join('skills');
+  const families = fs.existsSync(skillsRoot) ? fs.readdirSync(skillsRoot) : [];
+  for (const family of families) {
+    const candidate = path.join(skillsRoot, family, skill);
+    if (fs.existsSync(candidate)) return candidate;
+  }
+  return null;
+}
+
 async function main() {
   const argv = minimist(process.argv.slice(2));
   const skill = argv.skill;
@@ -43,13 +55,18 @@ async function main() {
   const outPath = path.join(outDir, filename);
   const data = dataFile ? JSON.parse(fs.readFileSync(dataFile, 'utf8')) : {};
   // try to load mappings from same skill folder
-  const mappingsPath = path.join('.agents', 'skills', skill, 'mappings.json');
+  const skillDir = findSkillDir(skill);
   let mappings = {};
-  if (fs.existsSync(mappingsPath)) {
-    mappings = JSON.parse(fs.readFileSync(mappingsPath, 'utf8'));
+  if (skillDir) {
+    const mappingsPath = path.join(skillDir, 'mappings.json');
+    if (fs.existsSync(mappingsPath)) {
+      mappings = JSON.parse(fs.readFileSync(mappingsPath, 'utf8'));
+    } else {
+      const example = path.join(skillDir, 'mappings.example.json');
+      if (fs.existsSync(example)) console.warn('No mappings.json found, using example as reference:', example);
+    }
   } else {
-    const example = path.join('.agents', 'skills', skill, 'mappings.example.json');
-    if (fs.existsSync(example)) console.warn('No mappings.json found, using example as reference:', example);
+    console.warn(`Skill '${skill}' not found under skills/*/${skill} — proceeding without mappings.`);
   }
 
   if (ext === '.xlsx' || ext === '.xls') {

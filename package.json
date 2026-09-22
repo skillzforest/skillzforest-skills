@@ -1,9 +1,16 @@
 {
-  "name": "ai-factory-tools",
+  "name": "skillzforest-skills",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "fill-master": "node scripts/fill_master.js"
+    "validate": "node scripts/validate.js",
+    "build": "node scripts/build-all.js",
+    "build:skill": "node scripts/build-skill.js",
+    "build:pack": "node scripts/build-pack.js",
+    "build:runtime": "node scripts/build-runtime.js",
+    "fill-master": "node scripts/fill_master.js",
+    "app:dev": "npm run installer:dev --prefix installer",
+    "app:build": "npm run installer:build --prefix installer"
   },
   "dependencies": {
     "exceljs": "^4.3.0",
