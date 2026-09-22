@@ -4,9 +4,9 @@ Ce dépôt est conçu en mode skill-first : chaque `SKILL.md` reste atomique, li
 
 ## 1. Distinction claire
 
-- Skill : capacité métier ou documentaire autonome (ex. `av-cadrage-fonctionnel`, `av-devis`), rangée sous `skills/<famille>/`.
+- Skill : capacité métier ou documentaire autonome (ex. `av-cadrage-fonctionnel`, `av-devis`), rangée sous `skills/<domaine>/` (ex. `skills/sales/`).
 - Workflow : séquence de compétences à enchaîner selon un besoin projet.
-- Pack : produit commercial qui référence plusieurs skills cohérentes (ex. `packs/presales/pack.json`), sans jamais en dupliquer le contenu.
+- Pack : produit commercial qui référence plusieurs skills cohérentes (ex. `packs/sales/pack.json`), sans jamais en dupliquer le contenu.
 - Bundle : ensemble de plusieurs packs commercialisés ensemble.
 - Runtime : environnement cible (Claude Code, Codex, Cursor…) qui adapte ou génère le format d'installation à partir de `skills/`.
 - MCP / connecteurs : accès Drive, Sheets, Miro, Docs, Slides, etc.
@@ -110,7 +110,7 @@ Un workflow, au sens SkillzForest :
 - référence plusieurs skills par leur nom (jamais par copie de fichiers) ;
 - définit un ordre ou une orchestration entre elles ;
 - ne duplique jamais leur contenu, leurs entrées ou leurs garde-fous ;
-- peut appartenir à un ou plusieurs packs commerciaux (ex. `avant-vente-complete` appartient au Pre-Sales Pack).
+- peut appartenir à un ou plusieurs packs commerciaux (ex. `avant-vente-complete` appartient au pack Sales & Presales).
 
 Exemple de manifeste **illustratif** (aucun `workflow.json` de ce type n'existe encore dans ce dépôt — les workflows actuels sont documentés en Markdown sous `workflows/<nom>/WORKFLOW.md`, ce qui suffit tant qu'aucune orchestration automatisée n'est nécessaire) :
 
@@ -118,7 +118,7 @@ Exemple de manifeste **illustratif** (aucun `workflow.json` de ce type n'existe 
 {
   "id": "avant-vente-complete",
   "name": "Avant-vente complète",
-  "packs": ["presales"],
+  "packs": ["sales"],
   "steps": [
     { "skill": "av-init-projet" },
     { "skill": "av-cadrage-fonctionnel" },

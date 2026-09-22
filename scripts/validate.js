@@ -6,6 +6,10 @@ const {
   REPO_ROOT,
   SKILLS_ROOT,
   listFamilies,
+  listStandaloneSkillNames,
+  listDomains,
+  findDomain,
+  prefixOf,
   listPacks,
   readPack,
   listRuntimes,
@@ -16,59 +20,133 @@ const {
 const errors = [];
 const warnings = [];
 
-function checkSkillFolders() {
-  const seenNames = new Map(); // name -> family
-  const seenIds = new Map(); // skill.json id -> name
-  for (const family of listFamilies()) {
-    const familyDir = path.join(SKILLS_ROOT, family);
-    for (const entry of fs.readdirSync(familyDir, { withFileTypes: true })) {
-      if (!entry.isDirectory()) continue;
-      const skillDir = path.join(familyDir, entry.name);
-      const label = `skills/${family}/${entry.name}`;
-
-      if (!fs.existsSync(path.join(skillDir, 'SKILL.md'))) {
-        errors.push(`${label} has no SKILL.md`);
-        continue;
-      }
-      if (!entry.name.startsWith(`${family}-`)) {
-        errors.push(`${label} does not use the '${family}-' prefix expected for this category`);
-      }
-      if (seenNames.has(entry.name)) {
-        errors.push(`skill '${entry.name}' is duplicated: skills/${seenNames.get(entry.name)}/${entry.name} and ${label}`);
-      } else {
-        seenNames.set(entry.name, family);
-      }
-
-      const manifestPath = path.join(skillDir, 'skill.json');
-      if (!fs.existsSync(manifestPath)) {
-        errors.push(`${label} has no skill.json`);
-        continue;
-      }
-      let manifest;
-      try {
-        manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-      } catch (e) {
-        errors.push(`${label}/skill.json is not valid JSON: ${e.message}`);
-        continue;
-      }
-      if (manifest.id !== entry.name) {
-        errors.push(`${label}/skill.json id '${manifest.id}' does not match its folder name`);
-      }
-      if (seenIds.has(manifest.id)) {
-        errors.push(`skill.json id '${manifest.id}' is duplicated (also used by ${seenIds.get(manifest.id)})`);
-      } else {
-        seenIds.set(manifest.id, label);
-      }
-      for (const [runtimeId, status] of Object.entries(manifest.compatibility || {})) {
-        if (!COMPATIBILITY_STATUSES.includes(status)) {
-          errors.push(`${label}/skill.json declares invalid compatibility status '${status}' for '${runtimeId}'`);
-        }
-        if (!listRuntimes().includes(runtimeId)) {
-          errors.push(`${label}/skill.json declares compatibility with unknown runtime '${runtimeId}' (no runtimes/${runtimeId}/runtime.json)`);
-        }
-      }
+// Validates one skill folder (SKILL.md presence, prefix, skill.json,
+// duplicate name/id, compatibility values) and records it into seenNames /
+// seenIds. Shared by the flat-domain, subcategory, and standalone cases
+// below so the three don't drift from each other.
+function checkOneSkill({ skillDir, label, name, allowedPrefixes, groupKey, requireManifest, seenNames, seenIds }) {
+  if (!fs.existsSync(path.join(skillDir, 'SKILL.md'))) {
+    errors.push(`${label} has no SKILL.md`);
+    return;
+  }
+  if (allowedPrefixes) {
+    const prefix = prefixOf(name);
+    if (!allowedPrefixes.includes(prefix)) {
+      errors.push(
+        `${label} uses prefix '${prefix}-' which is not registered for this location `
+        + `(skills/domains.json lists: ${allowedPrefixes.map((p) => `${p}-`).join(', ')})`
+      );
     }
   }
+  if (seenNames.has(name)) {
+    errors.push(`skill '${name}' is duplicated: skills/${seenNames.get(name)}/${name} and ${label}`);
+  } else {
+    seenNames.set(name, groupKey);
+  }
+
+  const manifestPath = path.join(skillDir, 'skill.json');
+  if (!fs.existsSync(manifestPath)) {
+    if (requireManifest) errors.push(`${label} has no skill.json`);
+    return;
+  }
+  let manifest;
+  try {
+    manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  } catch (e) {
+    errors.push(`${label}/skill.json is not valid JSON: ${e.message}`);
+    return;
+  }
+  if (manifest.id !== name) {
+    errors.push(`${label}/skill.json id '${manifest.id}' does not match its folder name`);
+  }
+  if (seenIds.has(manifest.id)) {
+    errors.push(`skill.json id '${manifest.id}' is duplicated (also used by ${seenIds.get(manifest.id)})`);
+  } else {
+    seenIds.set(manifest.id, label);
+  }
+  for (const [runtimeId, status] of Object.entries(manifest.compatibility || {})) {
+    if (!COMPATIBILITY_STATUSES.includes(status)) {
+      errors.push(`${label}/skill.json declares invalid compatibility status '${status}' for '${runtimeId}'`);
+    }
+    if (!listRuntimes().includes(runtimeId)) {
+      errors.push(`${label}/skill.json declares compatibility with unknown runtime '${runtimeId}' (no runtimes/${runtimeId}/runtime.json)`);
+    }
+  }
+}
+
+function checkSkillFolders() {
+  const seenNames = new Map(); // name -> domain (or domain/subcategory, or '(standalone)')
+  const seenIds = new Map(); // skill.json id -> label
+  const domains = listDomains();
+  if (domains.length === 0) {
+    errors.push('skills/domains.json is missing or declares no domains');
+  }
+
+  for (const domain of listFamilies()) {
+    const domainDir = path.join(SKILLS_ROOT, domain);
+    const domainEntry = findDomain(domain);
+    if (!domainEntry) {
+      errors.push(`skills/${domain} has no matching entry in skills/domains.json — add one, or move its skills under a registered domain`);
+    }
+
+    if (domainEntry && domainEntry.subcategories) {
+      const declaredSubIds = new Set(domainEntry.subcategories.map((s) => s.id));
+      for (const subEntry of fs.readdirSync(domainDir, { withFileTypes: true })) {
+        if (!subEntry.isDirectory()) continue;
+        const subDir = path.join(domainDir, subEntry.name);
+        const subcategoryEntry = domainEntry.subcategories.find((s) => s.id === subEntry.name);
+        if (!subcategoryEntry) {
+          errors.push(`skills/${domain}/${subEntry.name} has no matching subcategory in skills/domains.json (declared: ${[...declaredSubIds].join(', ')})`);
+        }
+        for (const entry of fs.readdirSync(subDir, { withFileTypes: true })) {
+          if (!entry.isDirectory()) continue;
+          checkOneSkill({
+            skillDir: path.join(subDir, entry.name),
+            label: `skills/${domain}/${subEntry.name}/${entry.name}`,
+            name: entry.name,
+            allowedPrefixes: subcategoryEntry ? subcategoryEntry.prefixes : null,
+            groupKey: `${domain}/${subEntry.name}`,
+            requireManifest: true,
+            seenNames,
+            seenIds,
+          });
+        }
+      }
+      continue;
+    }
+
+    for (const entry of fs.readdirSync(domainDir, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      checkOneSkill({
+        skillDir: path.join(domainDir, entry.name),
+        label: `skills/${domain}/${entry.name}`,
+        name: entry.name,
+        allowedPrefixes: domainEntry ? domainEntry.prefixes : null,
+        groupKey: domain,
+        requireManifest: true,
+        seenNames,
+        seenIds,
+      });
+    }
+  }
+
+  // Standalone skills (skills/<name>/SKILL.md, no domain/prefix): generic
+  // agent-tooling skills that aren't part of the domain/pack/runtime
+  // distribution system. They still need a unique name and, if present, a
+  // consistent skill.json, but no domain prefix and no skill.json is required.
+  for (const name of listStandaloneSkillNames()) {
+    checkOneSkill({
+      skillDir: path.join(SKILLS_ROOT, name),
+      label: `skills/${name}`,
+      name,
+      allowedPrefixes: null,
+      groupKey: '(standalone)',
+      requireManifest: false,
+      seenNames,
+      seenIds,
+    });
+  }
+
   return seenNames;
 }
 
@@ -128,7 +206,7 @@ checkRuntimes();
 checkDistIsGenerated();
 
 console.log(
-  `Checked ${knownSkills.size} skill(s) across ${listFamilies().length} categories, ` +
+  `Checked ${knownSkills.size} skill(s) across ${listFamilies().length} domain(s), ` +
   `${listPacks().length} pack(s), ${listRuntimes().length} runtime(s).`
 );
 

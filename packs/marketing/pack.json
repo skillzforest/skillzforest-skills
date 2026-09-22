@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "marketing",
+  "name": "Marketing & Communication",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Get found and generate leads: content, SEO, social media, advertising.",
+  "tags": ["marketing", "communication", "content", "acquisition"],
+  "skills": []
+}

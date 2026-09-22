@@ -3,10 +3,10 @@
 A bundle groups several commercial [packs](../packs/) sold together on SkillzForest, at a combined price or as a themed offer.
 
 ```text
-Conceptual example — SaaS Factory Bundle
-├── Pre-Sales Pack
-├── SaaS Builder Pack
-└── SaaS Operations Pack
+Conceptual example — Digital Agency Bundle
+├── Sales & Presales
+├── Development & Engineering
+└── Project Management
 ```
 
 A bundle never duplicates pack or skill content — it only references pack IDs, the same way a pack only references skill names.

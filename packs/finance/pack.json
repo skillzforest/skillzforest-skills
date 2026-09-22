@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "finance",
+  "name": "Finance & Billing",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Invoice, track payments, and manage subscriptions.",
+  "tags": ["finance", "billing", "subscriptions", "invoicing"],
+  "skills": []
+}

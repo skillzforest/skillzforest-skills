@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "github-issue-context",
+  "name": "GitHub Issue Context",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "development",
+  "description": "Collects, normalizes, and enriches a GitHub Issue — text, comments, screenshots, attachments — into a stable .agent/issues/<number>/context.json + context.md bundle for another skill (or a human) to build on.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unsupported",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unsupported",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

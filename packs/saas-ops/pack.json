@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "id": "saas-ops",
-  "name": "SaaS Operations Pack",
-  "publisher": "SkillzForest",
-  "version": "0.1.0",
-  "description": "Skills for releasing, operating and maintaining SaaS products.",
-  "skills": []
-}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "github-implement-issue",
+  "name": "Implement GitHub Issue",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "development",
+  "description": "Investigates a repository, separates reporter claims from code/test evidence, reproduces and root-causes a GitHub Issue prepared by github-issue-context, then implements the minimal fix and reports PASS/FAIL/NOT RUN validation results. Supports a --plan mode that never touches a file.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unsupported",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unsupported",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

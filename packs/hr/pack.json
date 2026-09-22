@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "hr",
+  "name": "HR & Recruiting",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Hire and manage people: job postings, candidate screening, onboarding.",
+  "tags": ["hr", "recruiting", "hiring"],
+  "skills": []
+}

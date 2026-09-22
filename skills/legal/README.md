@@ -1,5 +1,9 @@
-# skills/legal
+# skills/legal — Legal & Compliance
 
-Skills de conformité et juridique.
+Secure contracts and regulatory compliance.
 
-Aucune skill `legal-*` n'est encore implémentée dans ce dépôt. Ce dossier est prêt à en accueillir : chaque skill doit vivre dans son propre sous-dossier `legal-<nom>/` avec au minimum un `SKILL.md` et un `skill.json`, conformément à la convention décrite dans [`skills/README.md`](../README.md).
+No skill is implemented in this domain yet. Accepted prefix: `legal-*`
+(e.g. `legal-contract-review`, `legal-gdpr-check`). Each skill lives in its
+own `legal-<name>/` subfolder with at least a `SKILL.md`, per the convention
+in [`skills/README.md`](../README.md) and the registry
+[`skills/domains.json`](../domains.json).

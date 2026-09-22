@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "customer-support",
+  "name": "Customer Support",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Respond to customers and track satisfaction: inbox, tickets, reviews.",
+  "tags": ["support", "customer-support", "satisfaction"],
+  "skills": []
+}

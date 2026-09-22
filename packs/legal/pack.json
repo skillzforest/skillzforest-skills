@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "legal",
+  "name": "Legal & Compliance",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Secure contracts and regulatory compliance.",
+  "tags": ["legal", "compliance", "contracts", "gdpr"],
+  "skills": []
+}

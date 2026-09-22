@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "development",
+  "name": "Development & Engineering",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Design, build, test, and run a software product.",
+  "tags": ["development", "engineering", "code", "ux-ui", "seo"],
+  "skills": [
+    "github-issue-context",
+    "github-implement-issue"
+  ]
+}

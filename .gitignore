@@ -52,3 +52,8 @@ Thumbs.db
 .venv/
 __pycache__/
 *.pyc
+
+# Generated per-issue context bundles (github-issue-context /
+# implement-github-issue skills) — regenerable from GitHub, never a
+# second source of truth, and can contain downloaded screenshots.
+.agent/

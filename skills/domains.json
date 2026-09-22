@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "domains": [
+    {
+      "id": "sales",
+      "name": "Sales & Presales",
+      "description": "Sell a digital project: quotes, client scoping, presentations, meeting notes.",
+      "prefixes": ["av"]
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing & Communication",
+      "description": "Get found and generate leads: content, SEO, social media, advertising.",
+      "prefixes": ["growth"]
+    },
+    {
+      "id": "finance",
+      "name": "Finance & Billing",
+      "description": "Invoice, track payments, and manage subscriptions.",
+      "prefixes": ["billing"]
+    },
+    {
+      "id": "hr",
+      "name": "HR & Recruiting",
+      "description": "Hire and manage people: job postings, candidate screening, onboarding.",
+      "prefixes": ["hr"]
+    },
+    {
+      "id": "customer-support",
+      "name": "Customer Support",
+      "description": "Respond to customers and track satisfaction: inbox, tickets, reviews.",
+      "prefixes": ["support"]
+    },
+    {
+      "id": "project-management",
+      "name": "Project Management",
+      "description": "Track project progress: backlog, sprints, reporting, documentation.",
+      "prefixes": ["board", "docs"]
+    },
+    {
+      "id": "legal",
+      "name": "Legal & Compliance",
+      "description": "Secure contracts and regulatory compliance.",
+      "prefixes": ["legal"]
+    },
+    {
+      "id": "development",
+      "name": "Development & Engineering",
+      "description": "Design, build, test, and run a software product.",
+      "subcategories": [
+        {
+          "id": "seo",
+          "name": "SEO",
+          "description": "Technical and content search-engine optimization.",
+          "prefixes": ["seo"]
+        },
+        {
+          "id": "code",
+          "name": "Code",
+          "description": "Product scoping, architecture, development, data, AI, QA, infrastructure, release, and security.",
+          "prefixes": ["product", "arch", "dev", "data", "ai", "qa", "infra", "ops", "release", "sec", "github"]
+        },
+        {
+          "id": "ux-ui",
+          "name": "UX/UI",
+          "description": "User experience, journeys, interface, and design system.",
+          "prefixes": ["ux", "ui"]
+        }
+      ]
+    }
+  ]
+}

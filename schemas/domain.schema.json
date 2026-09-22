@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://skillzforest.ai/schemas/domain.schema.json",
+  "title": "Domain registry (skills/domains.json)",
+  "description": "The buyer-facing category domains skills/ is organized into. Each domain is a top-level folder under skills/ and accepts one or more technical skill-id prefixes, either directly (`prefixes`) or split into named subcategories (`subcategories`), one folder level deeper, for a domain broad enough to need it. This is the single source of truth scripts/validate.js and scripts/lib/skills.js use to check a skill lives under the right domain/subcategory — it is also meant to be read by anything presenting the catalog to a non-technical audience (docs, the installer app).",
+  "type": "object",
+  "required": ["schemaVersion", "domains"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "domains": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/domain" }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "domain": {
+      "type": "object",
+      "required": ["id", "name", "description"],
+      "oneOf": [
+        { "required": ["prefixes"] },
+        { "required": ["subcategories"] }
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Folder name under skills/, e.g. 'sales'. English, so it reads the same in every market.",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Buyer-facing category label in English, e.g. 'Sales & Presales'."
+        },
+        "description": {
+          "type": "string",
+          "description": "One plain-language sentence: what this domain is for, in terms a non-technical buyer recognizes."
+        },
+        "prefixes": {
+          "type": "array",
+          "description": "Technical skill-id prefixes (without the trailing '-') this domain accepts directly, e.g. ['av']. Mutually exclusive with 'subcategories' — a domain either holds skills directly or splits into subcategories, not both.",
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9]*$" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "subcategories": {
+          "type": "array",
+          "description": "One extra folder level under this domain (skills/<domain>/<subcategory>/<skill-name>/), for a domain broad enough that buyers still benefit from a finer split (e.g. Development -> SEO / Code / UX-UI).",
+          "items": {
+            "type": "object",
+            "required": ["id", "name", "description", "prefixes"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Folder name under skills/<domain>/, e.g. 'code'.",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "prefixes": {
+                "type": "array",
+                "items": { "type": "string", "pattern": "^[a-z][a-z0-9]*$" },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -27,13 +27,13 @@ function copyMaster(src, dest) {
   console.log('Copied master to', dest);
 }
 
-// Skills live under skills/<family>/<skill-name>/ — find the family folder
+// Skills live under skills/<domain>/<skill-name>/ — find the domain folder
 // that actually contains this skill instead of hardcoding one.
 function findSkillDir(skill) {
   const skillsRoot = path.join('skills');
-  const families = fs.existsSync(skillsRoot) ? fs.readdirSync(skillsRoot) : [];
-  for (const family of families) {
-    const candidate = path.join(skillsRoot, family, skill);
+  const domains = fs.existsSync(skillsRoot) ? fs.readdirSync(skillsRoot) : [];
+  for (const domain of domains) {
+    const candidate = path.join(skillsRoot, domain, skill);
     if (fs.existsSync(candidate)) return candidate;
   }
   return null;

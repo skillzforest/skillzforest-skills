@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "project-management",
+  "name": "Project Management",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Track project progress: backlog, sprints, reporting, documentation.",
+  "tags": ["project-management", "backlog", "reporting"],
+  "skills": []
+}
