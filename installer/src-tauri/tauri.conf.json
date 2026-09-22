@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "SkillzForest Installer",
+  "version": "0.1.0",
+  "identifier": "com.skillzforest.installer",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "SkillzForest",
+        "width": 1000,
+        "height": 720,
+        "minWidth": 760,
+        "minHeight": 560,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["dmg", "nsis", "appimage"],
+    "icon": [
+      "icons/icon.png"
+    ],
+    "category": "DeveloperTool",
+    "shortDescription": "Install SkillzForest skills into your AI runtimes",
+    "longDescription": "SkillzForest Installer detects your local AI runtimes (Claude Code, Codex, and more) and installs skills or packs purchased on SkillzForest into them — no terminal, no file paths, no Node.js required."
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["skillzforest"]
+      }
+    }
+  }
+}
