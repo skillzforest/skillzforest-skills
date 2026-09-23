@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "presales-domain-name",
+  "name": "Nom de domaine et marque du projet",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "pre-sales",
+  "description": "Trouve et vérifie la disponibilité d'un nom de domaine ou de marque via le connecteur GoDaddy.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "native",
+    "codex": "supported",
+    "gemini": "supported",
+    "mistral": "supported",
+    "perplexity": "supported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

@@ -5,7 +5,7 @@
       "id": "sales",
       "name": "Sales & Presales",
       "description": "Sell a digital project: quotes, client scoping, presentations, meeting notes.",
-      "prefixes": ["av"]
+      "prefixes": ["presales"]
     },
     {
       "id": "marketing",

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "presales-logical-diagram",
+  "name": "Schéma d'architecture logique (.excalidraw)",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "pre-sales",
+  "description": "Génère le schéma d'architecture logique d'un projet (.excalidraw) à partir d'un template adapté à sa topologie.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "native",
+    "codex": "supported",
+    "gemini": "supported",
+    "mistral": "supported",
+    "perplexity": "supported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "presales-meeting-notes",
+  "name": "Compte rendu de réunion",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "pre-sales",
+  "description": "Rédige un compte rendu de réunion structuré (décisions, actions, points en suspens) à partir d'une interview courte.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "native",
+    "codex": "supported",
+    "gemini": "supported",
+    "mistral": "supported",
+    "perplexity": "supported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

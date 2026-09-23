@@ -43,7 +43,7 @@ Runtime = environnement cible
 Pack = produit commercial SkillzForest
 ```
 
-- **Skill** — a single atomic capability, with its own inputs, guardrails and outputs (e.g. `av-devis`, or a future `dev-seo`). Lives once, under `skills/<domain>/<name>/`. A skill's id is always runtime-agnostic: `dev-seo`, never `claude-dev-seo` / `codex-dev-seo` / `cursor-dev-seo`.
+- **Skill** — a single atomic capability, with its own inputs, guardrails and outputs (e.g. `presales-quote`, or a future `dev-seo`). Lives once, under `skills/<domain>/<name>/`. A skill's id is always runtime-agnostic: `dev-seo`, never `claude-dev-seo` / `codex-dev-seo` / `cursor-dev-seo`.
 - **Distribution** — how one skill is prepared for one specific runtime (a filesystem copy, a zip, a plugin manifest…). Generated on demand into `dist/skills/<name>/<runtime>/`; never hand-maintained.
 - **Runtime** — a target environment where a skill installs or runs (Claude Code, Claude.ai, ChatGPT, Codex, Cursor, Perplexity, Gemini, OpenCode…). Declared under `runtimes/<id>/runtime.json`; adapts, never duplicates.
 - **Compatibility** — how sure we are that a skill actually works on a given runtime: `native` (verified, no adaptation needed), `supported` (verified, different but known install path), `adapted` (verified, needs a generated transformation), `unsupported` (verified not to work), `unknown` (not checked yet — the honest default until proven otherwise).
@@ -76,7 +76,7 @@ skillzforest-skills/
 │   └── README.md
 ├── workflows/                  # documented orchestration across skills
 ├── packs/                      # commercial products (metadata + skill references), one per domain
-│   ├── sales/pack.json         # active — all existing av-* skills
+│   ├── sales/pack.json         # active — all existing presales-* skills
 │   ├── development/pack.json   # active — github-issue-context, github-implement-issue
 │   ├── marketing/ finance/ hr/ customer-support/
 │   └── project-management/ legal/   # skeletons, skills: []
@@ -98,7 +98,7 @@ skillzforest-skills/
 ## A skill, up close
 
 ```text
-skills/sales/av-devis/
+skills/sales/presales-quote/
 ├── SKILL.md      # the business content — what the skill actually does
 ├── skill.json    # SkillzForest metadata + runtime compatibility
 ├── scripts/      # optional — skill-owned automation
@@ -109,7 +109,7 @@ skills/sales/av-devis/
 ```json
 {
   "schemaVersion": 1,
-  "id": "av-devis",
+  "id": "presales-quote",
   "name": "Devis modulaire du projet",
   "publisher": "SkillzForest",
   "version": "0.1.0",
@@ -133,69 +133,69 @@ No skill in this repository declares `native`/`supported`/`adapted` for a runtim
 
 ## The pre-sales skills (`skills/sales/`)
 
-- `av-init-projet` : initialise la structure du projet et les dossiers de travail.
-- `av-cadrage-fonctionnel` : produit le cadrage fonctionnel du besoin.
-- `av-cadrage-plateforme` : produit le cadrage technique et architectural.
-- `av-schema-logique` : génère le schéma logique.
-- `av-schema-physique` : génère le schéma physique.
-- `av-parcours-miro` : construit le user story mapping sur Miro.
-- `av-devis` : produit le devis forfaitaire du projet.
-- `av-devis-tma` : produit le devis de maintenance récurrente.
-- `av-presentation-client` : assemble le deck client.
-- `av-compte-rendu-reunion` : rédige les comptes rendus de réunion.
-- `av-nom-de-domaine` : trouve et vérifie un nom de domaine / de marque disponible.
+- `presales-init-project` : initialise la structure du projet et les dossiers de travail.
+- `presales-functional-scoping` : produit le cadrage fonctionnel du besoin.
+- `presales-platform-scoping` : produit le cadrage technique et architectural.
+- `presales-logical-diagram` : génère le schéma logique.
+- `presales-physical-diagram` : génère le schéma physique.
+- `presales-user-journey-miro` : construit le user story mapping sur Miro.
+- `presales-quote` : produit le devis forfaitaire du projet.
+- `presales-maintenance-quote` : produit le devis de maintenance récurrente.
+- `presales-client-presentation` : assemble le deck client.
+- `presales-meeting-notes` : rédige les comptes rendus de réunion.
+- `presales-domain-name` : trouve et vérifie un nom de domaine / de marque disponible.
 
 ### Phrases d'invocation copiables
 
 ```text
-av-init-projet : Initialise le projet [Nom du projet] dans l'arborescence avant-vente et crée les dossiers et documents de base.
+presales-init-project : Initialise le projet [Nom du projet] dans l'arborescence avant-vente et crée les dossiers et documents de base.
 ```
 
 ```text
-av-cadrage-fonctionnel : Fais le cadrage fonctionnel du projet [Nom du projet] à partir des pièces client et des comptes rendus.
+presales-functional-scoping : Fais le cadrage fonctionnel du projet [Nom du projet] à partir des pièces client et des comptes rendus.
 ```
 
 ```text
-av-cadrage-plateforme : Fais le cadrage technique du projet [Nom du projet], avec les décisions structurantes, composants, services tiers et budget indicatif.
+presales-platform-scoping : Fais le cadrage technique du projet [Nom du projet], avec les décisions structurantes, composants, services tiers et budget indicatif.
 ```
 
 ```text
-av-schema-logique : Génère le schéma logique de l'architecture du projet [Nom du projet].
+presales-logical-diagram : Génère le schéma logique de l'architecture du projet [Nom du projet].
 ```
 
 ```text
-av-schema-physique : Génère le schéma physique de l'infrastructure du projet [Nom du projet].
+presales-physical-diagram : Génère le schéma physique de l'infrastructure du projet [Nom du projet].
 ```
 
 ```text
-av-parcours-miro : Crée le user story mapping et les parcours utilisateurs du projet [Nom du projet] sur Miro.
+presales-user-journey-miro : Crée le user story mapping et les parcours utilisateurs du projet [Nom du projet] sur Miro.
 ```
 
 ```text
-av-devis : Prépare le devis du projet [Nom du projet] à partir du cadrage fonctionnel et du cadrage plateforme.
+presales-quote : Prépare le devis du projet [Nom du projet] à partir du cadrage fonctionnel et du cadrage plateforme.
 ```
 
 ```text
-av-devis-tma : Prépare le devis TMA du projet [Nom du projet] avec les hypothèses de maintenance récurrente.
+presales-maintenance-quote : Prépare le devis TMA du projet [Nom du projet] avec les hypothèses de maintenance récurrente.
 ```
 
 ```text
-av-presentation-client : Assemble la présentation client du projet [Nom du projet] à partir des livrables déjà produits.
+presales-client-presentation : Assemble la présentation client du projet [Nom du projet] à partir des livrables déjà produits.
 ```
 
 ```text
-av-compte-rendu-reunion : Rédige le compte rendu de la réunion sur le projet [Nom du projet] avec les décisions, actions et points en suspens.
+presales-meeting-notes : Rédige le compte rendu de la réunion sur le projet [Nom du projet] avec les décisions, actions et points en suspens.
 ```
 
 ```text
-av-nom-de-domaine : Trouve et vérifie un nom de domaine disponible pour le projet [Nom du projet].
+presales-domain-name : Trouve et vérifie un nom de domaine disponible pour le projet [Nom du projet].
 ```
 
 ## Workflows
 
-A workflow orchestrates several skills in a defined order — see [`workflows/README.md`](workflows/README.md) for the full format and governance rules. Today's active workflows (documented in Markdown, all built from existing `av-*` skills):
+A workflow orchestrates several skills in a defined order — see [`workflows/README.md`](workflows/README.md) for the full format and governance rules. Today's active workflows (documented in Markdown, all built from existing `presales-*` skills):
 
-- `avant-vente-complete`, `cadrage-fonctionnel`, `cadrage-technique`, `ux-parcours`, `chiffrage`, `presentation-client`.
+- `presales-full-cycle`, `functional-scoping`, `platform-scoping`, `user-journey-mapping`, `quoting`, `client-presentation`.
 
 ## Known compatibility today
 
@@ -217,8 +217,8 @@ Every `skill.json` and `runtimes/*/runtime.json` in this repo reflects this tabl
 
 ```bash
 npm run validate                        # checks skills/, packs/, and runtimes/ for structural and compatibility errors
-npm run build:skill -- av-devis         # -> dist/skills/av-devis/<runtime>/ for every compatible runtime
-npm run build:skill -- av-devis claude-code   # -> just that one runtime
+npm run build:skill -- presales-quote         # -> dist/skills/presales-quote/<runtime>/ for every compatible runtime
+npm run build:skill -- presales-quote claude-code   # -> just that one runtime
 npm run build:runtime -- claude-code    # builds every compatible skill for one runtime
 npm run build:pack -- sales             # -> dist/packs/sales/<runtime>/ for every runtime the pack's skills support
 npm run build                           # builds every runtime, then every pack

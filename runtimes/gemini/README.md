@@ -7,10 +7,10 @@ Refers to **Gemini CLI** (the local coding-agent CLI), not the remote Gemini web
 ## Building and installing locally
 
 ```bash
-npm run build:skill -- av-devis gemini
+npm run build:skill -- presales-quote gemini
 npm run build:runtime -- gemini
 
-cp -R dist/skills/av-devis/gemini ~/.gemini/skills/av-devis
+cp -R dist/skills/presales-quote/gemini ~/.gemini/skills/presales-quote
 ```
 
 ## Once verified

@@ -413,7 +413,7 @@ mod tests {
         write_skill_source(&source_b);
 
         let adapter = fake_filesystem_adapter("claude-code", &base);
-        let compatible_skill = fake_skill("av-devis", &[("claude-code", "native")]);
+        let compatible_skill = fake_skill("presales-quote", &[("claude-code", "native")]);
         let incompatible_skill = fake_skill(
             "chatgpt-only-skill",
             &[("chatgpt", "native"), ("claude-code", "unsupported")],
@@ -424,7 +424,7 @@ mod tests {
             publisher: "Test".to_string(),
             version: "0.1.0".to_string(),
             description: "test".to_string(),
-            skills: vec!["av-devis".to_string(), "chatgpt-only-skill".to_string()],
+            skills: vec!["presales-quote".to_string(), "chatgpt-only-skill".to_string()],
         };
         let mut registry = Registry::default();
 
@@ -439,7 +439,7 @@ mod tests {
             "test",
         );
 
-        assert_eq!(outcome.installed, vec!["av-devis".to_string()]);
+        assert_eq!(outcome.installed, vec!["presales-quote".to_string()]);
         assert_eq!(outcome.skipped.len(), 1);
         assert_eq!(outcome.skipped[0].skill_id, "chatgpt-only-skill");
         assert_eq!(outcome.skipped[0].reason, "chatgpt-only distribution");

@@ -7,11 +7,11 @@ Target layout: `~/.claude/skills/<skill-name>/`, one folder per skill containing
 ## Building and installing locally
 
 ```bash
-npm run build:skill -- av-devis claude-code   # -> dist/skills/av-devis/claude-code/
+npm run build:skill -- presales-quote claude-code   # -> dist/skills/presales-quote/claude-code/
 npm run build:runtime -- claude-code          # builds every compatible skill for this runtime
 npm run build:pack -- sales                   # builds every runtime a pack's skills are compatible with, including this one
 
-cp -R dist/skills/av-devis/claude-code ~/.claude/skills/av-devis
+cp -R dist/skills/presales-quote/claude-code ~/.claude/skills/presales-quote
 ```
 
 ## Compatibility note

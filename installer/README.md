@@ -55,7 +55,7 @@ No layer is more complex than it needs to be: there's no message queue, no plugi
 3. `RuntimeAdapter::install` — for a `filesystem` runtime, copies the skill folder (excluding `node_modules/`, `out/`, `.DS_Store`) into `paths.user/<skill-id>/`, guarded by `security::ensure_within` against path traversal, then verifies `SKILL.md` landed.
 4. `installer::registry::record_install` — the only thing that makes SkillzForest "own" that install, and thus later allowed to uninstall or update it.
 
-**Installing a skill never executes anything inside it.** Scripts that ship with a skill (e.g. `av-devis/scripts/fill_devis.js`) are copied like any other file — the runtime or the user runs them later, never this app.
+**Installing a skill never executes anything inside it.** Scripts that ship with a skill (e.g. `presales-quote/scripts/fill_devis.js`) are copied like any other file — the runtime or the user runs them later, never this app.
 
 ## Runtimes: functional today vs. prepared
 
@@ -133,7 +133,7 @@ Building for Windows/Linux from this checkout requires running `tauri build` on 
 ```json
 {
   "skills": {
-    "av-devis": {
+    "presales-quote": {
       "claude-code": { "version": "0.1.0", "installDate": 1732000000000, "source": "local-repo" }
     }
   }

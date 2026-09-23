@@ -16,7 +16,7 @@
     "version": { "type": "string" },
     "category": {
       "type": "string",
-      "description": "Human-readable category matching the skill's family (e.g. 'pre-sales' for av-*, 'development' for dev-*)."
+      "description": "Human-readable category matching the skill's family (e.g. 'pre-sales' for presales-*, 'development' for dev-*)."
     },
     "description": { "type": "string" },
     "compatibility": {

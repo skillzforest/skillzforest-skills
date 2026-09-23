@@ -24,7 +24,7 @@ Skills are grouped into **8 domains**, named in plain English — the same bucke
 
 | Domain folder | Name (buyer-facing) | Accepted prefixes | Scope |
 |---|---|---|---|
-| `sales/` | Sales & Presales | `av-` | Quotes, client scoping, presentations, meeting notes |
+| `sales/` | Sales & Presales | `presales-` | Quotes, client scoping, presentations, meeting notes |
 | `marketing/` | Marketing & Communication | `growth-` | Content, social media, advertising |
 | `finance/` | Finance & Billing | `billing-` | Invoicing, payments, subscriptions |
 | `hr/` | HR & Recruiting | `hr-` | Job postings, candidate screening, onboarding |

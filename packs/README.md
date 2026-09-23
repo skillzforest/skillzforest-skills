@@ -18,7 +18,7 @@ packs/<pack-id>/
   "publisher": "SkillzForest",
   "version": "0.1.0",
   "description": "...",
-  "skills": ["av-devis", "av-cadrage-fonctionnel"]
+  "skills": ["presales-quote", "presales-functional-scoping"]
 }
 ```
 
@@ -30,7 +30,7 @@ Packs are the **commercial, buyer-facing** view of the catalog — one pack per 
 
 | Pack | Domain | Status |
 |---|---|---|
-| [`sales`](sales/pack.json) | Sales & Presales | Active — the existing `av-*` skills |
+| [`sales`](sales/pack.json) | Sales & Presales | Active — the existing `presales-*` skills |
 | [`marketing`](marketing/pack.json) | Marketing & Communication | Skeleton — no skills assigned yet |
 | [`finance`](finance/pack.json) | Finance & Billing | Skeleton — no skills assigned yet |
 | [`hr`](hr/pack.json) | HR & Recruiting | Skeleton — no skills assigned yet |
@@ -52,12 +52,12 @@ dist/packs/sales/
 ├── claude-code/
 │   ├── pack.json
 │   ├── pack-distribution.json
-│   ├── av-devis/
+│   ├── presales-quote/
 │   └── ...
 └── claude-ai/
     ├── pack.json
     ├── pack-distribution.json
-    ├── av-devis/          # contains av-devis-0.1.0.skill
+    ├── presales-quote/          # contains presales-quote-0.1.0.skill
     └── ...
 ```
 

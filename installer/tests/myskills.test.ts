@@ -27,11 +27,11 @@ function fakePack(id: string, name: string, skills: string[]): CatalogPack {
 
 describe("computeInstalledSkills", () => {
   it("lists only skills present in the registry, sorted by name", () => {
-    const skills = [fakeSkill("av-devis", "Devis"), fakeSkill("av-nom-de-domaine", "Nom de domaine")];
+    const skills = [fakeSkill("presales-quote", "Devis"), fakeSkill("presales-domain-name", "Nom de domaine")];
     const registry: Registry = {
       skills: {
-        "av-nom-de-domaine": { "claude-code": { version: "1.0.0", installDate: 1, source: "test" } },
-        "av-devis": {
+        "presales-domain-name": { "claude-code": { version: "1.0.0", installDate: 1, source: "test" } },
+        "presales-quote": {
           "claude-code": { version: "1.0.0", installDate: 1, source: "test" },
           codex: { version: "1.0.0", installDate: 1, source: "test" },
         },
@@ -41,8 +41,8 @@ describe("computeInstalledSkills", () => {
     const result = computeInstalledSkills(skills, registry);
 
     expect(result).toEqual([
-      { skillId: "av-devis", name: "Devis", runtimeIds: ["claude-code", "codex"] },
-      { skillId: "av-nom-de-domaine", name: "Nom de domaine", runtimeIds: ["claude-code"] },
+      { skillId: "presales-quote", name: "Devis", runtimeIds: ["claude-code", "codex"] },
+      { skillId: "presales-domain-name", name: "Nom de domaine", runtimeIds: ["claude-code"] },
     ]);
   });
 
@@ -55,18 +55,18 @@ describe("computeInstalledSkills", () => {
   });
 
   it("omits an entry whose every runtime install was removed", () => {
-    const registry: Registry = { skills: { "av-devis": {} } };
-    expect(computeInstalledSkills([fakeSkill("av-devis", "Devis")], registry)).toEqual([]);
+    const registry: Registry = { skills: { "presales-quote": {} } };
+    expect(computeInstalledSkills([fakeSkill("presales-quote", "Devis")], registry)).toEqual([]);
   });
 });
 
 describe("computeInstalledPacks", () => {
   it("counts how many of a pack's skills are installed anywhere", () => {
-    const packs = [fakePack("presales", "Pre-Sales Pack", ["av-devis", "av-cadrage-fonctionnel", "av-devis-tma"])];
+    const packs = [fakePack("presales", "Pre-Sales Pack", ["presales-quote", "presales-functional-scoping", "presales-maintenance-quote"])];
     const registry: Registry = {
       skills: {
-        "av-devis": { "claude-code": { version: "1.0.0", installDate: 1, source: "test" } },
-        "av-cadrage-fonctionnel": { codex: { version: "1.0.0", installDate: 1, source: "test" } },
+        "presales-quote": { "claude-code": { version: "1.0.0", installDate: 1, source: "test" } },
+        "presales-functional-scoping": { codex: { version: "1.0.0", installDate: 1, source: "test" } },
       },
     };
 

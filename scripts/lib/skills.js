@@ -33,7 +33,7 @@ function findDomain(domainId) {
   return listDomains().find((d) => d.id === domainId) || null;
 }
 
-// The prefix a skill id declares, e.g. 'av-devis' -> 'av'.
+// The prefix a skill id declares, e.g. 'presales-quote' -> 'presales'.
 function prefixOf(skillName) {
   return skillName.split('-')[0];
 }

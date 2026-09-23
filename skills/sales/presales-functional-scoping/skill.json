@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "presales-functional-scoping",
+  "name": "Note de cadrage fonctionnel",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "pre-sales",
+  "description": "Produit la note de cadrage fonctionnel d'un projet à partir du cahier des charges et des documents client.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "native",
+    "codex": "supported",
+    "gemini": "supported",
+    "mistral": "supported",
+    "perplexity": "supported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

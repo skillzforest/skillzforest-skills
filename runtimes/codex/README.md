@@ -7,10 +7,10 @@ Target layout: `~/.agents/skills/<skill-name>/`, the same plain `SKILL.md` folde
 ## Building and installing locally
 
 ```bash
-npm run build:skill -- av-devis codex   # -> dist/skills/av-devis/codex/
+npm run build:skill -- presales-quote codex   # -> dist/skills/presales-quote/codex/
 npm run build:runtime -- codex          # every compatible skill for this runtime
 
-cp -R dist/skills/av-devis/codex ~/.agents/skills/av-devis
+cp -R dist/skills/presales-quote/codex ~/.agents/skills/presales-quote
 ```
 
 ## Once verified

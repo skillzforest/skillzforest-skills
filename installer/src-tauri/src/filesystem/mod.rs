@@ -161,7 +161,7 @@ mod tests {
         fs::create_dir_all(src.join("scripts")).unwrap();
         fs::write(src.join("scripts/run.js"), "// noop").unwrap();
 
-        let dest = dest_root.join("av-devis");
+        let dest = dest_root.join("presales-quote");
         let copied = copy_dir_safely(&src, &dest).unwrap();
 
         assert!(dest.join("SKILL.md").is_file());

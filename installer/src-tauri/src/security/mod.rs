@@ -101,7 +101,7 @@ mod tests {
 
     #[test]
     fn accepts_normal_ids() {
-        assert!(validate_id("av-devis").is_ok());
+        assert!(validate_id("presales-quote").is_ok());
         assert!(validate_id("dev-seo").is_ok());
     }
 
@@ -111,13 +111,13 @@ mod tests {
         assert!(validate_id("Av-Devis").is_err());
         assert!(validate_id("av_devis").is_err());
         assert!(validate_id("").is_err());
-        assert!(validate_id("-av-devis").is_err());
+        assert!(validate_id("-presales-quote").is_err());
     }
 
     #[test]
     fn ensure_within_blocks_parent_dir_escape() {
         let base = Path::new("/home/user/.claude/skills");
-        assert!(ensure_within(base, Path::new("av-devis")).is_ok());
+        assert!(ensure_within(base, Path::new("presales-quote")).is_ok());
         assert!(ensure_within(base, Path::new("../../etc/passwd")).is_err());
         assert!(ensure_within(base, Path::new("/etc/passwd")).is_err());
     }

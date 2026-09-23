@@ -4,7 +4,7 @@ Ce dépôt est conçu en mode skill-first : chaque `SKILL.md` reste atomique, li
 
 ## 1. Distinction claire
 
-- Skill : capacité métier ou documentaire autonome (ex. `av-cadrage-fonctionnel`, `av-devis`), rangée sous `skills/<domaine>/` (ex. `skills/sales/`).
+- Skill : capacité métier ou documentaire autonome (ex. `presales-functional-scoping`, `presales-quote`), rangée sous `skills/<domaine>/` (ex. `skills/sales/`).
 - Workflow : séquence de compétences à enchaîner selon un besoin projet.
 - Pack : produit commercial qui référence plusieurs skills cohérentes (ex. `packs/sales/pack.json`), sans jamais en dupliquer le contenu.
 - Bundle : ensemble de plusieurs packs commercialisés ensemble.
@@ -18,39 +18,39 @@ Les skills ne doivent pas embarquer de logique d’orchestration. Une skill ne c
 
 Les dépendances ci-dessous sont tirées des docstrings et des règles propres aux skills existants.
 
-- `av-init-projet`
+- `presales-init-project`
   - initialise l’arborescence projet et les documents de base
-  - ouvre la voie à `av-cadrage-fonctionnel` et `av-cadrage-plateforme`
+  - ouvre la voie à `presales-functional-scoping` et `presales-platform-scoping`
 
-- `av-cadrage-fonctionnel`
+- `presales-functional-scoping`
   - dépend du projet et des entrées client
-  - alimente `av-parcours-miro`
-  - alimente `av-presentation-client`
-  - alimente le chiffrage (`av-devis`, `av-devis-tma`)
+  - alimente `presales-user-journey-miro`
+  - alimente `presales-client-presentation`
+  - alimente le chiffrage (`presales-quote`, `presales-maintenance-quote`)
 
-- `av-cadrage-plateforme`
+- `presales-platform-scoping`
   - dépend des documents techniques et des décisions de conception
-  - alimente `av-schema-logique`
-  - alimente `av-schema-physique`
-  - alimente le chiffrage (`av-devis`, `av-devis-tma`)
-  - alimente `av-presentation-client`
+  - alimente `presales-logical-diagram`
+  - alimente `presales-physical-diagram`
+  - alimente le chiffrage (`presales-quote`, `presales-maintenance-quote`)
+  - alimente `presales-client-presentation`
 
-- `av-parcours-miro`
+- `presales-user-journey-miro`
   - dépend du cadrage fonctionnel
   - sert d’input UX pour la présentation client
 
-- `av-devis`
+- `presales-quote`
   - dépend du cadrage fonctionnel et du cadrage plateforme
-  - est un input de `av-presentation-client`
+  - est un input de `presales-client-presentation`
 
-- `av-devis-tma`
+- `presales-maintenance-quote`
   - dépend du cadrage plateforme et du périmètre fonctionnel
-  - est un input de `av-presentation-client`
+  - est un input de `presales-client-presentation`
 
-- `av-presentation-client`
+- `presales-client-presentation`
   - dépend des livrables produits : cadrage fonctionnel, cadrage plateforme, devis, TMA, parcours Miro, démo
 
-- `av-compte-rendu-reunion`
+- `presales-meeting-notes`
   - est transverse et indépendant
   - peut être déclenché à n’importe quel moment du projet pour documenter les décisions et suivre les actions
 
@@ -72,12 +72,12 @@ Ce n’est pas une chaîne linéaire rigide : les étapes 2 et 3 peuvent être m
 
 Les workflows concrets du dépôt sont rangés sous `workflows/` :
 
-- `workflows/avant-vente-complete/WORKFLOW.md`
-- `workflows/cadrage-fonctionnel/WORKFLOW.md`
-- `workflows/cadrage-technique/WORKFLOW.md`
-- `workflows/ux-parcours/WORKFLOW.md`
-- `workflows/chiffrage/WORKFLOW.md`
-- `workflows/presentation-client/WORKFLOW.md`
+- `workflows/presales-full-cycle/WORKFLOW.md`
+- `workflows/functional-scoping/WORKFLOW.md`
+- `workflows/platform-scoping/WORKFLOW.md`
+- `workflows/user-journey-mapping/WORKFLOW.md`
+- `workflows/quoting/WORKFLOW.md`
+- `workflows/client-presentation/WORKFLOW.md`
 
 ## 5. Règles de gouvernance
 
@@ -85,19 +85,19 @@ Les workflows concrets du dépôt sont rangés sous `workflows/` :
 - Une skill documente une capacité que l’on peut déclencher de façon autonome.
 - Une workflow ne doit pas dupliquer les gardes-fous déjà présents dans les skills.
 - Une workflow doit toujours expliciter ses dépendances et ses livrables de sortie.
-- `av-compte-rendu-reunion` est un “transversal” : il peut être ajouté à n’importe quel workflow sans modifier sa logique de base.
+- `presales-meeting-notes` est un “transversal” : il peut être ajouté à n’importe quel workflow sans modifier sa logique de base.
 
 ## 6. Exemple de commande de déclenchement
 
 Le runtime peut utiliser une logique de type :
 
-- “nouveau prospect” → `av-init-projet`
-- “cadrer le besoin” → `av-cadrage-fonctionnel`
-- “cadrer la plateforme” → `av-cadrage-plateforme`
-- “parcours utilisateurs” → `av-parcours-miro`
-- “devis / chiffrage” → `av-devis` et éventuellement `av-devis-tma`
-- “présentation client” → `av-presentation-client`
-- “CR de réunion” → `av-compte-rendu-reunion`
+- “nouveau prospect” → `presales-init-project`
+- “cadrer le besoin” → `presales-functional-scoping`
+- “cadrer la plateforme” → `presales-platform-scoping`
+- “parcours utilisateurs” → `presales-user-journey-miro`
+- “devis / chiffrage” → `presales-quote` et éventuellement `presales-maintenance-quote`
+- “présentation client” → `presales-client-presentation`
+- “CR de réunion” → `presales-meeting-notes`
 
 ## 7. Sortie attendue
 
@@ -110,23 +110,23 @@ Un workflow, au sens SkillzForest :
 - référence plusieurs skills par leur nom (jamais par copie de fichiers) ;
 - définit un ordre ou une orchestration entre elles ;
 - ne duplique jamais leur contenu, leurs entrées ou leurs garde-fous ;
-- peut appartenir à un ou plusieurs packs commerciaux (ex. `avant-vente-complete` appartient au pack Sales & Presales).
+- peut appartenir à un ou plusieurs packs commerciaux (ex. `presales-full-cycle` appartient au pack Sales & Presales).
 
 Exemple de manifeste **illustratif** (aucun `workflow.json` de ce type n'existe encore dans ce dépôt — les workflows actuels sont documentés en Markdown sous `workflows/<nom>/WORKFLOW.md`, ce qui suffit tant qu'aucune orchestration automatisée n'est nécessaire) :
 
 ```json
 {
-  "id": "avant-vente-complete",
+  "id": "presales-full-cycle",
   "name": "Avant-vente complète",
   "packs": ["sales"],
   "steps": [
-    { "skill": "av-init-projet" },
-    { "skill": "av-cadrage-fonctionnel" },
-    { "skill": "av-cadrage-plateforme" },
-    { "skill": "av-parcours-miro" },
-    { "skill": "av-devis" },
-    { "skill": "av-devis-tma", "optional": true },
-    { "skill": "av-presentation-client" }
+    { "skill": "presales-init-project" },
+    { "skill": "presales-functional-scoping" },
+    { "skill": "presales-platform-scoping" },
+    { "skill": "presales-user-journey-miro" },
+    { "skill": "presales-quote" },
+    { "skill": "presales-maintenance-quote", "optional": true },
+    { "skill": "presales-client-presentation" }
   ]
 }
 ```

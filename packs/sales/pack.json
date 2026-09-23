@@ -8,16 +8,16 @@
   "description": "Sell a digital project: quotes, client scoping, presentations, meeting notes.",
   "tags": ["sales", "presales", "quotes", "scoping", "agency"],
   "skills": [
-    "av-init-projet",
-    "av-cadrage-fonctionnel",
-    "av-cadrage-plateforme",
-    "av-schema-logique",
-    "av-schema-physique",
-    "av-parcours-miro",
-    "av-devis",
-    "av-devis-tma",
-    "av-presentation-client",
-    "av-compte-rendu-reunion",
-    "av-nom-de-domaine"
+    "presales-init-project",
+    "presales-functional-scoping",
+    "presales-platform-scoping",
+    "presales-logical-diagram",
+    "presales-physical-diagram",
+    "presales-user-journey-miro",
+    "presales-quote",
+    "presales-maintenance-quote",
+    "presales-client-presentation",
+    "presales-meeting-notes",
+    "presales-domain-name"
   ]
 }
