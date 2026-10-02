@@ -3,52 +3,50 @@
 A pack is a commercial product bundling several coherent skills, sold and distributed through SkillzForest.
 
 ```text
-packs/<pack-id>/
+packs/<category>/<subcategory>/<pack-id>/
 ├── pack.json   # metadata + skill references
 └── docs/       # optional — pack-level supporting documentation (never skill copies)
 ```
+
+Packs are filed like skills: under the site category and subcategory they're listed in (see [`skills/domains.json`](../skills/domains.json)), with the pack's catalog slug as its folder name and `id`. `pack.json`'s `category` and `subcategory` match its folders — `npm run validate` enforces it. Folder names are lowercase slugs: no spaces, no accents, hyphens between words.
 
 `pack.json` fields (see [`schemas/pack.schema.json`](../schemas/pack.schema.json)):
 
 ```json
 {
   "schemaVersion": 1,
-  "id": "sales",
-  "name": "Sales & Presales",
+  "id": "presales-scoping",
+  "name": "Presales Scoping Pack",
   "publisher": "SkillzForest",
+  "category": "development",
+  "subcategory": "code",
   "version": "0.1.0",
   "description": "...",
   "skills": ["presales-quote", "presales-functional-scoping"]
 }
 ```
 
-A pack **only references** skills by name — it never embeds a copy of a skill's files. Skills are resolved from [`skills/`](../skills/) at build time by [`scripts/build-pack.js`](../scripts/build-pack.js).
+When the skills build on each other (the second works from what the first produced), set `"ordered": true`: `skills` is then the order to use them in, and the site and the Manager show them as numbered steps — mirror it with the back office's « Les skills s'utilisent dans cet ordre » box. `github-issue-resolver` is ordered (context, then fix); `presales-scoping` is not.
+
+A pack **only references** skills by name — it never embeds a copy of a skill's files. Skills are resolved from [`skills/`](../skills/) at build time by [`scripts/build-pack.js`](../scripts/build-pack.js), wherever they're filed.
 
 ## Packs in this repository
 
-Packs are the **commercial, buyer-facing** view of the catalog — one pack per domain in [`skills/domains.json`](../skills/domains.json), named in plain English. A pack name is meant to be understood in a few seconds by anyone (an enterprise buyer, a freelancer, or the general public), regardless of the technical skill prefixes or subcategories it happens to bundle underneath.
-
-| Pack | Domain | Status |
+| Pack | Folder | Skills |
 |---|---|---|
-| [`sales`](sales/pack.json) | Sales & Presales | Active — the existing `presales-*` skills |
-| [`marketing`](marketing/pack.json) | Marketing & Communication | Skeleton — no skills assigned yet |
-| [`finance`](finance/pack.json) | Finance & Billing | Skeleton — no skills assigned yet |
-| [`hr`](hr/pack.json) | HR & Recruiting | Skeleton — no skills assigned yet |
-| [`customer-support`](customer-support/pack.json) | Customer Support | Skeleton — no skills assigned yet |
-| [`project-management`](project-management/pack.json) | Project Management | Skeleton — no skills assigned yet |
-| [`legal`](legal/pack.json) | Legal & Compliance | Skeleton — no skills assigned yet |
-| [`development`](development/pack.json) | Development & Engineering | Active — `github-issue-context`, `github-implement-issue` |
+| GitHub Issue Resolver | [`development/code/github-issue-resolver/`](development/code/github-issue-resolver/pack.json) | `github-issue-context`, `github-implement-issue` |
+| Presales Scoping Pack | [`development/code/presales-scoping/`](development/code/presales-scoping/pack.json) | the 11 `presales-*` skills |
 
 ## Building a pack
 
 ```bash
-npm run build:pack -- sales
+npm run build:pack -- presales-scoping
 ```
 
-This reads `packs/sales/pack.json`, resolves each listed skill from `skills/`, and — for every runtime at least one of its skills is compatible with (see [`runtimes/`](../runtimes/)) — builds a distribution per skill and assembles them under `dist/packs/sales/<runtime>/`:
+This reads `packs/development/code/presales-scoping/pack.json`, resolves each listed skill from `skills/`, and — for every runtime at least one of its skills is compatible with (see [`runtimes/`](../runtimes/)) — builds a distribution per skill and assembles them under `dist/packs/presales-scoping/<runtime>/`:
 
 ```text
-dist/packs/sales/
+dist/packs/presales-scoping/
 ├── claude-code/
 │   ├── pack.json
 │   ├── pack-distribution.json
@@ -61,4 +59,4 @@ dist/packs/sales/
     └── ...
 ```
 
-A runtime with no verified/implemented adapter for any of the pack's skills (e.g. `codex` today) is simply absent from `dist/packs/sales/` — nothing fictional gets built. The command never modifies anything under `skills/`, `packs/`, or `runtimes/`.
+A runtime with no verified/implemented adapter for any of the pack's skills is simply absent from `dist/packs/<pack-id>/` — nothing fictional gets built. The command never modifies anything under `skills/`, `packs/`, or `runtimes/`.

@@ -5,6 +5,7 @@
   "publisher": "SkillzForest",
   "version": "0.1.0",
   "category": "development",
+  "subcategory": "code",
   "description": "Investigates a repository, separates reporter claims from code/test evidence, reproduces and root-causes a GitHub Issue prepared by github-issue-context, then implements the minimal fix and reports PASS/FAIL/NOT RUN validation results. Supports a --plan mode that never touches a file.",
   "compatibility": {
     "claude-code": "native",

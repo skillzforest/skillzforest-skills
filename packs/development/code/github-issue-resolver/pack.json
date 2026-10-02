@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "github-issue-resolver",
+  "name": "GitHub Issue Resolver",
+  "publisher": "SkillzForest",
+  "category": "development",
+  "subcategory": "code",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Turn a GitHub Issue into a reviewed fix in Claude Code: gathers the issue's full context — text, comments, screenshots, attachments — then investigates, reproduces and implements the minimal fix.",
+  "tags": [
+    "github",
+    "issues",
+    "claude-code",
+    "bugfix"
+  ],
+  "skills": [
+    "github-issue-context",
+    "github-implement-issue"
+  ],
+  "ordered": true
+}

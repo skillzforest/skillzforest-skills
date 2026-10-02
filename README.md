@@ -47,7 +47,7 @@ Pack = produit commercial SkillzForest
 - **Distribution** — how one skill is prepared for one specific runtime (a filesystem copy, a zip, a plugin manifest…). Generated on demand into `dist/skills/<name>/<runtime>/`; never hand-maintained.
 - **Runtime** — a target environment where a skill installs or runs (Claude Code, Claude.ai, ChatGPT, Codex, Cursor, Perplexity, Gemini, OpenCode…). Declared under `runtimes/<id>/runtime.json`; adapts, never duplicates.
 - **Compatibility** — how sure we are that a skill actually works on a given runtime: `native` (verified, no adaptation needed), `supported` (verified, different but known install path), `adapted` (verified, needs a generated transformation), `unsupported` (verified not to work), `unknown` (not checked yet — the honest default until proven otherwise).
-- **Pack** — a commercial product bundling several coherent skills for SkillzForest (e.g. the Sales & Presales pack). Lives under `packs/<id>/pack.json`; only references skill ids, never copies their files.
+- **Pack** — a commercial product bundling several coherent skills for SkillzForest (e.g. the Sales & Presales pack). Lives under `packs/<category>/<subcategory>/<id>/pack.json`; only references skill ids, never copies their files.
 - **Workflow** — an ordered sequence of skills that completes an end-to-end process (e.g. a future `feature-to-production`). Lives under `workflows/`; orchestrates, never duplicates.
 - **Bundle** — several commercial packs sold together. Lives under `bundles/`.
 
@@ -67,19 +67,16 @@ dist/       = generated distributions — always derived, never hand-edited, nev
 
 ```text
 skillzforest-skills/
-├── skills/                    # canonical source of every skill, grouped by domain
-│   ├── sales/                  # Sales & Presales — the only populated domain today
-│   ├── marketing/ finance/ hr/ customer-support/
-│   ├── project-management/ legal/
-│   ├── development/            # split into seo/ code/ ux-ui/ subcategories
-│   ├── domains.json            # registry: domain (+ subcategory) <-> accepted skill-id prefixes
+├── skills/                    # canonical source of every skill, filed like the site's catalog
+│   ├── development/code/       # github-* and presales-* skills
+│   ├── design/ui-ux/           # skf-design-extractor
+│   ├── domains.json            # registry: the site's categories, subcategories and universes
 │   └── README.md
 ├── workflows/                  # documented orchestration across skills
-├── packs/                      # commercial products (metadata + skill references), one per domain
-│   ├── sales/pack.json         # active — all existing presales-* skills
-│   ├── development/pack.json   # active — github-issue-context, github-implement-issue
-│   ├── marketing/ finance/ hr/ customer-support/
-│   └── project-management/ legal/   # skeletons, skills: []
+├── packs/                      # commercial products (metadata + skill references), filed by category/subcategory
+│   └── development/
+│       ├── github-issue-resolver/  # github-issue-context, github-implement-issue
+│       └── presales-scoping/       # the 11 presales-* skills
 ├── bundles/                    # groups of packs (none active yet)
 ├── runtimes/                   # one runtime.json + README per target environment
 │   ├── claude-code/ claude-ai/ codex/ gemini/
@@ -98,7 +95,7 @@ skillzforest-skills/
 ## A skill, up close
 
 ```text
-skills/sales/presales-quote/
+skills/development/code/presales-quote/
 ├── SKILL.md      # the business content — what the skill actually does
 ├── skill.json    # SkillzForest metadata + runtime compatibility
 ├── scripts/      # optional — skill-owned automation
@@ -113,7 +110,8 @@ skills/sales/presales-quote/
   "name": "Devis modulaire du projet",
   "publisher": "SkillzForest",
   "version": "0.1.0",
-  "category": "pre-sales",
+  "category": "development",
+  "subcategory": "code",
   "description": "Produit le devis modulaire forfaitaire d'un projet à partir du master Devis_Modulaire.",
   "compatibility": {
     "claude-code": "native",
@@ -131,7 +129,7 @@ skills/sales/presales-quote/
 
 No skill in this repository declares `native`/`supported`/`adapted` for a runtime that hasn't actually been checked — see [Known compatibility](#known-compatibility-today) below.
 
-## The pre-sales skills (`skills/sales/`)
+## The pre-sales skills (`skills/development/code/presales-*`)
 
 - `presales-init-project` : initialise la structure du projet et les dossiers de travail.
 - `presales-functional-scoping` : produit le cadrage fonctionnel du besoin.
@@ -220,10 +218,10 @@ npm run validate                        # checks skills/, packs/, and runtimes/ 
 npm run build:skill -- presales-quote         # -> dist/skills/presales-quote/<runtime>/ for every compatible runtime
 npm run build:skill -- presales-quote claude-code   # -> just that one runtime
 npm run build:runtime -- claude-code    # builds every compatible skill for one runtime
-npm run build:pack -- sales             # -> dist/packs/sales/<runtime>/ for every runtime the pack's skills support
+npm run build:pack -- presales-scoping  # -> dist/packs/presales-scoping/<runtime>/ for every runtime the pack's skills support
 npm run build                           # builds every runtime, then every pack
 
-./scripts/install-pack.sh dist/packs/sales/claude-code ~/.claude/skills   # local install test (filesystem runtimes only)
+./scripts/install-pack.sh dist/packs/presales-scoping/claude-code ~/.claude/skills   # local install test (filesystem runtimes only)
 ```
 
 Every build script reads only from `skills/` (or from previously generated `dist/` output within the same run) and never writes back into `skills/`, `packs/`, or `runtimes/`.
@@ -249,11 +247,12 @@ See [`installer/README.md`](installer/README.md) for the full architecture, dev/
 
 ## Compatibility notes (retired / transitional)
 
-- `plugins/ai-factory-av/` was removed: its manifest and build logic are now `packs/sales/pack.json` + `scripts/build-pack.js`.
+- `plugins/ai-factory-av/` was removed: its manifest and build logic are now `packs/development/code/presales-scoping/pack.json` + `scripts/build-pack.js`.
 - `skills-claude/*.skill` (hand-zipped archives, one per skill) was removed: it was a second source of truth that could silently drift from `skills/`. The same `.skill` zip format is now generated on demand for the `claude-ai` runtime — see [`runtimes/claude-ai/README.md`](runtimes/claude-ai/README.md).
-- `.agents/skills/` (this repo's former canonical source) moved to `skills/av/`, later reorganized under `skills/sales/` as part of the domain restructuring (see [`skills/README.md`](skills/README.md) and [`skills/domains.json`](skills/domains.json)). `.agents/skills/<name>/` remains the *install target* other projects use to consume these skills via Codex — never a source maintained in this repository.
-- The original 18 one-prefix-per-folder "families" (`product/`, `board/`, `ux/`, `ui/`, `arch/`, `dev/`, `data/`, `ai/`, `sec/`, `qa/`, `release/`, `infra/`, `ops/`, `growth/`, `billing/`, `legal/`, `docs/`, plus `av/`) and the 3 lifecycle packs (`presales`, `saas-builder`, `saas-ops`) were retired in favor of the 8 domains/packs above — the old grouping was an engineering-lifecycle view (before/during/after a build), while the new one is what a buyer — enterprise, freelance, or general public — recognizes immediately as a department.
+- `.agents/skills/` (this repo's former canonical source) moved to `skills/av/`, later reorganized under `skills/sales/`, then `skills/development/code/` (see [`skills/README.md`](skills/README.md) and [`skills/domains.json`](skills/domains.json)). `.agents/skills/<name>/` remains the *install target* other projects use to consume these skills via Codex — never a source maintained in this repository.
+- The original 18 one-prefix-per-folder "families" (`product/`, `board/`, `ux/`, `ui/`, `arch/`, `dev/`, `data/`, `ai/`, `sec/`, `qa/`, `release/`, `infra/`, `ops/`, `growth/`, `billing/`, `legal/`, `docs/`, plus `av/`) and the 3 lifecycle packs (`presales`, `saas-builder`, `saas-ops`) were retired in favor of 8 domains/packs (since replaced by the site's categories, see below) — the old grouping was an engineering-lifecycle view (before/during/after a build), while the new one is what a buyer — enterprise, freelance, or general public — recognizes immediately as a department.
 - Those 8 domains/packs were first named in French (`avant-vente`, `gestion-de-projet`, `juridique`, `informatique`, ...); they were renamed to English (`sales`, `project-management`, `legal`, `development`, ...) so the catalog reads the same in every market. `development/` also gained three subcategories — `seo/`, `code/`, `ux-ui/` — one folder level deeper, since it was broad enough to need a finer split; `skills/github-issue-context/` and `skills/github-implement-issue/` moved from being standalone skills into `skills/development/code/` as its first real content.
+- The 8 domains/packs were then replaced by the **SkillzForest site's own categories and subcategories** (`skills/domains.json` mirrors `GET /api/v1/categories`): skills live at `skills/<category>/<subcategory>/<skill>/` and packs at `packs/<category>/<subcategory>/<pack-id>/`, filed where the site lists them. The `presales-*` skills moved from `skills/sales/presales/` to `skills/development/code/`, `skf-design-extractor` from `skills/development/ux-ui/` to `skills/design/ui-ux/`; the two real packs took their catalog slugs (`github-issue-resolver`, `presales-scoping`) and the six empty domain packs were removed.
 - `templates/documents/` was removed: its files were either exact duplicates of masters already versioned with their skill (`skills/*/masters/`), or not yet placed with their skill — they were moved, not duplicated. `templates/projet/` (local, untracked test fixtures) was left untouched.
 
 ## Development

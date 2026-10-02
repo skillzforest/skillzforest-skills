@@ -5,6 +5,7 @@
   "publisher": "SkillzForest",
   "version": "0.1.0",
   "category": "development",
+  "subcategory": "code",
   "description": "Collects, normalizes, and enriches a GitHub Issue — text, comments, screenshots, attachments — into a stable .agent/issues/<number>/context.json + context.md bundle for another skill (or a human) to build on.",
   "compatibility": {
     "claude-code": "native",

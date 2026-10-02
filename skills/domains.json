@@ -1,70 +1,388 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "domains": [
     {
-      "id": "sales",
-      "name": "Sales & Presales",
-      "description": "Sell a digital project: quotes, client scoping, presentations, meeting notes.",
-      "prefixes": ["presales"]
+      "id": "social-media",
+      "universe": "personal",
+      "name": "Social media",
+      "nameFr": "Réseaux sociaux",
+      "description": "Create, schedule, grow your audience.",
+      "subcategories": [
+        {
+          "id": "personal-branding",
+          "name": "Personal branding",
+          "nameFr": "Marque personnelle",
+          "description": "Personal branding"
+        },
+        {
+          "id": "content-creation",
+          "name": "Content creation",
+          "nameFr": "Création de contenu",
+          "description": "Content creation"
+        },
+        {
+          "id": "growth",
+          "name": "Audience growth",
+          "nameFr": "Croissance d'audience",
+          "description": "Audience growth"
+        }
+      ]
+    },
+    {
+      "id": "career",
+      "universe": "personal",
+      "name": "Job Search & Career",
+      "nameFr": "Recherche d'emploi & Carrière",
+      "description": "Prepare, apply and grow with AI.",
+      "subcategories": [
+        {
+          "id": "resume",
+          "name": "Resume",
+          "nameFr": "CV",
+          "description": "Resume"
+        },
+        {
+          "id": "cover-letter",
+          "name": "Cover letter",
+          "nameFr": "Lettre de motivation",
+          "description": "Cover letter"
+        },
+        {
+          "id": "skills-assessment",
+          "name": "Skills assessment",
+          "nameFr": "Bilan de compétences",
+          "description": "Skills assessment"
+        },
+        {
+          "id": "job-search",
+          "name": "Job search",
+          "nameFr": "Recherche d'offres",
+          "description": "Job search"
+        },
+        {
+          "id": "application-tracking",
+          "name": "Application tracking",
+          "nameFr": "Suivi de candidatures",
+          "description": "Application tracking"
+        }
+      ]
+    },
+    {
+      "id": "creative",
+      "universe": "personal",
+      "name": "Creative & AI avatars",
+      "nameFr": "Création & avatars IA",
+      "description": "Avatars, visuals and videos with AI.",
+      "subcategories": [
+        {
+          "id": "ai-avatar",
+          "name": "AI avatars",
+          "nameFr": "Avatars IA",
+          "description": "AI avatars"
+        },
+        {
+          "id": "visuals",
+          "name": "Visuals & graphics",
+          "nameFr": "Visuels & graphisme",
+          "description": "Visuals & graphics"
+        },
+        {
+          "id": "video",
+          "name": "Video",
+          "nameFr": "Vidéo",
+          "description": "Video"
+        }
+      ]
+    },
+    {
+      "id": "token-savings",
+      "universe": "personal",
+      "name": "Token savings & AI costs",
+      "nameFr": "Économie de tokens & coûts IA",
+      "description": "Cut your AI token usage and costs.",
+      "subcategories": [
+        {
+          "id": "context-management",
+          "name": "Context management",
+          "nameFr": "Gestion du contexte",
+          "description": "Context management"
+        },
+        {
+          "id": "prompt-optimization",
+          "name": "Prompt optimization",
+          "nameFr": "Optimisation des prompts",
+          "description": "Prompt optimization"
+        },
+        {
+          "id": "cost-monitoring",
+          "name": "Cost monitoring",
+          "nameFr": "Suivi des coûts",
+          "description": "Cost monitoring"
+        }
+      ]
     },
     {
       "id": "marketing",
-      "name": "Marketing & Communication",
-      "description": "Get found and generate leads: content, SEO, social media, advertising.",
-      "prefixes": ["growth"]
+      "universe": "pro",
+      "name": "Marketing & Growth",
+      "nameFr": "Marketing & Growth",
+      "description": "Write, create and communicate effectively.",
+      "subcategories": [
+        {
+          "id": "content",
+          "name": "Content",
+          "nameFr": "Contenu",
+          "description": "Content"
+        },
+        {
+          "id": "seo-sea",
+          "name": "SEO & SEA",
+          "nameFr": "SEO & SEA",
+          "description": "SEO & SEA"
+        },
+        {
+          "id": "social-media",
+          "name": "Social media",
+          "nameFr": "Réseaux sociaux",
+          "description": "Social media"
+        },
+        {
+          "id": "emailing",
+          "name": "Email marketing",
+          "nameFr": "Emailing",
+          "description": "Email marketing"
+        }
+      ]
     },
     {
-      "id": "finance",
-      "name": "Finance & Billing",
-      "description": "Invoice, track payments, and manage subscriptions.",
-      "prefixes": ["billing"]
+      "id": "writing",
+      "universe": "pro",
+      "name": "Writing & Content",
+      "nameFr": "Écriture & Contenu",
+      "description": "Draft, edit and translate.",
+      "subcategories": [
+        {
+          "id": "drafting",
+          "name": "Drafting",
+          "nameFr": "Rédaction",
+          "description": "Drafting"
+        },
+        {
+          "id": "editing",
+          "name": "Editing",
+          "nameFr": "Édition",
+          "description": "Editing"
+        },
+        {
+          "id": "translation",
+          "name": "Translation",
+          "nameFr": "Traduction",
+          "description": "Translation"
+        }
+      ]
     },
     {
-      "id": "hr",
-      "name": "HR & Recruiting",
-      "description": "Hire and manage people: job postings, candidate screening, onboarding.",
-      "prefixes": ["hr"]
+      "id": "design",
+      "universe": "pro",
+      "name": "Design & Creative",
+      "nameFr": "Design & Créa",
+      "description": "Design interfaces and visuals.",
+      "subcategories": [
+        {
+          "id": "ui-ux",
+          "name": "UI/UX",
+          "nameFr": "UI/UX",
+          "description": "UI/UX",
+          "prefixes": [
+            "skf"
+          ]
+        },
+        {
+          "id": "visual-content",
+          "name": "Visual content",
+          "nameFr": "Contenu visuel",
+          "description": "Visual content"
+        }
+      ]
     },
     {
-      "id": "customer-support",
+      "id": "support",
+      "universe": "pro",
       "name": "Customer Support",
-      "description": "Respond to customers and track satisfaction: inbox, tickets, reviews.",
-      "prefixes": ["support"]
+      "nameFr": "Support client",
+      "description": "Improve your service and your replies.",
+      "subcategories": [
+        {
+          "id": "ticketing",
+          "name": "Ticket handling",
+          "nameFr": "Traitement des tickets",
+          "description": "Ticket handling"
+        },
+        {
+          "id": "knowledge-base",
+          "name": "Knowledge base",
+          "nameFr": "Base de connaissances",
+          "description": "Knowledge base"
+        }
+      ]
     },
     {
-      "id": "project-management",
-      "name": "Project Management",
-      "description": "Track project progress: backlog, sprints, reporting, documentation.",
-      "prefixes": ["board", "docs"]
+      "id": "sales-crm",
+      "universe": "pro",
+      "name": "Sales & CRM",
+      "nameFr": "Vente & CRM",
+      "description": "Prospect and follow up with clients.",
+      "subcategories": [
+        {
+          "id": "prospecting",
+          "name": "Prospecting",
+          "nameFr": "Prospection",
+          "description": "Prospecting"
+        },
+        {
+          "id": "client-follow-up",
+          "name": "Client follow-up",
+          "nameFr": "Suivi client",
+          "description": "Client follow-up"
+        },
+        {
+          "id": "reporting",
+          "name": "Reporting",
+          "nameFr": "Reporting",
+          "description": "Reporting"
+        }
+      ]
     },
     {
-      "id": "legal",
-      "name": "Legal & Compliance",
-      "description": "Secure contracts and regulatory compliance.",
-      "prefixes": ["legal"]
+      "id": "product",
+      "universe": "pro",
+      "name": "Product Management",
+      "nameFr": "Product Management",
+      "description": "Frame, specify, prioritise.",
+      "subcategories": [
+        {
+          "id": "roadmap",
+          "name": "Roadmap",
+          "nameFr": "Roadmap",
+          "description": "Roadmap"
+        },
+        {
+          "id": "specs",
+          "name": "Specs",
+          "nameFr": "Spécifications",
+          "description": "Specs"
+        },
+        {
+          "id": "user-research",
+          "name": "User research",
+          "nameFr": "Recherche utilisateur",
+          "description": "User research"
+        }
+      ]
     },
     {
       "id": "development",
-      "name": "Development & Engineering",
-      "description": "Design, build, test, and run a software product.",
+      "universe": "pro",
+      "name": "Development & Tech",
+      "nameFr": "Développement & Tech",
+      "description": "Code, ship and analyse faster.",
       "subcategories": [
-        {
-          "id": "seo",
-          "name": "SEO",
-          "description": "Technical and content search-engine optimization.",
-          "prefixes": ["seo"]
-        },
         {
           "id": "code",
           "name": "Code",
-          "description": "Product scoping, architecture, development, data, AI, QA, infrastructure, release, and security.",
-          "prefixes": ["product", "arch", "dev", "data", "ai", "qa", "infra", "ops", "release", "sec", "github"]
+          "nameFr": "Code",
+          "description": "Code",
+          "prefixes": [
+            "presales",
+            "github"
+          ]
         },
         {
-          "id": "ux-ui",
-          "name": "UX/UI",
-          "description": "User experience, journeys, interface, and design system.",
-          "prefixes": ["ux", "ui"]
+          "id": "devops",
+          "name": "DevOps",
+          "nameFr": "DevOps",
+          "description": "DevOps"
+        },
+        {
+          "id": "data-ai",
+          "name": "Data & AI",
+          "nameFr": "Data & IA",
+          "description": "Data & AI"
+        }
+      ]
+    },
+    {
+      "id": "hr",
+      "universe": "pro",
+      "name": "HR & Recruiting",
+      "nameFr": "RH & Recrutement",
+      "description": "Hire and support your teams.",
+      "subcategories": [
+        {
+          "id": "sourcing",
+          "name": "Sourcing",
+          "nameFr": "Sourcing",
+          "description": "Sourcing"
+        },
+        {
+          "id": "onboarding",
+          "name": "Onboarding",
+          "nameFr": "Onboarding",
+          "description": "Onboarding"
+        },
+        {
+          "id": "payroll",
+          "name": "Payroll",
+          "nameFr": "Paie",
+          "description": "Payroll"
+        }
+      ]
+    },
+    {
+      "id": "finance",
+      "universe": "pro",
+      "name": "Finance & Accounting",
+      "nameFr": "Finance & Comptabilité",
+      "description": "Invoice, close and track your numbers.",
+      "subcategories": [
+        {
+          "id": "invoicing",
+          "name": "Invoicing",
+          "nameFr": "Facturation",
+          "description": "Invoicing"
+        },
+        {
+          "id": "closing",
+          "name": "Accounting close",
+          "nameFr": "Clôture comptable",
+          "description": "Accounting close"
+        },
+        {
+          "id": "reporting",
+          "name": "Reporting",
+          "nameFr": "Reporting",
+          "description": "Reporting"
+        }
+      ]
+    },
+    {
+      "id": "legal",
+      "universe": "pro",
+      "name": "Legal & Compliance",
+      "nameFr": "Juridique & Conformité",
+      "description": "Contracts and compliance, stress-free.",
+      "subcategories": [
+        {
+          "id": "contracts",
+          "name": "Contracts",
+          "nameFr": "Contrats",
+          "description": "Contracts"
+        },
+        {
+          "id": "compliance",
+          "name": "Compliance",
+          "nameFr": "Conformité",
+          "description": "Compliance"
         }
       ]
     }

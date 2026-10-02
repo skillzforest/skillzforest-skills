@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "presales-scoping",
+  "name": "Presales Scoping Pack",
+  "publisher": "SkillzForest",
+  "category": "development",
+  "subcategory": "code",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Functional and technical scoping for an app, web or SaaS project, from kickoff to client proposal: init project, functional and platform scoping, logical and physical diagrams, user journeys, quotes, client presentation, meeting notes and domain name.",
+  "tags": [
+    "presales",
+    "scoping",
+    "functional-scoping",
+    "technical-scoping",
+    "architecture",
+    "quotes",
+    "web",
+    "saas",
+    "agency"
+  ],
+  "skills": [
+    "presales-init-project",
+    "presales-functional-scoping",
+    "presales-platform-scoping",
+    "presales-logical-diagram",
+    "presales-physical-diagram",
+    "presales-user-journey-miro",
+    "presales-quote",
+    "presales-maintenance-quote",
+    "presales-client-presentation",
+    "presales-meeting-notes",
+    "presales-domain-name"
+  ]
+}

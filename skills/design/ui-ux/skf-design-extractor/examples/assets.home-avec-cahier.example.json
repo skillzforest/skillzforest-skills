@@ -1,0 +1,54 @@
+{
+  "source": "home.png",
+  "source_path": "../../../design/home.png",
+  "spec": "../assets-spec.json",
+  "mockup": "home",
+  "page": "Home",
+  "width": 2880,
+  "height": 3000,
+  "generated_by": "skf-design-extractor",
+  "defaults": { "padding": 0, "min_confidence": 0.8 },
+  "assets": [
+    {
+      "name": "logo-skillfactory",
+      "type": "logo",
+      "x": 80, "y": 60, "width": 300, "height": 80,
+      "padding": 8,
+      "confidence": 0.95,
+      "requires_reconstruction": false,
+      "reason": "Logotype absent du cahier : exporté brut, listé hors cahier.",
+      "output": "logo-skillfactory.webp"
+    },
+    {
+      "name": "home-hero",
+      "type": "photo",
+      "spec_id": 12,
+      "x": 1600, "y": 240, "width": 1152, "height": 920,
+      "confidence": 0.95,
+      "requires_reconstruction": false,
+      "reason": "Visuel du haut de la home (ligne 12).",
+      "output": "home-hero.webp"
+    },
+    {
+      "name": "besoin-communication",
+      "type": "photo",
+      "spec_id": 1,
+      "x": 160, "y": 1400, "width": 440, "height": 330,
+      "confidence": 0.9,
+      "requires_reconstruction": false,
+      "reason": "Carte « Explorer par besoin » (ligne 1).",
+      "output": "besoin-communication.webp"
+    },
+    {
+      "name": "skill-crm",
+      "type": "photo",
+      "spec_id": 5,
+      "x": 160, "y": 2100, "width": 664, "height": 415,
+      "focus": [0.5, 0.5],
+      "confidence": 0.9,
+      "requires_reconstruction": false,
+      "reason": "Carte produit (ligne 5) ; la variante mobile 400 × 400 (ligne 6) est produite automatiquement.",
+      "output": "skill-crm.webp"
+    }
+  ]
+}

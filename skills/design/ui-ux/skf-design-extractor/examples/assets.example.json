@@ -1,0 +1,76 @@
+{
+  "source": "dashboard.png",
+  "source_path": "examples/dashboard.png",
+  "width": 1440,
+  "height": 900,
+  "generated_by": "skf-design-extractor",
+  "defaults": { "padding": 0, "min_confidence": 0.8 },
+  "assets": [
+    {
+      "name": "logo-acme",
+      "type": "logo",
+      "x": 40,
+      "y": 28,
+      "width": 140,
+      "height": 44,
+      "padding": 8,
+      "confidence": 0.97,
+      "requires_reconstruction": false,
+      "reason": "Logotype de marque : doit rester fidèle au fichier d'origine.",
+      "output": "logo-acme.webp"
+    },
+    {
+      "name": "hero-dashboard",
+      "type": "illustration",
+      "x": 760,
+      "y": 160,
+      "width": 600,
+      "height": 420,
+      "padding": 0,
+      "confidence": 0.93,
+      "requires_reconstruction": false,
+      "reason": "Illustration détaillée multi-formes, non reproductible en CSS.",
+      "output": "hero-dashboard.webp"
+    },
+    {
+      "name": "customer-avatar",
+      "type": "avatar",
+      "x": 110,
+      "y": 660,
+      "width": 96,
+      "height": 96,
+      "padding": 8,
+      "confidence": 0.91,
+      "requires_reconstruction": false,
+      "reason": "Photo de profil : contenu photographique propre à la maquette.",
+      "output": "customer-avatar.webp"
+    },
+    {
+      "name": "background-hero-waves",
+      "type": "background",
+      "x": 0,
+      "y": 600,
+      "width": 1440,
+      "height": 300,
+      "padding": 0,
+      "confidence": 0.62,
+      "requires_reconstruction": false,
+      "reason": "Ondes décoratives, peut-être reproductibles en SVG ou CSS : à confirmer.",
+      "output": "background-hero-waves.webp"
+    },
+    {
+      "name": "team-photo",
+      "type": "photo",
+      "x": 80,
+      "y": 220,
+      "width": 560,
+      "height": 320,
+      "padding": 0,
+      "confidence": 0.9,
+      "requires_reconstruction": true,
+      "reconstruction_reason": "Titre et bouton posés sur la photo : pixels sous-jacents non récupérables.",
+      "reason": "Photographie d'équipe.",
+      "output": "team-photo.webp"
+    }
+  ]
+}

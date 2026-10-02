@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-design-extractor",
+  "name": "Design Extractor",
+  "publisher": "SkillzForest",
+  "version": "0.2.0",
+  "category": "design",
+  "subcategory": "ui-ux",
+  "description": "Extracts the real graphic assets (photos, illustrations, logos, avatars, backgrounds, textures, screenshots, design-specific icons) from one or more static JPG or PNG mockups, with or without an asset size spec (Markdown, Excel or CSV). With a spec, it matches each image to its row and exports it at the requested ratio, size and weight, with a coverage report across all mockups. Exact crops and downscaling only: no generative AI, no retouching.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unsupported",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

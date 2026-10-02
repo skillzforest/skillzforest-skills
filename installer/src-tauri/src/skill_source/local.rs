@@ -52,56 +52,76 @@ impl LocalSkillSource {
 }
 
 impl SkillSource for LocalSkillSource {
+    /// skills/<category>/<subcategory>/<skill>/skill.json — the site's
+    /// categories and subcategories (see skills/domains.json).
     fn list_skills(&self) -> Result<Vec<CatalogSkill>, SkillSourceError> {
         let mut out = Vec::new();
-        let skills_root = self.skills_root();
-        for family_entry in fs::read_dir(&skills_root)? {
-            let family_entry = family_entry?;
-            if !family_entry.file_type()?.is_dir() {
+        for category_entry in fs::read_dir(self.skills_root())? {
+            let category_entry = category_entry?;
+            if !category_entry.file_type()?.is_dir() {
                 continue;
             }
-            let family = family_entry.file_name().to_string_lossy().to_string();
-            if family == "lib" {
+            let category = category_entry.file_name().to_string_lossy().to_string();
+            if category == "lib" {
                 continue;
             }
-            for skill_entry in fs::read_dir(family_entry.path())? {
-                let skill_entry = skill_entry?;
-                if !skill_entry.file_type()?.is_dir() {
+            for sub_entry in fs::read_dir(category_entry.path())? {
+                let sub_entry = sub_entry?;
+                if !sub_entry.file_type()?.is_dir() {
                     continue;
                 }
-                let skill_dir = skill_entry.path();
-                let manifest_path = skill_dir.join("skill.json");
-                if !manifest_path.is_file() {
-                    continue;
+                for skill_entry in fs::read_dir(sub_entry.path())? {
+                    let skill_entry = skill_entry?;
+                    if !skill_entry.file_type()?.is_dir() {
+                        continue;
+                    }
+                    let skill_dir = skill_entry.path();
+                    let manifest_path = skill_dir.join("skill.json");
+                    if !manifest_path.is_file() {
+                        continue;
+                    }
+                    let manifest: SkillManifest = Self::read_json(&manifest_path)?;
+                    out.push(CatalogSkill {
+                        manifest,
+                        family: category.clone(),
+                        source_dir: skill_dir.display().to_string(),
+                    });
                 }
-                let manifest: SkillManifest = Self::read_json(&manifest_path)?;
-                out.push(CatalogSkill {
-                    manifest,
-                    family: family.clone(),
-                    source_dir: skill_dir.display().to_string(),
-                });
             }
         }
         Ok(out)
     }
 
+    /// packs/<category>/<subcategory>/<pack-id>/pack.json.
     fn list_packs(&self) -> Result<Vec<CatalogPack>, SkillSourceError> {
         let mut out = Vec::new();
         let packs_root = self.packs_root();
         if !packs_root.is_dir() {
             return Ok(out);
         }
-        for entry in fs::read_dir(&packs_root)? {
-            let entry = entry?;
-            if !entry.file_type()?.is_dir() {
+        for category_entry in fs::read_dir(&packs_root)? {
+            let category_entry = category_entry?;
+            if !category_entry.file_type()?.is_dir() {
                 continue;
             }
-            let manifest_path = entry.path().join("pack.json");
-            if !manifest_path.is_file() {
-                continue;
+            for subcategory_entry in fs::read_dir(category_entry.path())? {
+                let subcategory_entry = subcategory_entry?;
+                if !subcategory_entry.file_type()?.is_dir() {
+                    continue;
+                }
+                for entry in fs::read_dir(subcategory_entry.path())? {
+                    let entry = entry?;
+                    if !entry.file_type()?.is_dir() {
+                        continue;
+                    }
+                    let manifest_path = entry.path().join("pack.json");
+                    if !manifest_path.is_file() {
+                        continue;
+                    }
+                    let manifest: PackManifest = Self::read_json(&manifest_path)?;
+                    out.push(CatalogPack { manifest });
+                }
             }
-            let manifest: PackManifest = Self::read_json(&manifest_path)?;
-            out.push(CatalogPack { manifest });
         }
         Ok(out)
     }

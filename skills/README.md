@@ -2,79 +2,65 @@
 
 This is the **canonical source of truth** for every Agent Skill in SkillzForest. Nothing outside this folder may hold an independently maintained copy of a skill — `packs/`, `runtimes/`, and `dist/` only reference or generate from what lives here.
 
-## Layout
+## Layout: the site's categories
+
+Skills are organized **exactly like the SkillzForest site's catalog**: one folder per category, one per subcategory, then the skill.
 
 ```text
-skills/<domain>/<skill-name>/
-skills/<domain>/<subcategory>/<skill-name>/   # only for a domain that declares subcategories (e.g. development)
+skills/<category>/<subcategory>/<skill-name>/
 ├── SKILL.md        # required — the skill's business content (the actual prompt/logic)
-├── skill.json      # required — SkillzForest metadata + runtime compatibility (see schemas/skill.schema.json)
+├── skill.json      # required — metadata (category + subcategory, matching the folders) and runtime compatibility
 ├── scripts/        # optional — skill-owned automation
-├── references/      # optional — supporting material read by the skill
-├── templates/       # optional — reusable structural templates
-├── masters/          # optional — master documents the skill fills/copies
-└── assets/           # optional — static assets
+├── references/     # optional — supporting material read by the skill
+├── templates/      # optional — reusable structural templates
+├── masters/        # optional — master documents the skill fills/copies
+└── assets/         # optional — static assets
 ```
 
-A skill exists exactly once, under the **domain** (and, where relevant, **subcategory**) its name prefix belongs to (see below), and its `id` is always runtime-agnostic — `dev-seo`, never `claude-dev-seo` or `codex-dev-seo`. Which runtimes it actually works on is declared in `skill.json`'s `compatibility` map (see [`runtimes/README.md`](../runtimes/README.md)), not baked into its name or location.
+The registry is [`skills/domains.json`](./domains.json) (schema: [`schemas/domain.schema.json`](../schemas/domain.schema.json)). It mirrors the site's categories and subcategories (`GET /api/v1/categories`): the same slugs, universes and names. When the site's taxonomy changes, update `domains.json` first, then move the folders — `npm run validate` checks that every folder is a registered category/subcategory and that each `skill.json` declares the `category`/`subcategory` it lives under.
 
-## Domains
+A skill's folder must also match where the site lists it: a skill the site files under *Development › Code* lives in `skills/development/code/`.
 
-Skills are grouped into **8 domains**, named in plain English — the same buckets a buyer sees in the SkillzForest catalog, not internal engineering jargon, and English so the catalog reads the same in every market. The registry is [`skills/domains.json`](./domains.json) (schema: [`schemas/domain.schema.json`](../schemas/domain.schema.json)); this table is its human-readable mirror. A domain can accept several technical prefixes directly, or split into named **subcategories** one folder level deeper when it's broad enough to need it (today, only `development/`).
+Folder names are the site's slugs: lowercase, no spaces, no accents, hyphens between words (`sales-crm/client-follow-up`, never `Vente & CRM/Suivi client`). The same goes for files a skill ships (`User-story-mapping-Template.jpg`).
 
-| Domain folder | Name (buyer-facing) | Accepted prefixes | Scope |
-|---|---|---|---|
-| `sales/` | Sales & Presales | `presales-` | Quotes, client scoping, presentations, meeting notes |
-| `marketing/` | Marketing & Communication | `growth-` | Content, social media, advertising |
-| `finance/` | Finance & Billing | `billing-` | Invoicing, payments, subscriptions |
-| `hr/` | HR & Recruiting | `hr-` | Job postings, candidate screening, onboarding |
-| `customer-support/` | Customer Support | `support-` | Inbox, tickets, reviews |
-| `project-management/` | Project Management | `board-`, `docs-` | Backlog, sprints, reporting, documentation |
-| `legal/` | Legal & Compliance | `legal-` | Contracts, GDPR, regulatory compliance |
-| `development/` | Development & Engineering | see subcategories below | Product, design, dev, data, AI, QA, infra, ops, release, security |
+## Categories
 
-### `development/` subcategories
+### General public (`personal`)
 
-Broad enough on its own that a buyer benefits from a finer split, and specific enough internally that the people building skills still need the old technical distinctions:
+| Category folder | Name (FR) | Subcategory folders |
+|---|---|---|
+| `social-media/` | Social media (Réseaux sociaux) | `personal-branding`, `content-creation`, `growth` |
+| `career/` | Job Search & Career (Recherche d'emploi & Carrière) | `resume`, `cover-letter`, `skills-assessment`, `job-search`, `application-tracking` |
+| `creative/` | Creative & AI avatars (Création & avatars IA) | `ai-avatar`, `visuals`, `video` |
+| `token-savings/` | Token savings & AI costs (Économie de tokens & coûts IA) | `context-management`, `prompt-optimization`, `cost-monitoring` |
 
-| Subcategory folder | Name | Accepted prefixes | Scope |
-|---|---|---|---|
-| `development/seo/` | SEO | `seo-` | Technical and content search-engine optimization |
-| `development/code/` | Code | `product-`, `arch-`, `dev-`, `data-`, `ai-`, `qa-`, `infra-`, `ops-`, `release-`, `sec-`, `github-` | Product scoping, architecture, development, data, AI, QA, infra, ops, release, security |
-| `development/ux-ui/` | UX/UI | `ux-`, `ui-` | User experience, journeys, interface, design system |
+### Pros & teams (`pro`)
 
-Only `sales/` and `development/code/` currently contain real skills — see [`packs/sales/pack.json`](../packs/sales/pack.json) and [`packs/development/pack.json`](../packs/development/pack.json). The other domains (and `development/seo/`, `development/ux-ui/`) are placeholders, created ahead of need so the catalog's shape is already right — see each domain's `README.md`.
+| Category folder | Name (FR) | Subcategory folders |
+|---|---|---|
+| `marketing/` | Marketing & Growth (Marketing & Growth) | `content`, `seo-sea`, `social-media`, `emailing` |
+| `writing/` | Writing & Content (Écriture & Contenu) | `drafting`, `editing`, `translation` |
+| `design/` | Design & Creative (Design & Créa) | `ui-ux` (skf-), `visual-content` |
+| `support/` | Customer Support (Support client) | `ticketing`, `knowledge-base` |
+| `sales-crm/` | Sales & CRM (Vente & CRM) | `prospecting`, `client-follow-up`, `reporting` |
+| `product/` | Product Management (Product Management) | `roadmap`, `specs`, `user-research` |
+| `development/` | Development & Tech (Développement & Tech) | `code` (presales-, github-), `devops`, `data-ai` |
+| `hr/` | HR & Recruiting (RH & Recrutement) | `sourcing`, `onboarding`, `payroll` |
+| `finance/` | Finance & Accounting (Finance & Comptabilité) | `invoicing`, `closing`, `reporting` |
+| `legal/` | Legal & Compliance (Juridique & Conformité) | `contracts`, `compliance` |
 
-Each of the 8 domains has exactly one matching pack under `packs/<domain-id>/pack.json` — the domain is the engineering-side grouping, the pack is what's actually sold, and today they're 1:1. That's a convenience for a small catalog, not a rule: nothing stops a future pack from bundling skills across several domains, or a domain from being split across several packs, once there's enough content to make that useful.
+A subcategory may restrict the skill-id prefixes it accepts (shown in parentheses); without that, any prefix is fine. Folders are only created once a category holds a skill — today, `development/code/` (the `github-*` and `presales-*` skills) and `design/ui-ux/` (`skf-design-extractor`).
 
-## Standalone skills (no domain)
+## Standalone skills (no category)
 
-A directory directly under `skills/<skill-name>/` that itself contains a
-`SKILL.md` is a **standalone skill** — a generic Claude Code Agent Skill
-meant to be invoked directly by its own name, not part of the commercial
-pack/runtime distribution system the domain convention above exists for. It
-follows Anthropic's standard `skills/<skill-name>/SKILL.md` layout as-is: no
-name prefix, and `skill.json` is optional (only add one if the skill will
-actually be distributed through a pack). `scripts/validate.js` and
-`scripts/lib/skills.js` both know the difference between a domain (a folder
-whose immediate children are skills, or subcategories of skills) and a
-standalone skill (a folder that is itself a skill).
-
-No standalone skill exists today — `github-issue-context` and
-`github-implement-issue` (Claude Code developer tooling for turning a
-GitHub Issue into a context bundle and then implementing it) started this
-way but now live under
-[`skills/development/code/`](./development/code/), since they're
-genuinely part of the Development & Engineering catalog. The mechanism
-stays documented here for whenever a future skill is generic enough to
-warrant it.
+A directory directly under `skills/<skill-name>/` that itself contains a `SKILL.md` is a **standalone skill** — a generic Claude Code Agent Skill invoked by its own name, outside the catalog. No name prefix, and `skill.json` is optional. `scripts/validate.js` and `scripts/lib/skills.js` tell a category folder from a standalone skill. None exists today.
 
 ## Rules
 
-1. A skill exists once, in one domain (and, where relevant, subcategory) folder, under one runtime-agnostic id.
-2. A skill's name prefix must be one of the prefixes `skills/domains.json` registers for the domain (or subcategory) folder it lives in — `npm run validate` enforces this.
-3. A skill contains no runtime-specific logic (no Claude-Code-only or Codex-only behavior) unless that logic is intrinsic to the skill itself — runtime adaptation belongs in `runtimes/`.
+1. A skill exists once, in the category/subcategory folder the site files it under, with one runtime-agnostic id (`dev-seo`, never `claude-dev-seo`).
+2. `skill.json`'s `category` and `subcategory` match its folders — `npm run validate` enforces it, along with any prefix a subcategory restricts.
+3. A skill contains no runtime-specific logic unless intrinsic to it — runtime adaptation belongs in `runtimes/`.
 4. A skill contains no orchestration logic — that belongs in `workflows/`.
 5. Packs, bundles and runtimes only reference skills by name; they never copy skill files.
-6. `skill.json`'s `compatibility` map only ever records what's actually been verified — see [`runtimes/README.md`](../runtimes/README.md) for the `native`/`supported`/`adapted`/`unsupported`/`unknown` distinction.
-7. Run `npm run validate` before committing changes here — it checks for missing `SKILL.md`/`skill.json`, duplicate ids, prefix/domain mismatches, invalid compatibility values, and broken pack/runtime references.
+6. `skill.json`'s `compatibility` map only records what's actually been verified — see [`runtimes/README.md`](../runtimes/README.md).
+7. Run `npm run validate` before committing changes here.

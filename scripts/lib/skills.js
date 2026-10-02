@@ -17,13 +17,11 @@ const COMPATIBILITY_STATUSES = ['native', 'supported', 'adapted', 'unsupported',
 
 const DOMAINS_FILE = path.join(SKILLS_ROOT, 'domains.json');
 
-// skills/domains.json is the buyer-facing category grouping: each domain is
-// a folder under skills/ (e.g. 'sales') and accepts one or more technical id
-// prefixes (e.g. 'av'), either directly or split into named subcategories
-// one folder level deeper (e.g. 'development' -> 'code', 'ux-ui', 'seo').
-// A domain (or subcategory) can accept several prefixes (e.g.
-// 'project-management' accepts both 'board' and 'docs') — this is what
-// replaced the old one-folder-per-prefix "family" convention.
+// skills/domains.json mirrors the SkillzForest site's categories and
+// subcategories: skills live at skills/<category>/<subcategory>/<skill>/
+// (e.g. skills/development/code/github-issue-context/) and packs at
+// packs/<category>/<subcategory>/<pack-id>/ (e.g. packs/development/code/presales-scoping/).
+// A subcategory may restrict the skill-id prefixes it accepts.
 function listDomains() {
   if (!fs.existsSync(DOMAINS_FILE)) return [];
   return JSON.parse(fs.readFileSync(DOMAINS_FILE, 'utf8')).domains || [];
@@ -117,17 +115,41 @@ function findSkillDir(name) {
   return match ? match.dir : null;
 }
 
-function listPacks() {
+// Every pack as { id, category, subcategory, dir }:
+// packs/<category>/<subcategory>/<pack-id>/pack.json.
+function listPackEntries() {
   if (!fs.existsSync(PACKS_ROOT)) return [];
-  return fs.readdirSync(PACKS_ROOT, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => d.name)
-    .filter((id) => fs.existsSync(path.join(PACKS_ROOT, id, 'pack.json')));
+  const entries = [];
+  for (const category of fs.readdirSync(PACKS_ROOT, { withFileTypes: true })) {
+    if (!category.isDirectory()) continue;
+    const categoryDir = path.join(PACKS_ROOT, category.name);
+    for (const subcategory of fs.readdirSync(categoryDir, { withFileTypes: true })) {
+      if (!subcategory.isDirectory()) continue;
+      const subcategoryDir = path.join(categoryDir, subcategory.name);
+      for (const pack of fs.readdirSync(subcategoryDir, { withFileTypes: true })) {
+        const dir = path.join(subcategoryDir, pack.name);
+        if (pack.isDirectory() && fs.existsSync(path.join(dir, 'pack.json'))) {
+          entries.push({ id: pack.name, category: category.name, subcategory: subcategory.name, dir });
+        }
+      }
+    }
+  }
+  return entries;
+}
+
+function listPacks() {
+  return listPackEntries().map((p) => p.id);
+}
+
+function findPackDir(id) {
+  const match = listPackEntries().find((p) => p.id === id);
+  return match ? match.dir : null;
 }
 
 function readPack(id) {
-  const packPath = path.join(PACKS_ROOT, id, 'pack.json');
-  return JSON.parse(fs.readFileSync(packPath, 'utf8'));
+  const dir = findPackDir(id);
+  if (!dir) throw new Error(`Unknown pack '${id}' (no packs/<category>/<subcategory>/${id}/pack.json)`);
+  return JSON.parse(fs.readFileSync(path.join(dir, 'pack.json'), 'utf8'));
 }
 
 function listRuntimes() {
@@ -160,7 +182,9 @@ module.exports = {
   listSkills,
   findSkill,
   findSkillDir,
+  listPackEntries,
   listPacks,
+  findPackDir,
   readPack,
   listRuntimes,
   readRuntime,

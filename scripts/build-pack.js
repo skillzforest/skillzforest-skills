@@ -1,20 +1,18 @@
 #!/usr/bin/env node
 // Builds a pack's per-runtime distributions: dist/packs/<pack-id>/<runtime>/
-// Reads packs/<id>/pack.json, resolves each skill from skills/, builds each
+// Reads packs/<category>/<subcategory>/<id>/pack.json, resolves each skill from skills/, builds each
 // skill's distribution (via buildSkillForRuntime) for every runtime at least
 // one of the pack's skills is compatible with, then assembles the pack-level
 // output for that runtime. Never modifies skills/ or packs/.
 const fs = require('fs');
 const path = require('path');
-const { DIST_ROOT, PACKS_ROOT, listRuntimes, findSkill, readPack } = require('./lib/skills');
+const { DIST_ROOT, listRuntimes, findSkill, findPackDir, readPack } = require('./lib/skills');
 const { buildSkillForRuntime } = require('./lib/distribute');
 const { copyDir } = require('./lib/adapters');
 
 function buildPack(packId, opts = {}) {
-  const packDir = path.join(PACKS_ROOT, packId);
-  const packJsonPath = path.join(packDir, 'pack.json');
-  if (!fs.existsSync(packJsonPath)) {
-    throw new Error(`No pack.json found at packs/${packId}/pack.json`);
+  if (!findPackDir(packId)) {
+    throw new Error(`No pack.json found at packs/<category>/<subcategory>/${packId}/pack.json`);
   }
   const pack = readPack(packId);
   const skillNames = pack.skills || [];
@@ -49,7 +47,7 @@ function buildPack(packId, opts = {}) {
     const runtimeOutDir = path.join(DIST_ROOT, 'packs', packId, runtimeId);
     fs.rmSync(runtimeOutDir, { recursive: true, force: true });
     fs.mkdirSync(runtimeOutDir, { recursive: true });
-    fs.copyFileSync(packJsonPath, path.join(runtimeOutDir, 'pack.json'));
+    fs.copyFileSync(path.join(findPackDir(packId), 'pack.json'), path.join(runtimeOutDir, 'pack.json'));
 
     for (const { name, dir } of builtSkills) {
       copyDir(dir, path.join(runtimeOutDir, name));

@@ -3,16 +3,30 @@
   "$id": "https://skillzforest.ai/schemas/pack.schema.json",
   "title": "Pack manifest (pack.json)",
   "type": "object",
-  "required": ["schemaVersion", "id", "name", "publisher", "version", "description", "skills"],
+  "required": ["schemaVersion", "id", "name", "publisher", "category", "subcategory", "version", "description", "skills"],
   "properties": {
     "schemaVersion": { "const": 1 },
     "id": { "type": "string" },
     "name": { "type": "string" },
     "publisher": { "type": "string" },
+    "category": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "The SkillzForest site category (skills/domains.json id) the pack is listed under, e.g. 'development' — the same as its packs/<category>/ folder."
+    },
+    "subcategory": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "The site subcategory, e.g. 'code' — the same as its packs/<category>/<subcategory>/ folder."
+    },
     "version": { "type": "string" },
     "description": { "type": "string" },
     "license": { "type": "string" },
     "tags": { "type": "array", "items": { "type": "string" } },
+    "ordered": {
+      "type": "boolean",
+      "description": "True when the skills are used one after the other, in the order of 'skills' (each step builds on the previous one's result). The site and the Manager then number them as steps. Omitted or false: the order is only for display."
+    },
     "skills": {
       "type": "array",
       "description": "Skill ids referenced by name only. A pack must never embed a skill's own files — see the 'no embedded skill copy' rule enforced by scripts/validate.js.",

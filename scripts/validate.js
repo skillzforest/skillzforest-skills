@@ -10,6 +10,7 @@ const {
   listDomains,
   findDomain,
   prefixOf,
+  listPackEntries,
   listPacks,
   readPack,
   listRuntimes,
@@ -29,7 +30,7 @@ function checkOneSkill({ skillDir, label, name, allowedPrefixes, groupKey, requi
     errors.push(`${label} has no SKILL.md`);
     return;
   }
-  if (allowedPrefixes) {
+  if (allowedPrefixes && allowedPrefixes.length) {
     const prefix = prefixOf(name);
     if (!allowedPrefixes.includes(prefix)) {
       errors.push(
@@ -58,6 +59,13 @@ function checkOneSkill({ skillDir, label, name, allowedPrefixes, groupKey, requi
   }
   if (manifest.id !== name) {
     errors.push(`${label}/skill.json id '${manifest.id}' does not match its folder name`);
+  }
+  // skills/<category>/<subcategory>/<name>/: the manifest says where it lives, like the site does.
+  const [category, subcategory] = groupKey.includes('/') ? groupKey.split('/') : [null, null];
+  if (category && (manifest.category !== category || manifest.subcategory !== subcategory)) {
+    errors.push(
+      `${label}/skill.json declares category '${manifest.category}/${manifest.subcategory}' but lives under '${category}/${subcategory}'`
+    );
   }
   if (seenIds.has(manifest.id)) {
     errors.push(`skill.json id '${manifest.id}' is duplicated (also used by ${seenIds.get(manifest.id)})`);
@@ -104,7 +112,7 @@ function checkSkillFolders() {
             skillDir: path.join(subDir, entry.name),
             label: `skills/${domain}/${subEntry.name}/${entry.name}`,
             name: entry.name,
-            allowedPrefixes: subcategoryEntry ? subcategoryEntry.prefixes : null,
+            allowedPrefixes: subcategoryEntry ? subcategoryEntry.prefixes || null : null,
             groupKey: `${domain}/${subEntry.name}`,
             requireManifest: true,
             seenNames,
@@ -121,7 +129,7 @@ function checkSkillFolders() {
         skillDir: path.join(domainDir, entry.name),
         label: `skills/${domain}/${entry.name}`,
         name: entry.name,
-        allowedPrefixes: domainEntry ? domainEntry.prefixes : null,
+        allowedPrefixes: domainEntry ? domainEntry.prefixes || null : null,
         groupKey: domain,
         requireManifest: true,
         seenNames,
@@ -151,19 +159,38 @@ function checkSkillFolders() {
 }
 
 function checkPacks(knownSkills) {
-  for (const id of listPacks()) {
+  const seenPackIds = new Map();
+  for (const { id, category, subcategory, dir } of listPackEntries()) {
+    const label = `packs/${category}/${subcategory}/${id}`;
+    const domain = findDomain(category);
+    if (!domain) {
+      errors.push(`${label}: '${category}' is not a category in skills/domains.json — packs live under packs/<category>/<subcategory>/`);
+    } else if (!(domain.subcategories || []).some((s) => s.id === subcategory)) {
+      errors.push(`${label}: '${subcategory}' is not a subcategory of '${category}' in skills/domains.json`);
+    }
+    if (seenPackIds.has(id)) {
+      errors.push(`pack '${id}' is duplicated: ${seenPackIds.get(id)} and ${label}`);
+    } else {
+      seenPackIds.set(id, label);
+    }
     const pack = readPack(id);
+    if (pack.id !== id) {
+      errors.push(`${label}/pack.json id '${pack.id}' does not match its folder name`);
+    }
+    if (pack.category !== category || pack.subcategory !== subcategory) {
+      errors.push(
+        `${label}/pack.json declares category '${pack.category}/${pack.subcategory}' but lives under '${category}/${subcategory}'`
+      );
+    }
     for (const skillName of pack.skills || []) {
       if (!knownSkills.has(skillName)) {
-        errors.push(`packs/${id}/pack.json references unknown skill '${skillName}'`);
+        errors.push(`${label}/pack.json references unknown skill '${skillName}'`);
       }
     }
-    const packDir = path.join(REPO_ROOT, 'packs', id);
-    for (const entry of fs.readdirSync(packDir, { withFileTypes: true })) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       if (!entry.isDirectory()) continue;
-      const nested = path.join(packDir, entry.name);
-      if (fs.existsSync(path.join(nested, 'SKILL.md'))) {
-        errors.push(`packs/${id}/${entry.name} embeds a skill copy — packs must only reference skills/`);
+      if (fs.existsSync(path.join(dir, entry.name, 'SKILL.md'))) {
+        errors.push(`${label}/${entry.name} embeds a skill copy — packs must only reference skills/`);
       }
     }
   }
@@ -206,7 +233,7 @@ checkRuntimes();
 checkDistIsGenerated();
 
 console.log(
-  `Checked ${knownSkills.size} skill(s) across ${listFamilies().length} domain(s), ` +
+  `Checked ${knownSkills.size} skill(s) across ${listFamilies().length} category folder(s), ` +
   `${listPacks().length} pack(s), ${listRuntimes().length} runtime(s).`
 );
 

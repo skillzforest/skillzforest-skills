@@ -4,9 +4,9 @@ Ce dépôt est conçu en mode skill-first : chaque `SKILL.md` reste atomique, li
 
 ## 1. Distinction claire
 
-- Skill : capacité métier ou documentaire autonome (ex. `presales-functional-scoping`, `presales-quote`), rangée sous `skills/<domaine>/` (ex. `skills/sales/`).
+- Skill : capacité métier ou documentaire autonome (ex. `presales-functional-scoping`, `presales-quote`), rangée sous `skills/<catégorie>/<sous-catégorie>/` (ex. `skills/development/code/`).
 - Workflow : séquence de compétences à enchaîner selon un besoin projet.
-- Pack : produit commercial qui référence plusieurs skills cohérentes (ex. `packs/sales/pack.json`), sans jamais en dupliquer le contenu.
+- Pack : produit commercial qui référence plusieurs skills cohérentes (ex. `packs/development/code/presales-scoping/pack.json`), sans jamais en dupliquer le contenu.
 - Bundle : ensemble de plusieurs packs commercialisés ensemble.
 - Runtime : environnement cible (Claude Code, Codex, Cursor…) qui adapte ou génère le format d'installation à partir de `skills/`.
 - MCP / connecteurs : accès Drive, Sheets, Miro, Docs, Slides, etc.

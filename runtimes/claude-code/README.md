@@ -9,7 +9,7 @@ Target layout: `~/.claude/skills/<skill-name>/`, one folder per skill containing
 ```bash
 npm run build:skill -- presales-quote claude-code   # -> dist/skills/presales-quote/claude-code/
 npm run build:runtime -- claude-code          # builds every compatible skill for this runtime
-npm run build:pack -- sales                   # builds every runtime a pack's skills are compatible with, including this one
+npm run build:pack -- presales-scoping        # builds every runtime a pack's skills are compatible with, including this one
 
 cp -R dist/skills/presales-quote/claude-code ~/.claude/skills/presales-quote
 ```

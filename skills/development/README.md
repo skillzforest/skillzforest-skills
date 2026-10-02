@@ -1,32 +1,10 @@
-# skills/development — Development & Engineering
+# skills/development — Development & Tech
 
-Design, build, test, and run a software product.
+The site's **Development & Tech** category (*Développement & Tech*, pros & teams). Its subcategories are `code/`, `devops/` and `data-ai/` (see [`skills/domains.json`](../domains.json)); only `code/` holds skills today.
 
-Seen from the outside (a buyer, a client), this is one domain — the
-commercial pack [`packs/development/pack.json`](../../packs/development/pack.json)
-sells it as such. Internally it splits into **subcategories**, one folder
-level deeper, so both a buyer with a narrower need and the people building
-skills here get the right level of detail:
+## `code/`
 
-| Subcategory folder | Name | Accepted prefixes | Scope |
-|---|---|---|---|
-| `seo/` | SEO | `seo-*` | Technical and content search-engine optimization |
-| `code/` | Code | `product-*`, `arch-*`, `dev-*`, `data-*`, `ai-*`, `qa-*`, `infra-*`, `ops-*`, `release-*`, `sec-*`, `github-*` | Product scoping, architecture, development, data, AI, QA, infra, ops, release, security |
-| `ux-ui/` | UX/UI | `ux-*`, `ui-*` | User experience, journeys, interface, design system |
+- `github-issue-context` and `github-implement-issue` — turn a GitHub Issue into a ready-to-use context bundle, then implement it in a codebase. See [`code/github-issue-workflow.md`](./code/github-issue-workflow.md) for how they work together. Sold together as the **GitHub Issue Resolver** pack ([`packs/development/code/github-issue-resolver/`](../../packs/development/code/github-issue-resolver/pack.json)).
+- The 11 `presales-*` skills — functional and technical scoping of an app, web or SaaS project, from kickoff to client proposal: init project, functional and platform scoping, logical and physical diagrams, user journeys, quotes, client presentation, meeting notes and domain name. Sold together as the **Presales Scoping Pack** ([`packs/development/code/presales-scoping/`](../../packs/development/code/presales-scoping/pack.json)).
 
-The registry is [`skills/domains.json`](../domains.json) (schema:
-[`schemas/domain.schema.json`](../../schemas/domain.schema.json)); this table
-is its human-readable mirror. `npm run validate` enforces that every skill
-under `skills/development/<subcategory>/` uses a prefix registered for that
-subcategory.
-
-## What lives here today
-
-- `code/github-issue-context` and `code/github-implement-issue` — the pair
-  of Claude Code Agent Skills that turn a GitHub Issue into a ready-to-use
-  context bundle and then implement it in a codebase. See
-  [`code/github-issue-workflow.md`](./code/github-issue-workflow.md) for how
-  they work together.
-
-`seo/` and `ux-ui/` are placeholders, created ahead of need — no skill lives
-there yet.
+Accepted prefixes in `code/`: `github-`, `presales-`.
