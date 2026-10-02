@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-prompt-compressor",
+  "name": "Prompt Compressor",
+  "publisher": "SkillzForest",
+  "version": "1.0.0",
+  "category": "token-savings",
+  "subcategory": "prompt-optimization",
+  "description": "Shortens a long prompt (system prompt, project instructions, SKILL.md, agent prompt) to save tokens: removes filler and repetition, keeps every instruction, constraint and technical element intact, then reports the token savings.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unknown",
+    "perplexity": "unknown",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}
