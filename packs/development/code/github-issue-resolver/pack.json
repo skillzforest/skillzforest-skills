@@ -5,9 +5,9 @@
   "publisher": "SkillzForest",
   "category": "development",
   "subcategory": "code",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "license": "MIT",
-  "description": "Turn a GitHub Issue into a reviewed fix in Claude Code: gathers the issue's full context — text, comments, screenshots, attachments — then investigates, reproduces and implements the minimal fix.",
+  "description": "Turn GitHub Issues into reviewed fixes in Claude Code: installs the GitHub CLI if needed, gathers each issue's full context — text, comments, screenshots, attachments — one at a time or for a whole Project board at once, then investigates, reproduces and implements the minimal fix, and links the pushed commit or pull request back on the issue.",
   "tags": [
     "github",
     "issues",
@@ -15,8 +15,8 @@
     "bugfix"
   ],
   "skills": [
-    "github-issue-context",
-    "github-implement-issue"
+    "skf-github-issue-brief",
+    "skf-github-issue-fix"
   ],
   "ordered": true
 }

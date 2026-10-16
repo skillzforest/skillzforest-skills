@@ -294,7 +294,8 @@
           "description": "Code",
           "prefixes": [
             "presales",
-            "github"
+            "github",
+            "skf"
           ]
         },
         {

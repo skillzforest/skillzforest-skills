@@ -4,28 +4,45 @@ Two Claude Code Agent Skills, part of the
 [Development & Engineering](../README.md) domain, that work together but
 stay loosely coupled, communicating only through files on disk:
 
-- [`github-issue-context`](./github-issue-context/SKILL.md) — collects and
+- [`skf-github-issue-brief`](./skf-github-issue-brief/SKILL.md) — collects and
   normalizes a GitHub Issue (text, comments, screenshots/attachments) into
   a stable context bundle. Never touches application code.
-- [`github-implement-issue`](./github-implement-issue/SKILL.md) —
+- [`skf-github-issue-fix`](./skf-github-issue-fix/SKILL.md) —
   investigates the repository and implements a fix using that bundle.
   Never re-fetches GitHub data itself.
 
 ## Commands
 
 ```text
-/github-issue-context 427
-/github-issue-context https://github.com/org/repository/issues/427
-/github-issue-context 427 --refresh
+/skf-github-issue-brief 427
+/skf-github-issue-brief https://github.com/org/repository/issues/427
+/skf-github-issue-brief 427 --refresh
+/skf-github-issue-brief --board https://github.com/orgs/acme/projects/7 --status "Todo"
 
-/github-implement-issue 427
-/github-implement-issue https://github.com/org/project/issues/427
-/github-implement-issue 427 --plan
+/skf-github-issue-fix 427
+/skf-github-issue-fix https://github.com/org/project/issues/427
+/skf-github-issue-fix 427 --plan
+
+/skf-github-issue-fix --board https://github.com/orgs/acme/projects/7 --status "Todo"
+/skf-github-issue-fix --all --label bug
+/skf-github-issue-fix --next
 ```
 
-`--refresh` forces `github-issue-context` to rebuild even if nothing
-changed on GitHub. `--plan` makes `github-implement-issue` investigate and
-propose an approach without touching any file.
+`--refresh` forces `skf-github-issue-brief` to rebuild even if nothing
+changed on GitHub. `--plan` makes `skf-github-issue-fix` investigate and
+propose an approach without touching any file. `--board` (a GitHub
+Project) and `--all` (the repository's issues) prepare every matching
+issue's context in one go and write a queue, `.agent/issues/INDEX.md`;
+`--next` then fixes the first pending one.
+
+## GitHub CLI
+
+Both skills use `gh`. `skf-github-issue-brief`'s Step 0
+(`scripts/setup_gh.py`) checks it, installs it with the user's consent
+when it is missing — package manager, or the official release checked
+against its SHA-256 sums into `~/.local/bin` — and hands the user the
+`gh auth login` command (plus `gh auth refresh --scopes read:project` for
+`--board`). Sign-in stays with the user: no token is ever asked for.
 
 ## Pipeline
 
@@ -33,12 +50,13 @@ propose an approach without touching any file.
 GitHub
    |
    v
-github-issue-context
+skf-github-issue-brief
    |  gh issue view --json ...           (fetch_issue.py)
    |  regex scan for image/attachment URLs (extract_attachments.py)
    |  download images, tolerate failures  (download_attachments.py)
    |  Claude reads each image directly    (visual_evidence.json)
    |  merge everything, derive leads      (build_context.py)
+   |  ... or for a whole board / repo     (prepare_issues.py -> queue.json, INDEX.md)
    v
 .agent/issues/<number>/
    context.json   <- machine-readable contract
@@ -47,7 +65,7 @@ github-issue-context
    assets.json    <- download manifest (incl. failures)
    |
    v
-github-implement-issue
+skf-github-issue-fix
    |  read context.md / context.json (Phase 1)
    |  map the repository, find test/lint/build commands (Phase 2)
    |  separate reporter claims from code/test evidence (Phase 3)
@@ -63,18 +81,18 @@ remaining uncertainties) — no commit/push/PR unless explicitly asked.
 
 ## Why this boundary
 
-`github-issue-context` and `github-implement-issue` don't share code and
+`skf-github-issue-brief` and `skf-github-issue-fix` don't share code and
 don't call into each other directly. The only interface between them is
 `.agent/issues/<number>/context.json` (schema documented in
-[`github-issue-context/references/context-schema.md`](./github-issue-context/references/context-schema.md))
+[`skf-github-issue-brief/references/context-schema.md`](./skf-github-issue-brief/references/context-schema.md))
 and its companion `context.md`. That means:
 
-- `github-issue-context` can be run standalone, by a human or another
+- `skf-github-issue-brief` can be run standalone, by a human or another
   skill, purely to understand a ticket — it never starts editing code.
-- `github-implement-issue` checks for a fresh context bundle before doing
-  anything else and triggers `github-issue-context`'s own workflow if it's
+- `skf-github-issue-fix` checks for a fresh context bundle before doing
+  anything else and triggers `skf-github-issue-brief`'s own workflow if it's
   missing or stale, rather than re-implementing issue fetching itself (see
-  [`github-implement-issue/references/context-contract.md`](./github-implement-issue/references/context-contract.md)).
+  [`skf-github-issue-fix/references/context-contract.md`](./skf-github-issue-fix/references/context-contract.md)).
 - Either skill can change internally (a better regex, a smarter root-cause
   heuristic) without the other needing to change, as long as the schema
   holds.

@@ -1,0 +1,60 @@
+{
+  "id": "strapi-example",
+  "name": "Strapi 5 — example to adapt",
+  "description": "Template for a Strapi 5 collection type `products` with i18n. Rename the collection, the fields and the locales to match your content-type, then save it under a new name. Not tested against a live Strapi: dry-run first.",
+  "locales": ["fr", "en"],
+  "title_field": "name",
+
+  "defaults": {},
+
+  "guide": [
+    "Strapi stores one entry per locale: this profile creates the default locale (fr), then a localization for each other locale with PUT …?locale=en.",
+    "Media fields take the uploaded file's numeric id (`@media:<slot>` resolves to it)."
+  ],
+
+  "fields": [
+    {"path": "record.data.slug", "required": true, "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    {"path": "record.data.name", "required": true, "type": "string", "max_length": 120},
+    {"path": "record.data.summary", "required": true, "type": "string", "max_length": 200},
+    {"path": "record.data.body", "required": true, "type": "string"},
+    {"path": "record.data.cover", "required": true},
+    {"path": "relations.localizations", "required": true, "type": "object"},
+    {"path": "relations.localizations.*.summary", "required": true, "type": "string", "max_length": 200}
+  ],
+
+  "media": {
+    "cover": {"kind": "image", "required": true, "ratio": "1:1", "min_width": 512, "render": {"composition": "ProductCover", "format": "png"}},
+    "hero_video": {"kind": "video", "render": {"composition": "ProductHero", "codec": "h264"}}
+  },
+
+  "kinds": {"skill": {"fields": []}, "pack": {"fields": []}},
+
+  "remotion": {
+    "brand": {
+      "background": "#0F172A", "surface": "#020617", "text": "#FFFFFF", "muted": "#94A3B8",
+      "accent": "#A78BFA", "fontFamily": "Inter, system-ui, sans-serif", "wordmark": "My site"
+    },
+    "copy": {
+      "fr": {"promptLabel": "Dans votre agent IA", "pointsTitleSkill": "Ce que vous obtenez", "pointsTitlePack": "Les skills, dans l'ordre", "cta": "Disponible maintenant"},
+      "en": {"promptLabel": "In your AI agent", "pointsTitleSkill": "What you get", "pointsTitlePack": "The skills, in order", "cta": "Available now"}
+    },
+    "video_locale": "fr"
+  },
+
+  "adapter": {
+    "type": "http",
+    "base_url_env": "STRAPI_URL",
+    "base_url_default": "http://localhost:1337/api",
+    "auth": {"type": "bearer", "token_env": "STRAPI_TOKEN"},
+    "upload": {"method": "POST", "path": "/upload", "field": "files", "result": "0.id"},
+    "lookups": {
+      "products": {"path": "/products", "query": {"filters[slug][$eq]": "{{key}}", "locale": "fr"}, "items": "data", "match": "slug", "result": "documentId"}
+    },
+    "steps": [
+      {"name": "find", "lookup": "products", "key": "{{record.data.slug}}", "save": "existing_id"},
+      {"name": "create", "when": "!vars.existing_id", "method": "POST", "path": "/products", "query": {"locale": "fr"}, "body": "{{record}}", "save": {"document_id": "data.documentId"}},
+      {"name": "update", "when": "vars.existing_id", "method": "PUT", "path": "/products/{{vars.existing_id}}", "query": {"locale": "fr"}, "body": "{{record}}", "save": {"document_id": "data.documentId"}},
+      {"name": "localize-en", "when": "relations.localizations.en", "method": "PUT", "path": "/products/{{vars.document_id}}", "query": {"locale": "en"}, "body": {"data": "{{relations.localizations.en}}"}}
+    ]
+  }
+}

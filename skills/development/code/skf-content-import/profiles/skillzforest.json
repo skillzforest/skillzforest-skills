@@ -1,0 +1,215 @@
+{
+  "id": "skillzforest",
+  "name": "SkillzForest back office",
+  "description": "A Skill or Pack product page in the SkillzForest catalog (FastAPI admin API). Mirrors app/schemas/catalog.py (CatalogItemCreate/Update) and app/schemas/product_page.py (PageContent) in skillzforest-api.",
+  "locales": ["fr", "en"],
+  "title_field": "name",
+
+  "defaults": {
+    "publisher_slug": "skillzforest",
+    "status": "draft",
+    "visibility": "public",
+    "source_type": "skillzforest",
+    "source_status": "official",
+    "distribution_mode": "marketplace",
+    "latest_version": "0.1.0"
+  },
+
+  "guide": [
+    "Short description = page_content.texts.<locale>.headline (cards, search, page top); long description = page_content.texts.<locale>.description. The API mirrors them into short_description/description (English first): don't send those two.",
+    "headline: one sentence, the promise, often phrased as the user's question ('Vous voulez … ?'). description: plain text, a concrete before/after scenario, what it does, what it needs; blank line between paragraphs.",
+    "benefits: 3 short lines (≤ 160 chars), concrete gains, no adjectives without facts.",
+    "usage.<locale>: instructions = where to open the agent and what to have ready, ending with 'collez ce prompt :' / 'paste this prompt:'; prompt = a real request naming the skill; explanation = what happens step by step and what comes out. This prompt is also what the automated review runs.",
+    "Skill only: highlights = 4 to 6 'in brief' blocks (icon + title ≤ 40 chars + one-line description) about what the skill contains or requires.",
+    "Pack only: ordered_skills=true when each skill builds on the previous one; skill_usage keyed by each skill's catalog id (use @lookup:catalog:<slug>); usage holds only instructions (the context common to all its skills); texts.skills_subtitle introduces the list.",
+    "outcomes: up to 3 'what you can do' blocks, each with a 2:1 image (@media:outcome_N) and a title + one line per locale.",
+    "benefit_ids, faq_ids, audience_ids: pick ids from the libraries (push_content.py --libraries); never invent ids. Leave empty if nothing fits.",
+    "profession / activity: a category slug and one of its subcategory slugs from the categories library, matching the skill's skills/<category>/<subcategory>/ folder when it has one.",
+    "icon and highlights[].icon: one of the icon names listed in `icons`.",
+    "tags: at most 4, lowercase, reuse existing tags from the tags library when they fit.",
+    "status stays 'draft' unless the user explicitly asks to publish."
+  ],
+
+  "icons": ["boxes", "building", "clipboard-list", "clock", "database", "file-text", "globe", "graduation-cap", "heart", "laptop", "layers", "megaphone", "network", "notebook-pen", "palette", "presentation", "receipt", "route", "server", "share", "shield-check", "sparkles", "star", "target", "user", "users", "workflow", "wrench", "zap"],
+
+  "fields": [
+    {"path": "record.slug", "required": true, "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "max_length": 120},
+    {"path": "record.name", "required": true, "type": "string", "max_length": 255},
+    {"path": "record.type", "required": true, "enum": ["skill", "pack"]},
+    {"path": "record.publisher_slug", "required": true, "type": "string"},
+    {"path": "record.status", "enum": ["draft", "published"]},
+    {"path": "record.visibility", "enum": ["public", "unlisted", "private"]},
+    {"path": "record.latest_version", "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    {"path": "record.icon_url", "required": true, "type": "string"},
+    {"path": "record.icon_url_mobile", "type": "string"},
+    {"path": "record.profession", "required": true, "type": "string", "max_length": 64},
+    {"path": "record.activity", "type": "string"},
+    {"path": "record.tags", "type": "array", "max_items": 4, "min_items": 2},
+    {"path": "record.short_description", "type": "string", "max_length": 0},
+    {"path": "record.description", "type": "string", "max_length": 0},
+
+    {"path": "record.page_content", "required": true, "type": "object"},
+    {"path": "record.page_content.icon", "required": true, "enum": "@icons"},
+    {"path": "record.page_content.media.type", "required": true, "enum": ["image", "video"]},
+    {"path": "record.page_content.texts", "required": true, "type": "object", "locales": true},
+    {"path": "record.page_content.texts.*.name", "type": "string", "max_length": 255},
+    {"path": "record.page_content.texts.*.headline", "required": true, "type": "string", "min_length": 40, "max_length": 400},
+    {"path": "record.page_content.texts.*.description", "required": true, "type": "string", "min_length": 300, "max_length": 2000},
+    {"path": "record.page_content.texts.*.benefits", "required": true, "type": "array", "min_items": 3, "max_items": 3, "item_max_length": 160},
+    {"path": "record.page_content.texts.*.media_alt", "required": true, "type": "string", "max_length": 400},
+    {"path": "record.page_content.texts.*.outcomes_subtitle", "type": "string", "max_length": 400},
+    {"path": "record.page_content.outcomes", "type": "array", "max_items": 3},
+    {"path": "record.page_content.outcomes.*.texts", "type": "object", "locales": true},
+    {"path": "record.page_content.outcomes.*.texts.*.title", "required": true, "type": "string", "max_length": 160},
+    {"path": "record.page_content.outcomes.*.texts.*.description", "required": true, "type": "string", "max_length": 400},
+    {"path": "record.page_content.benefit_ids", "type": "array", "max_items": 4},
+    {"path": "record.page_content.faq_ids", "type": "array", "max_items": 6},
+    {"path": "record.page_content.audience_ids", "type": "array", "max_items": 8},
+    {"path": "record.page_content.usage", "required": true, "type": "object", "locales": true},
+    {"path": "record.page_content.usage.*.instructions", "required": true, "type": "string", "max_length": 2000}
+  ],
+
+  "media": {
+    "cover": {"kind": "image", "required": true, "ratio": "1:1", "min_width": 512, "max_bytes": 1048576, "formats": ["png", "jpg", "jpeg", "webp"], "render": {"composition": "ProductCover", "format": "png", "scale": 1}},
+    "cover_mobile": {"kind": "image", "ratio": "1:1", "min_width": 256, "max_bytes": 1048576, "target_bytes": 51200, "formats": ["png", "jpg", "jpeg", "webp"], "render": {"composition": "ProductCover", "format": "jpeg", "scale": 0.25}},
+    "hero_video": {"kind": "video", "max_bytes": 52428800, "formats": ["mp4", "webm"], "render": {"composition": "ProductHero", "codec": "h264"}},
+    "hero_poster": {"kind": "image", "ratio": "16:9", "max_bytes": 1048576, "formats": ["png", "jpg", "jpeg", "webp"], "render": {"composition": "ProductPoster", "format": "jpeg"}},
+    "outcome_1": {"kind": "image", "ratio": "2:1", "max_bytes": 1048576, "formats": ["png", "jpg", "jpeg", "webp"], "render": {"composition": "ProductOutcome", "format": "jpeg"}},
+    "outcome_2": {"kind": "image", "ratio": "2:1", "max_bytes": 1048576, "formats": ["png", "jpg", "jpeg", "webp"], "render": {"composition": "ProductOutcome", "format": "jpeg"}},
+    "outcome_3": {"kind": "image", "ratio": "2:1", "max_bytes": 1048576, "formats": ["png", "jpg", "jpeg", "webp"], "render": {"composition": "ProductOutcome", "format": "jpeg"}}
+  },
+
+  "kinds": {
+    "skill": {
+      "fields": [
+        {"path": "record.type", "enum": ["skill"]},
+        {"path": "record.page_content.highlights", "required": true, "type": "array", "min_items": 4, "max_items": 12},
+        {"path": "record.page_content.highlights.*.icon", "required": true, "enum": "@icons"},
+        {"path": "record.page_content.highlights.*.texts", "type": "object", "locales": true},
+        {"path": "record.page_content.highlights.*.texts.*.title", "required": true, "type": "string", "max_length": 160},
+        {"path": "record.page_content.highlights.*.texts.*.description", "required": true, "type": "string", "max_length": 400},
+        {"path": "record.page_content.usage.*.prompt", "required": true, "type": "string", "min_length": 30, "max_length": 2000},
+        {"path": "record.page_content.usage.*.explanation", "required": true, "type": "string", "min_length": 60, "max_length": 2000}
+      ]
+    },
+    "pack": {
+      "fields": [
+        {"path": "record.type", "enum": ["pack"]},
+        {"path": "record.page_content.ordered_skills", "type": "boolean"},
+        {"path": "record.page_content.texts.*.skills_subtitle", "required": true, "type": "string", "max_length": 400},
+        {"path": "record.page_content.highlights", "type": "array", "max_items": 0},
+        {"path": "record.page_content.skill_usage", "type": "object", "max_items": 50},
+        {"path": "record.page_content.skill_usage.*", "type": "object", "locales": true},
+        {"path": "record.page_content.skill_usage.*.*.prompt", "required": true, "type": "string", "max_length": 2000},
+        {"path": "record.page_content.skill_usage.*.*.explanation", "required": true, "type": "string", "max_length": 2000},
+        {"path": "relations.child_ids", "required": true, "type": "array", "min_items": 2, "max_items": 200}
+      ]
+    }
+  },
+
+  "remotion": {
+    "project": "~/Digital_projects/skillzforest/skillzforest-video",
+    "install_dir": "src/skf-content-import",
+    "brand": {
+      "background": "linear-gradient(160deg, #13262F 0%, #1E464E 55%, #236A62 100%)",
+      "surface": "#192E3A",
+      "text": "#FFFFFF",
+      "muted": "#BCCACC",
+      "accent": "#43C891",
+      "fontFamily": "Inter, system-ui, -apple-system, sans-serif",
+      "wordmark": "SkillzForest"
+    },
+    "copy": {
+      "fr": {"promptLabel": "Dans Claude Code", "pointsTitleSkill": "Ce que vous obtenez", "pointsTitlePack": "Les skills, dans l'ordre", "cta": "Disponible sur SkillzForest"},
+      "en": {"promptLabel": "In Claude Code", "pointsTitleSkill": "What you get", "pointsTitlePack": "The skills, in order", "cta": "Available on SkillzForest"}
+    },
+    "video_locale": "fr"
+  },
+
+  "libraries": {
+    "categories": {"path": "/admin/categories"},
+    "benefits": {"path": "/admin/benefits"},
+    "faq": {"path": "/admin/faq"},
+    "audiences": {"path": "/admin/audiences"},
+    "tags": {"path": "/admin/catalog/tags"}
+  },
+
+  "adapter": {
+    "type": "http",
+    "base_url_env": "SKF_API_URL",
+    "base_url_default": "http://api.localhost:9080/api/v1",
+    "auth": {"type": "bearer", "token_env": "SKF_ADMIN_TOKEN"},
+    "upload": {
+      "method": "POST",
+      "path": "/admin/uploads",
+      "query": {"kind": "{{media.kind}}"},
+      "field": "file",
+      "result": "url"
+    },
+    "lookups": {
+      "catalog": {
+        "path": "/admin/catalog",
+        "query": {"q": "{{key}}", "limit": "100"},
+        "items": "items",
+        "match": "slug",
+        "result": "id"
+      }
+    },
+    "steps": [
+      {"name": "find", "lookup": "catalog", "key": "{{record.slug}}", "save": "existing_id"},
+      {
+        "name": "create",
+        "when": "!vars.existing_id",
+        "method": "POST",
+        "path": "/admin/catalog",
+        "body": "{{record}}",
+        "save": {"item_id": "id"}
+      },
+      {
+        "name": "update",
+        "when": "vars.existing_id",
+        "method": "PATCH",
+        "path": "/admin/catalog/{{vars.existing_id}}",
+        "body": "{{record}}",
+        "omit": ["slug", "source_type", "source_url", "repository_url", "repository_owner", "repository_name", "repository_ref"],
+        "save": {"item_id": "id"}
+      },
+      {
+        "name": "pack-contents",
+        "when": "record.type == pack",
+        "method": "PUT",
+        "path": "/admin/catalog/{{vars.item_id}}/contents",
+        "body": {"child_ids": "{{relations.child_ids}}"}
+      },
+      {
+        "name": "package-upload",
+        "when": "package",
+        "method": "POST",
+        "path": "/admin/uploads",
+        "query": {"kind": "file"},
+        "file": "{{package.path}}",
+        "save": {"package_file_id": "id"}
+      },
+      {
+        "name": "package-attach",
+        "when": "package",
+        "method": "POST",
+        "path": "/admin/catalog/{{vars.item_id}}/files",
+        "body": {"stored_file_id": "{{vars.package_file_id}}", "version": "{{package.version}}"}
+      },
+      {
+        "name": "product",
+        "when": "content.pricing && !vars.existing_id",
+        "method": "POST",
+        "path": "/admin/products",
+        "body": {
+          "catalog_item_slug": "{{record.slug}}",
+          "slug": "{{record.slug}}",
+          "name": "{{record.name}}",
+          "price_amount": "{{content.pricing.price_amount}}",
+          "currency": "{{content.pricing.currency}}"
+        }
+      }
+    ]
+  }
+}

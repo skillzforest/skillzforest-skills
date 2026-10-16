@@ -34,7 +34,7 @@ A pack **only references** skills by name — it never embeds a copy of a skill'
 
 | Pack | Folder | Skills |
 |---|---|---|
-| GitHub Issue Resolver | [`development/code/github-issue-resolver/`](development/code/github-issue-resolver/pack.json) | `github-issue-context`, `github-implement-issue` |
+| GitHub Issue Resolver | [`development/code/github-issue-resolver/`](development/code/github-issue-resolver/pack.json) | `skf-github-issue-brief`, `skf-github-issue-fix` |
 | Presales Scoping Pack | [`development/code/presales-scoping/`](development/code/presales-scoping/pack.json) | the 11 `presales-*` skills |
 
 ## Building a pack

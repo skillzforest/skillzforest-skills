@@ -30,7 +30,10 @@ filenames deterministic and stable across re-runs.
 
 Anything else becomes a `status: "error"` or `status: "skipped_unsupported_type"`
 entry in `assets.json` — never a fatal error for the whole run. Redirects are
-followed transparently by `urllib`. A wrong MIME type is treated as a
+followed, but the `Authorization` header is dropped as soon as a redirect
+leaves the hosts below (`user-attachments` links redirect to a pre-signed
+storage URL, which rejects a second credential with HTTP 400). TLS uses the
+system CA bundle as a fallback when Python ships none (`common.ssl_context()`). A wrong MIME type is treated as a
 security signal (a URL claiming to be an image but serving HTML/script
 content) and rejected rather than saved.
 

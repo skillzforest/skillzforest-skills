@@ -1,4 +1,4 @@
-"""Shared helpers for the github-issue-context skill scripts.
+"""Shared helpers for the skf-github-issue-brief skill scripts.
 
 Every script in this skill is a small, deterministic step in a pipeline:
 
@@ -15,13 +15,14 @@ import json
 import os
 import re
 import shutil
+import ssl
 import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-SKILL_TAG = "github-issue-context"
+SKILL_TAG = "skf-github-issue-brief"
 
 MAX_ASSET_BYTES = 20 * 1024 * 1024  # 20 MB — generous for screenshots, bounded against abuse
 
@@ -80,16 +81,27 @@ class SkillError(Exception):
 class GhNotInstalled(SkillError):
     error_type = "gh_not_installed"
     remediation = [
-        "Install the GitHub CLI: https://cli.github.com/",
-        "macOS: brew install gh",
+        "Run: python3 <this skill's folder>/scripts/setup_gh.py "
+        "to see the install command for this machine, then --install to run it",
+        "Or install the GitHub CLI by hand: https://cli.github.com/",
     ]
 
 
 class GhNotAuthenticated(SkillError):
     error_type = "gh_not_authenticated"
     remediation = [
-        "Run: gh auth login",
+        "Run in a terminal (or in Claude Code, prefixed with !): "
+        "gh auth login --web --git-protocol https",
         "Then verify with: gh auth status",
+    ]
+
+
+class GhMissingScope(SkillError):
+    error_type = "gh_missing_scope"
+    remediation = [
+        "Reading a GitHub Project board needs the read:project scope.",
+        "Run in a terminal (or in Claude Code, prefixed with !): "
+        "gh auth refresh --scopes read:project",
     ]
 
 
@@ -113,21 +125,88 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def ensure_gh_ready() -> None:
-    if shutil.which("gh") is None:
-        raise GhNotInstalled("The GitHub CLI ('gh') was not found on PATH.")
+def ssl_context() -> ssl.SSLContext:
+    """Default TLS context, plus the system CA bundle when Python ships none
+    (python.org builds on macOS without "Install Certificates.command")."""
+    ctx = ssl.create_default_context()
+    try:
+        import certifi  # type: ignore
+
+        ctx.load_verify_locations(certifi.where())
+    except Exception:
+        pass
+    for bundle in ("/etc/ssl/cert.pem", "/etc/ssl/certs/ca-certificates.crt", "/etc/pki/tls/certs/ca-bundle.crt"):
+        if Path(bundle).is_file():
+            try:
+                ctx.load_verify_locations(bundle)
+            except ssl.SSLError:
+                pass
+    return ctx
+
+
+def user_install_dir() -> Path:
+    """Where setup_gh.py puts gh when it installs it without a package manager."""
+    if os.name == "nt":
+        base = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
+        return Path(base) / "Programs" / "gh" / "bin"
+    return Path.home() / ".local" / "bin"
+
+
+def gh_executable() -> Optional[str]:
+    """Path to gh: on PATH first, then the per-user folder setup_gh.py installs into."""
+    found = shutil.which("gh")
+    if found:
+        return found
+    candidate = user_install_dir() / ("gh.exe" if os.name == "nt" else "gh")
+    if candidate.is_file() and os.access(candidate, os.X_OK):
+        return str(candidate)
+    return None
+
+
+def _gh() -> str:
+    return gh_executable() or "gh"
+
+
+def gh_auth_status() -> dict:
+    """Parse `gh auth status`: {authenticated, account, scopes (None if not reported)}."""
     result = subprocess.run(
-        ["gh", "auth", "status"], capture_output=True, text=True, timeout=15
+        [_gh(), "auth", "status"], capture_output=True, text=True, timeout=15
     )
-    if result.returncode != 0:
+    output = (result.stdout or "") + (result.stderr or "")
+    account = re.search(r"account (\S+)", output)
+    scopes_line = re.search(r"Token scopes:\s*(.*)", output)
+    scopes = None
+    if scopes_line:
+        scopes = [s.strip().strip("'\"") for s in scopes_line.group(1).split(",") if s.strip()]
+    return {
+        "authenticated": result.returncode == 0,
+        "account": account.group(1) if account else None,
+        "scopes": scopes,
+    }
+
+
+def ensure_gh_ready() -> None:
+    if gh_executable() is None:
+        raise GhNotInstalled("The GitHub CLI ('gh') was not found on PATH.")
+    if not gh_auth_status()["authenticated"]:
         raise GhNotAuthenticated(
             "gh is installed but not authenticated (`gh auth status` failed)."
         )
 
 
+def ensure_project_scope() -> None:
+    """Fail early when the token can't read Projects. Unknown scopes (fine-grained
+    token, GH_TOKEN) are let through — gh's own error is clear enough then."""
+    scopes = gh_auth_status()["scopes"]
+    if scopes is not None and not {"project", "read:project"} & set(scopes):
+        raise GhMissingScope(
+            f"The gh token's scopes ({', '.join(scopes) or 'none'}) don't include read:project."
+        )
+
+
 def run_gh_json(args: list[str], timeout: int = 30):
     result = subprocess.run(
-        ["gh", *args], capture_output=True, text=True, timeout=timeout
+        [_gh(), *args], capture_output=True, text=True, timeout=timeout
     )
     if result.returncode != 0:
         raise GhCommandError(
@@ -143,7 +222,7 @@ def run_gh_json(args: list[str], timeout: int = 30):
 
 def run_gh_text(args: list[str], timeout: int = 15) -> str:
     result = subprocess.run(
-        ["gh", *args], capture_output=True, text=True, timeout=timeout
+        [_gh(), *args], capture_output=True, text=True, timeout=timeout
     )
     if result.returncode != 0:
         raise GhCommandError(
@@ -159,7 +238,7 @@ def get_gh_token() -> Optional[str]:
     """
     try:
         result = subprocess.run(
-            ["gh", "auth", "token"], capture_output=True, text=True, timeout=10
+            [_gh(), "auth", "token"], capture_output=True, text=True, timeout=10
         )
     except Exception:
         return None

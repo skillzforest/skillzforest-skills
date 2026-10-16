@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-zip-folders",
+  "name": "Zip Folders",
+  "publisher": "SkillzForest",
+  "version": "1.0.3",
+  "category": "development",
+  "subcategory": "code",
+  "description": "Asks for a directory, then zips each of its subdirectories into its own archive (folder-name.zip, next to it by default), leaving out clutter (.DS_Store, .git, node_modules, __pycache__), checks every archive and reports what was done. Needs Python 3.8+: when Python is missing, only Python 2 is there or Python 3 is too old, it offers to install or upgrade it, or falls back to the system's zip tools.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unknown",
+    "perplexity": "unknown",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

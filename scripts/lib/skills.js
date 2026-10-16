@@ -19,7 +19,7 @@ const DOMAINS_FILE = path.join(SKILLS_ROOT, 'domains.json');
 
 // skills/domains.json mirrors the SkillzForest site's categories and
 // subcategories: skills live at skills/<category>/<subcategory>/<skill>/
-// (e.g. skills/development/code/github-issue-context/) and packs at
+// (e.g. skills/development/code/skf-github-issue-brief/) and packs at
 // packs/<category>/<subcategory>/<pack-id>/ (e.g. packs/development/code/presales-scoping/).
 // A subcategory may restrict the skill-id prefixes it accepts.
 function listDomains() {
@@ -38,7 +38,7 @@ function prefixOf(skillName) {
 
 // A directory directly under skills/ that itself has a SKILL.md is a
 // standalone skill (no family, no prefix, no skill.json requirement) —
-// e.g. skills/github-issue-context/. It is not a family and its
+// e.g. skills/skf-github-issue-brief/. It is not a family and its
 // subdirectories (scripts/, references/, ...) are never scanned for
 // further skills.
 function isStandaloneSkillDir(dir) {

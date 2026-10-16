@@ -44,12 +44,12 @@ Folder names are the site's slugs: lowercase, no spaces, no accents, hyphens bet
 | `support/` | Customer Support (Support client) | `ticketing`, `knowledge-base` |
 | `sales-crm/` | Sales & CRM (Vente & CRM) | `prospecting`, `client-follow-up`, `reporting` |
 | `product/` | Product Management (Product Management) | `roadmap`, `specs`, `user-research` |
-| `development/` | Development & Tech (Développement & Tech) | `code` (presales-, github-), `devops`, `data-ai` |
+| `development/` | Development & Tech (Développement & Tech) | `code` (presales-, github-, skf-), `devops`, `data-ai` |
 | `hr/` | HR & Recruiting (RH & Recrutement) | `sourcing`, `onboarding`, `payroll` |
 | `finance/` | Finance & Accounting (Finance & Comptabilité) | `invoicing`, `closing`, `reporting` |
 | `legal/` | Legal & Compliance (Juridique & Conformité) | `contracts`, `compliance` |
 
-A subcategory may restrict the skill-id prefixes it accepts (shown in parentheses); without that, any prefix is fine. Folders are only created once a category holds a skill — today, `development/code/` (the `github-*` and `presales-*` skills) and `design/ui-ux/` (`skf-design-extractor`).
+A subcategory may restrict the skill-id prefixes it accepts (shown in parentheses); without that, any prefix is fine. Folders are only created once a category holds a skill — today, `development/code/` (the `presales-*` skills and `skf-github-issue-brief`, `skf-github-issue-fix`, `skf-skill-review`, `skf-content-import`, `skf-zip-folders`), `design/ui-ux/` (`skf-design-extractor`) and `token-savings/prompt-optimization/` (`skf-prompt-compressor`).
 
 ## Standalone skills (no category)
 

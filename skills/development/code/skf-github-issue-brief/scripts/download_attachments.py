@@ -39,15 +39,33 @@ def _guess_ext(url: str, content_type: str) -> str:
     return ".bin"
 
 
+class _DropAuthOffGitHub(urllib.request.HTTPRedirectHandler):
+    """Follow redirects, but never carry the gh token past GitHub's own hosts.
+
+    github.com/user-attachments/... redirects to a pre-signed storage URL that
+    rejects a second credential (HTTP 400) — and the token must not leave
+    GitHub anyway.
+    """
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        new = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if new is not None and urlparse(newurl).netloc.lower() not in common.GITHUB_ASSET_HOSTS:
+            new.remove_header("Authorization")
+        return new
+
+
 def _fetch(url: str, token: str | None) -> tuple[bytes, str]:
     """Return (bytes, content_type). Raises on any failure."""
-    headers = {"User-Agent": "github-issue-context-skill"}
+    headers = {"User-Agent": "skf-github-issue-brief-skill"}
     host = urlparse(url).netloc.lower()
     if token and host in common.GITHUB_ASSET_HOSTS:
         headers["Authorization"] = f"Bearer {token}"
 
     request = urllib.request.Request(url, headers=headers)
-    with urllib.request.urlopen(request, timeout=15) as response:
+    opener = urllib.request.build_opener(
+        urllib.request.HTTPSHandler(context=common.ssl_context()), _DropAuthOffGitHub()
+    )
+    with opener.open(request, timeout=15) as response:
         content_type = response.headers.get("Content-Type", "")
         data = response.read(common.MAX_ASSET_BYTES + 1)
         if len(data) > common.MAX_ASSET_BYTES:

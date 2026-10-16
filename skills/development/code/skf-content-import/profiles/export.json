@@ -1,0 +1,62 @@
+{
+  "id": "export",
+  "name": "Any CMS — file export",
+  "description": "No API call: writes record.json, a readable content.md and the media to a folder, to paste into any CMS or hand to a developer. The starting point to write a profile for a new CMS.",
+  "locales": ["fr", "en"],
+  "title_field": "name",
+
+  "defaults": {"status": "draft"},
+
+  "guide": [
+    "One record per product. Texts are per locale under `texts.<locale>`; everything else (media, slug, tags) is set once.",
+    "summary: one sentence, the promise. body: plain text, a concrete before/after scenario, what it does, what it needs.",
+    "usage.<locale>: where to open the agent, the prompt to paste, what happens."
+  ],
+
+  "fields": [
+    {"path": "record.slug", "required": true, "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    {"path": "record.name", "required": true, "type": "string", "max_length": 120},
+    {"path": "record.type", "required": true, "enum": ["skill", "pack"]},
+    {"path": "record.tags", "type": "array", "max_items": 8},
+    {"path": "record.cover", "required": true, "type": "string"},
+    {"path": "record.texts", "required": true, "type": "object", "locales": true},
+    {"path": "record.texts.*.title", "type": "string", "max_length": 120},
+    {"path": "record.texts.*.summary", "required": true, "type": "string", "max_length": 200},
+    {"path": "record.texts.*.body", "required": true, "type": "string", "min_length": 300, "max_length": 4000},
+    {"path": "record.texts.*.benefits", "type": "array", "max_items": 5, "item_max_length": 160},
+    {"path": "record.texts.*.seo_title", "type": "string", "max_length": 60},
+    {"path": "record.texts.*.seo_description", "type": "string", "max_length": 160},
+    {"path": "record.usage", "required": true, "type": "object", "locales": true},
+    {"path": "record.usage.*.prompt", "required": true, "type": "string"}
+  ],
+
+  "media": {
+    "cover": {"kind": "image", "required": true, "ratio": "1:1", "min_width": 512, "max_bytes": 1048576, "render": {"composition": "ProductCover", "format": "png"}},
+    "hero_video": {"kind": "video", "max_bytes": 52428800, "formats": ["mp4", "webm"], "render": {"composition": "ProductHero", "codec": "h264"}},
+    "hero_poster": {"kind": "image", "ratio": "16:9", "max_bytes": 1048576, "render": {"composition": "ProductPoster", "format": "jpeg"}}
+  },
+
+  "kinds": {
+    "skill": {"fields": []},
+    "pack": {"fields": [{"path": "record.skills", "required": true, "type": "array", "min_items": 2}]}
+  },
+
+  "remotion": {
+    "brand": {
+      "background": "linear-gradient(160deg, #111827 0%, #1F2937 100%)",
+      "surface": "#0B1220",
+      "text": "#FFFFFF",
+      "muted": "#9CA3AF",
+      "accent": "#60A5FA",
+      "fontFamily": "Inter, system-ui, -apple-system, sans-serif",
+      "wordmark": ""
+    },
+    "copy": {
+      "fr": {"promptLabel": "Dans votre agent IA", "pointsTitleSkill": "Ce que vous obtenez", "pointsTitlePack": "Les skills, dans l'ordre", "cta": "Disponible maintenant"},
+      "en": {"promptLabel": "In your AI agent", "pointsTitleSkill": "What you get", "pointsTitlePack": "The skills, in order", "cta": "Available now"}
+    },
+    "video_locale": "fr"
+  },
+
+  "adapter": {"type": "export", "out_dir": "content-export"}
+}

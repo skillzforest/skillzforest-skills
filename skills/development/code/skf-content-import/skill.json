@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-content-import",
+  "name": "Content Import",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "development",
+  "subcategory": "code",
+  "description": "Builds a complete product page for an agent skill or a pack of skills and imports it into a CMS: every form field written in French and English, a square cover, a poster and outcome images plus a presentation video rendered with Remotion, then the record created or updated through the CMS's API — or exported as files for any other CMS. CMS-agnostic: each CMS is a JSON profile (SkillzForest, generic export and a Strapi example included).",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unsupported",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unsupported",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

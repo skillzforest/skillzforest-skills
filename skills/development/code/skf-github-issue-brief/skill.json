@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "id": "github-issue-context",
-  "name": "GitHub Issue Context",
+  "id": "skf-github-issue-brief",
+  "name": "GitHub Issue Brief",
   "publisher": "SkillzForest",
-  "version": "0.1.0",
+  "version": "1.3.1",
   "category": "development",
   "subcategory": "code",
-  "description": "Collects, normalizes, and enriches a GitHub Issue — text, comments, screenshots, attachments — into a stable .agent/issues/<number>/context.json + context.md bundle for another skill (or a human) to build on.",
+  "description": "Collects a GitHub Issue — text, comments, screenshots, attachments — into a stable .agent/issues/NUMBER/context.json + context.md bundle, for one issue or a whole GitHub Project board at once. Installs the GitHub CLI when it is missing and guides sign-in.",
   "compatibility": {
     "claude-code": "native",
     "claude-ai": "unsupported",

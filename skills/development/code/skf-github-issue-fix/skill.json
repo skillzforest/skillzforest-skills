@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-github-issue-fix",
+  "name": "GitHub Issue Fix",
+  "publisher": "SkillzForest",
+  "version": "1.4.0",
+  "category": "development",
+  "subcategory": "code",
+  "description": "Investigates a repository, separates reporter claims from code/test evidence, reproduces and root-causes a GitHub Issue prepared by skf-github-issue-brief, then implements the minimal fix and reports PASS/FAIL/NOT RUN validation results. Supports a --plan mode that never touches a file. Can prepare every issue of a GitHub Project board (--board) or of the repository (--all) at once, as a queue to fix one by one. --next offers to commit and push each validated fix, on the current branch or on a dedicated fix branch, then comments the issue with the commit (and pull request) link and the validation results.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unsupported",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unsupported",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

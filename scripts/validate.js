@@ -21,6 +21,40 @@ const {
 const errors = [];
 const warnings = [];
 
+// The SKILL.md frontmatter's `name` and `description` (a plain or folded `>-` / `|`
+// value). Enough for the checks below; no YAML dependency.
+function frontmatterFields(text) {
+  const match = /^---\n([\s\S]*?)\n---/.exec(text);
+  if (!match) return {};
+  const lines = match[1].split('\n');
+  const fields = {};
+  for (let i = 0; i < lines.length; i++) {
+    const field = /^(name|description):\s*(.*)$/.exec(lines[i]);
+    if (!field) continue;
+    let value = field[2].trim();
+    if (/^[>|][-+]?$/.test(value)) {
+      const parts = [];
+      while (i + 1 < lines.length && (/^\s+\S/.test(lines[i + 1]) || lines[i + 1].trim() === '')) parts.push(lines[++i].trim());
+      value = parts.join(' ').trim();
+    }
+    fields[field[1]] = value.replace(/^["']|["']$/g, '');
+  }
+  return fields;
+}
+
+// What Claude (claude.ai › Skills) refuses at upload: tags in the description, a
+// reserved word in the name. The API's back office checks the same (skill_format.py).
+function checkClaudeUploadRules(skillDir, label) {
+  const { name = '', description = '' } = frontmatterFields(fs.readFileSync(path.join(skillDir, 'SKILL.md'), 'utf8'));
+  const tags = description.match(/<[^<>\s/][^<>\n]*>|<\/[^<>\n]+>/g);
+  if (tags) {
+    errors.push(`${label}/SKILL.md description contains tags (${[...new Set(tags)].join(', ')}): Claude refuses the upload — write them as plain text`);
+  }
+  if (/claude|anthropic/i.test(name)) {
+    errors.push(`${label}/SKILL.md name '${name}' contains a reserved word (claude, anthropic): Claude refuses the upload`);
+  }
+}
+
 // Validates one skill folder (SKILL.md presence, prefix, skill.json,
 // duplicate name/id, compatibility values) and records it into seenNames /
 // seenIds. Shared by the flat-domain, subcategory, and standalone cases
@@ -30,6 +64,7 @@ function checkOneSkill({ skillDir, label, name, allowedPrefixes, groupKey, requi
     errors.push(`${label} has no SKILL.md`);
     return;
   }
+  checkClaudeUploadRules(skillDir, label);
   if (allowedPrefixes && allowedPrefixes.length) {
     const prefix = prefixOf(name);
     if (!allowedPrefixes.includes(prefix)) {

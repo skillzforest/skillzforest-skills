@@ -12,7 +12,7 @@ Usage:
 
 Everything in the "derived" section of context.json is produced by regex
 heuristics over the issue text, not by an LLM and not verified against the
-repository. That distinction matters: github-implement-issue must treat
+repository. That distinction matters: skf-github-issue-fix must treat
 these as leads to check, never as established facts. See
 references/context-schema.md for the full field-by-field contract.
 """

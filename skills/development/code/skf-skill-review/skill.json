@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-skill-review",
+  "name": "Skill Review",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "development",
+  "subcategory": "code",
+  "description": "Runs the SkillzForest reviewer on an agent skill — from a local folder, a .zip, a SKILL.md or a URL (GitHub repo or folder, direct link): static checks, scanners, LLM auditors of SKILL.md and of the other files, a functional test in a sandboxed Claude Code, a judge and a pass / warn / fail verdict. Locally right away, or through the back office's n8n chain.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unsupported",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unsupported",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

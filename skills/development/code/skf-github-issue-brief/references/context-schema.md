@@ -1,7 +1,7 @@
 # context.json — field reference
 
 `context.json` is the machine-readable contract produced by this skill and
-consumed by `github-implement-issue` (and any other skill that needs GitHub
+consumed by `skf-github-issue-fix` (and any other skill that needs GitHub
 issue context). Treat it as an interface: don't rename fields, and add new
 optional fields rather than repurposing existing ones.
 

@@ -1,6 +1,9 @@
 ---
 name: skf-prompt-compressor
-description: Compresse un prompt long pour économiser des tokens : retire répétitions et remplissage, garde les instructions et le contexte utiles, et chiffre le gain obtenu.
+description: >-
+  Compresse un prompt long pour économiser des tokens : retire répétitions et
+  remplissage, garde les instructions et le contexte utiles, et chiffre le gain
+  obtenu.
 ---
 
 # Prompt Compressor
