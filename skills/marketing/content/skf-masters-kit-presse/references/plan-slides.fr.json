@@ -1,0 +1,166 @@
+{
+  "langue": "fr",
+  "titre_fichier": "{{MARQUE}} - Présentation presse - MASTER",
+  "pied": "{{MARQUE}} · Kit presse",
+  "slides": [
+    {
+      "id": "mode-emploi",
+      "layout": "guide",
+      "titre": "Mode d'emploi du master (slide à supprimer)",
+      "puces": [
+        "Copier ce fichier pour chaque campagne, ne jamais remplir le master lui-même.",
+        "Remplacer chaque champ {{...}} ; ce qui n'est pas connu reste [à compléter].",
+        "Supprimer les slides inutiles, dupliquer la slide « Focus » pour chaque fonctionnalité mise en avant.",
+        "Remplacer chaque cadre pointillé par le visuel indiqué.",
+        "Consignes de remplissage : dans les notes de chaque slide."
+      ],
+      "notes": "Slide réservée à l'équipe. La supprimer avant tout envoi."
+    },
+    {
+      "id": "couverture",
+      "layout": "cover",
+      "surtitre": "Lancement · {{DATE_LANCEMENT}}",
+      "titre": "{{PRODUIT_NOM}}",
+      "sous_titre": "{{PROMESSE}}",
+      "notes": "Titre : le nom du produit seul. Promesse : 10 mots au plus, ce que l'utilisateur obtient, pas la technique."
+    },
+    {
+      "id": "en-une-phrase",
+      "layout": "statement",
+      "surtitre": "En une phrase",
+      "texte": "{{PITCH_UNE_PHRASE}}",
+      "notes": "Une phrase de 25 mots au plus qu'un journaliste peut reprendre telle quelle : pour qui, ce que ça fait, ce que ça change."
+    },
+    {
+      "id": "probleme",
+      "layout": "bullets",
+      "surtitre": "Le constat",
+      "titre": "{{PROBLEME_TITRE}}",
+      "puces": ["{{CONSTAT_1}}", "{{CONSTAT_2}}", "{{CONSTAT_3}}"],
+      "notes": "Le problème vécu par l'utilisateur, avec ses mots. Un chiffre seulement s'il est sourcé ; indiquer la source en note."
+    },
+    {
+      "id": "solution",
+      "layout": "bullets",
+      "surtitre": "La solution",
+      "titre": "{{SOLUTION_TITRE}}",
+      "puces": ["{{SOLUTION_POINT_1}}", "{{SOLUTION_POINT_2}}", "{{SOLUTION_POINT_3}}"],
+      "image": "Visuel principal du produit (capture ou mise en situation)",
+      "notes": "Ce que le produit permet de faire, formulé en bénéfices. Pas de liste de fonctions ici."
+    },
+    {
+      "id": "pour-qui",
+      "layout": "cards",
+      "surtitre": "Pour qui",
+      "titre": "{{CIBLE_TITRE}}",
+      "cartes": [
+        {"titre": "{{CIBLE_1}}", "texte": "{{CIBLE_1_BESOIN}}"},
+        {"titre": "{{CIBLE_2}}", "texte": "{{CIBLE_2_BESOIN}}"},
+        {"titre": "{{CIBLE_3}}", "texte": "{{CIBLE_3_BESOIN}}"}
+      ],
+      "notes": "Deux ou trois profils réels, chacun avec le besoin auquel le produit répond. Supprimer une carte plutôt que d'en inventer."
+    },
+    {
+      "id": "comment-ca-marche",
+      "layout": "steps",
+      "surtitre": "Comment ça marche",
+      "titre": "{{FONCTIONNEMENT_TITRE}}",
+      "etapes": ["{{ETAPE_1}}", "{{ETAPE_2}}", "{{ETAPE_3}}"],
+      "notes": "Trois étapes vues par l'utilisateur, une ligne chacune, en commençant par un verbe."
+    },
+    {
+      "id": "fonctionnalites",
+      "layout": "cards",
+      "surtitre": "Fonctionnalités clés",
+      "titre": "{{FONCTIONS_TITRE}}",
+      "cartes": [
+        {"titre": "{{FONCTION_1_TITRE}}", "texte": "{{FONCTION_1_BENEFICE}}"},
+        {"titre": "{{FONCTION_2_TITRE}}", "texte": "{{FONCTION_2_BENEFICE}}"},
+        {"titre": "{{FONCTION_3_TITRE}}", "texte": "{{FONCTION_3_BENEFICE}}"},
+        {"titre": "{{FONCTION_4_TITRE}}", "texte": "{{FONCTION_4_BENEFICE}}"}
+      ],
+      "notes": "Trois à cinq fonctions réellement disponibles. Une fonction d'IA est présentée comme telle. Une fonction prévue va sur la slide « Et ensuite »."
+    },
+    {
+      "id": "focus",
+      "layout": "bullets",
+      "surtitre": "Zoom sur",
+      "titre": "{{FOCUS_TITRE}}",
+      "puces": ["{{FOCUS_BENEFICE}}", "{{FOCUS_DETAIL_1}}", "{{FOCUS_DETAIL_2}}"],
+      "image": "Capture de la fonctionnalité",
+      "notes": "Slide à dupliquer pour chaque fonctionnalité mise en avant (deux au plus dans un kit presse)."
+    },
+    {
+      "id": "en-images",
+      "layout": "gallery",
+      "surtitre": "En images",
+      "titre": "{{GALERIE_TITRE}}",
+      "images": [
+        {"cadre": "Capture 1", "legende": "{{CAPTURE_1_LEGENDE}}"},
+        {"cadre": "Capture 2", "legende": "{{CAPTURE_2_LEGENDE}}"},
+        {"cadre": "Capture 3", "legende": "{{CAPTURE_3_LEGENDE}}"}
+      ],
+      "notes": "Captures réelles du produit, sans données personnelles. Légende courte : ce que l'on voit."
+    },
+    {
+      "id": "differenciation",
+      "layout": "bullets",
+      "surtitre": "Ce qui change",
+      "titre": "{{DIFFERENCIATION_TITRE}}",
+      "puces": ["{{DIFFERENCE_1}}", "{{DIFFERENCE_2}}", "{{DIFFERENCE_3}}"],
+      "notes": "Ce qui distingue le produit, vérifiable. Ne citer ni dénigrer aucun concurrent."
+    },
+    {
+      "id": "chiffres-cles",
+      "layout": "numbers",
+      "surtitre": "Chiffres clés",
+      "titre": "{{CHIFFRES_TITRE}}",
+      "chiffres": [
+        {"valeur": "{{CHIFFRE_1}}", "legende": "{{CHIFFRE_1_LEGENDE}}"},
+        {"valeur": "{{CHIFFRE_2}}", "legende": "{{CHIFFRE_2_LEGENDE}}"},
+        {"valeur": "{{CHIFFRE_3}}", "legende": "{{CHIFFRE_3_LEGENDE}}"}
+      ],
+      "notes": "Uniquement des chiffres vérifiés et datés. Moins de chiffres plutôt qu'un chiffre douteux."
+    },
+    {
+      "id": "disponibilite",
+      "layout": "bullets",
+      "surtitre": "Disponibilité",
+      "titre": "{{DISPONIBILITE_TITRE}}",
+      "puces": ["Disponible sur : {{PLATEFORMES}}", "Prix : {{PRIX}}", "Depuis le : {{DATE_LANCEMENT}}", "{{LIEN_PRODUIT}}"],
+      "notes": "Plateformes, prix et date exacts. Indiquer clairement ce qui est gratuit, payant ou en essai."
+    },
+    {
+      "id": "et-ensuite",
+      "layout": "steps",
+      "surtitre": "Et ensuite",
+      "titre": "{{FEUILLE_DE_ROUTE_TITRE}}",
+      "etapes": ["{{PREVU_1}}", "{{PREVU_2}}", "{{PREVU_3}}"],
+      "notes": "Ce qui est prévu, présenté comme prévu, sans date si elle n'est pas engagée."
+    },
+    {
+      "id": "citation",
+      "layout": "quote",
+      "surtitre": "Le mot du fondateur",
+      "citation": "{{CITATION}}",
+      "auteur": "{{PORTE_PAROLE}}, {{PORTE_PAROLE_FONCTION}}",
+      "image": "Photo du porte-parole",
+      "notes": "Citation de 40 mots au plus, validée par la personne citée : pourquoi ce produit, pour qui."
+    },
+    {
+      "id": "ressources",
+      "layout": "bullets",
+      "surtitre": "Ressources presse",
+      "titre": "Tout pour écrire sur {{PRODUIT_NOM}}",
+      "puces": ["Kit presse : {{LIEN_KIT_PRESSE}}", "Logos et visuels HD : {{LIEN_VISUELS}}", "Démo ou vidéo : {{LIEN_DEMO}}", "Accès test : {{ACCES_TEST}}"],
+      "notes": "Liens publics et durables. Retirer une ligne si la ressource n'existe pas."
+    },
+    {
+      "id": "contact",
+      "layout": "contact",
+      "titre": "Contact presse",
+      "lignes": ["{{CONTACT_PRESSE}}", "{{EMAIL_PRESSE}}", "{{TELEPHONE_PRESSE}}", "{{SITE}} · {{RESEAUX}}"],
+      "notes": "Une personne joignable, avec ses coordonnées directes."
+    }
+  ]
+}

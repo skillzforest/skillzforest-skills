@@ -70,6 +70,7 @@ skillzforest-skills/
 ├── skills/                    # canonical source of every skill, filed like the site's catalog
 │   ├── development/code/       # github-* and presales-* skills
 │   ├── design/ui-ux/           # skf-design-extractor
+│   ├── marketing/content/      # skf-masters-kit-presse
 │   ├── domains.json            # registry: the site's categories, subcategories and universes
 │   └── README.md
 ├── workflows/                  # documented orchestration across skills
