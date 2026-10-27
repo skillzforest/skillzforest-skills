@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "seo-factory",
+  "name": "SEO Factory",
+  "publisher": "SkillzForest",
+  "category": "marketing",
+  "subcategory": "seo-sea",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Continuous SEO for any website or SaaS: describe the site once, connect Search Console, Google Trends and a mailbox or Slack, audit it, then let a scheduled agent improve it every few days — pull requests when the site lives in a Git repository, ready-to-paste recommendations in Google Slides when it runs on a CMS.",
+  "tags": ["seo", "search-console", "google-trends", "content", "audit", "saas", "automation"],
+  "skills": ["skf-seo-profile", "skf-seo-setup", "skf-seo-audit", "skf-seo-pass"],
+  "ordered": true
+}

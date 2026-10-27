@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "site": {
+    "name": "Invoicely",
+    "url": "https://invoicely.example/",
+    "pitch": "Online invoicing for freelancers: create, send and follow up invoices and quotes, with automatic payment reminders.",
+    "audience": "Freelancers and very small businesses who bill a few clients a month and hate paperwork.",
+    "business": "Freemium SaaS: free up to 5 invoices a month, then a monthly subscription."
+  },
+  "languages": {
+    "default": "en",
+    "list": [
+      { "code": "en", "pathPrefix": "/", "voice": "you", "markets": ["US", "GB"] },
+      { "code": "fr", "pathPrefix": "/fr/", "voice": "vous", "markets": ["FR", "BE", "CA"] }
+    ]
+  },
+  "facts": {
+    "files": ["src/data/features.json", "src/data/pricing.json", "src/data/faq.json"],
+    "urls": ["https://invoicely.example/features/", "https://invoicely.example/pricing/"],
+    "notes": "Stripe and PayPal payment links are included in every plan."
+  },
+  "topics": {
+    "target": [
+      {
+        "theme": "create an invoice as a freelancer",
+        "seeds": { "en": ["freelance invoice", "how to invoice a client"], "fr": ["facture freelance", "faire une facture"] }
+      },
+      {
+        "theme": "chase unpaid invoices",
+        "seeds": { "en": ["unpaid invoice reminder", "late payment email"], "fr": ["relance facture impayée"] }
+      }
+    ],
+    "exclude": ["free invoice generator no sign up", "crack", "invoice template excel"],
+    "competitors": ["https://www.freshbooks.com/", "https://www.zoho.com/invoice/"]
+  },
+  "style": {
+    "reportLanguage": "en",
+    "rules": ["Never promise legal or tax advice", "Say \"invoice\", not \"bill\"", "No exclamation marks"]
+  },
+  "mode": "repo",
+  "repo": {
+    "url": "https://github.com/acme/invoicely-website",
+    "baseBranch": "main",
+    "branchPrefix": "claude/seo-",
+    "pushToBaseDeploys": true,
+    "check": "npm ci && npm run build",
+    "pages": [
+      { "name": "Home", "url": "/", "file": "src/pages/index.astro", "fields": "title, description and hero texts; French in src/pages/fr/index.astro" },
+      { "name": "Pricing", "url": "/pricing/", "file": "src/pages/pricing.astro", "fields": "title, description, plan intros; French in src/pages/fr/pricing.astro" }
+    ],
+    "blog": {
+      "dir": "src/content/blog/{lang}/",
+      "format": "Markdown with front matter: title (max 64), description (50-170), date (YYYY-MM-DD), tags",
+      "urlPattern": "/{lang}/blog/{slug}/ (no /en/ prefix for English)",
+      "images": "src/assets/blog/",
+      "rules": "800 to 1,200 words, at least two internal links, one to /pricing/"
+    },
+    "limits": { "titleMax": 60, "descriptionMin": 50, "descriptionMax": 160 },
+    "protected": ["src/pages/legal/", "src/styles/", ".github/", ".seo/profile.json"]
+  },
+  "sources": {
+    "searchConsole": { "via": "composio", "property": "sc-domain:invoicely.example", "account": "invoicely" },
+    "trends": { "via": "serpapi", "account": "invoicely", "maxCallsPerPass": 5 },
+    "suggest": true,
+    "webSearch": true,
+    "pagespeed": true
+  },
+  "cadence": {
+    "schedule": "every 2 days at 08:00 Europe/Paris",
+    "articleEveryDays": 14,
+    "pageCooldownDays": 28,
+    "maxActionsPerPass": 1
+  },
+  "notify": { "channel": "gmail", "to": "owner@invoicely.example", "account": "invoicely", "when": "on-change" },
+  "paths": { "journal": ".seo/journal.md", "reports": ".seo/reports/", "backlog": ".seo/backlog.md" }
+}

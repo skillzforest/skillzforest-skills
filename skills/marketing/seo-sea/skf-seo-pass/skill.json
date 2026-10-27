@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-seo-pass",
+  "name": "SEO Pass",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "marketing",
+  "subcategory": "seo-sea",
+  "description": "One continuous-SEO pass driven by .seo/profile.json: reads Search Console, Google Trends, autocomplete and the search results, picks the single best opportunity, then edits the site and opens a pull request (Git repository) or writes the exact recommendation into a Google Slides deck (CMS), logs it and notifies the owner by Gmail, Outlook or Slack.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unsupported",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}
