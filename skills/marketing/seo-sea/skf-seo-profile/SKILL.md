@@ -80,7 +80,9 @@ medical, results). Ask the language for reports and emails (`style.reportLanguag
 - Mode `repo`: map `repo.pages` — for the home page and the main pages (features, pricing, docs, FAQ…), the file that
   holds the title, description and texts, and how translations are organized. Find the blog if there is one
   (folder, front matter, URL pattern, images, the checks it must pass) and the check command (`npm test`,
-  `npm run build`, `hugo`…) — run it once to be sure it passes before the agent relies on it. Propose
+  `npm run build`, `hugo`…) — run it once to be sure it passes before the agent relies on it, **without the local
+  `.env`**: a scheduled cloud run has none. When the build needs public variables (those the deploy workflow sets),
+  put them in the command itself (`npm ci && PUBLIC_X=… npm test`); never a secret. Propose
   `repo.protected`: legal pages, layouts and styles, CI, the `.seo/` profile itself. Branch prefix: `claude/seo-`.
   Read the limits the checks enforce (title and description lengths) into `repo.limits`.
 - Mode `advise`: ask the CMS, whether decks go to Google Slides (default) or stay as Markdown, an optional Google
