@@ -110,7 +110,7 @@ Slides deck and a report, and the owner applies them in their CMS.
 | `trends.maxCallsPerPass` | integer | Free plans are small: 5 is a good default |
 | `suggest` | boolean | Use Google autocomplete (`suggest.py`) |
 | `webSearch` | boolean | Look at what already ranks |
-| `pagespeed` | boolean | Audit only: PageSpeed Insights (Core Web Vitals) |
+| `pagespeed` | boolean | PageSpeed Insights (Core Web Vitals): 3 pages at every pass, key pages at each audit; needs a free key in the `PAGESPEED_KEY` environment variable |
 
 ### `cadence` (required)
 

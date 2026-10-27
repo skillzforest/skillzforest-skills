@@ -2,7 +2,7 @@
 """Core Web Vitals and Lighthouse scores of a few pages, from Google PageSpeed Insights.
 
 Usage:
-    python3 pagespeed.py https://example.com/ https://example.com/pricing/ [--strategy mobile|desktop]
+    python3 pagespeed.py https://example.com/ https://example.com/pricing/ [--strategy mobile|desktop] [--csv history.csv]
 
 For each URL prints the Lighthouse performance and SEO scores, the lab metrics (LCP, CLS, TBT) and, when Google has
 enough visits, the field data of real Chrome users (LCP, INP, CLS at the 75th percentile). No API key is needed for
@@ -10,6 +10,8 @@ a few calls; set PAGESPEED_KEY in the environment for more. Standard library onl
 """
 
 import argparse
+import csv
+import datetime
 import json
 import os
 import subprocess
@@ -43,6 +45,7 @@ def main():
     parser = argparse.ArgumentParser(description="PageSpeed Insights for a few pages.")
     parser.add_argument("urls", nargs="+", help="pages to test (keep it to 10 or fewer)")
     parser.add_argument("--strategy", choices=("mobile", "desktop"), default="mobile")
+    parser.add_argument("--csv", help="append one line per page to this history file (created with a header)")
     args = parser.parse_args()
 
     results = []
@@ -87,6 +90,20 @@ def main():
         print(f"{page} [{args.strategy}] performance {row['performance']}, SEO {row['seo']}, "
               f"LCP {row['lab']['LCP']}, CLS {row['lab']['CLS']}, TBT {row['lab']['TBT']}"
               + ("" if field else " (not enough real visits for field data)"))
+
+    if args.csv and results:
+        # History: one line per page and run, so a pass can compare with the previous measures.
+        new = not os.path.exists(args.csv)
+        today = datetime.date.today().isoformat()
+        with open(args.csv, "a", newline="", encoding="utf-8") as handle:
+            writer = csv.writer(handle)
+            if new:
+                writer.writerow(["date", "url", "strategy", "performance", "seo", "lcp", "cls", "tbt", "field_lcp_ms", "field_inp_ms", "field_cls_x100"])
+            for row in results:
+                field = row["field"] or {}
+                writer.writerow([today, row["url"], row["strategy"], row["performance"], row["seo"],
+                                 row["lab"]["LCP"], row["lab"]["CLS"], row["lab"]["TBT"],
+                                 field.get("LCP_ms"), field.get("INP_ms"), field.get("CLS_x100")])
 
     print(json.dumps(results, ensure_ascii=False, indent=2))
     return 0 if results else 1
