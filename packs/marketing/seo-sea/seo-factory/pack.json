@@ -5,10 +5,27 @@
   "publisher": "SkillzForest",
   "category": "marketing",
   "subcategory": "seo-sea",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
-  "description": "Continuous SEO for any website or SaaS: describe the site once, connect Search Console, Google Trends and a mailbox or Slack, audit it, then let a scheduled agent improve it every few days — pull requests when the site lives in a Git repository, ready-to-paste recommendations in Google Slides when it runs on a CMS.",
-  "tags": ["seo", "search-console", "google-trends", "content", "audit", "saas", "automation"],
-  "skills": ["skf-seo-profile", "skf-seo-setup", "skf-seo-audit", "skf-seo-pass"],
+  "description": "Continuous SEO for any website or SaaS: describe the site once, connect Search Console, Google Trends and a mailbox or Slack, audit it, then let a scheduled agent improve it every few days — pull requests when the site lives in a Git repository, ready-to-paste recommendations in Google Slides when it runs on a CMS. Every action is tracked on a GitHub board or a shared Google Sheet, owners get a weekly email of what waits for them, and labeling an issue claude:fix gets it fixed in a pull request.",
+  "tags": [
+    "audit",
+    "automation",
+    "content",
+    "github-issues",
+    "google-trends",
+    "pagespeed",
+    "saas",
+    "search-console",
+    "seo"
+  ],
+  "skills": [
+    "skf-seo-profile",
+    "skf-seo-setup",
+    "skf-seo-audit",
+    "skf-seo-pass",
+    "skf-github-issue-brief",
+    "skf-github-issue-fix"
+  ],
   "ordered": true
 }
