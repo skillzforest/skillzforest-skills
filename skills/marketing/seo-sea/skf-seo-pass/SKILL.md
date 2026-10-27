@@ -81,13 +81,16 @@ These are signs of demand, not volumes: say so in the report.
 
 ## 4. Choose the action
 
-Keep only searches tied to what the product really does (`site.pitch`, `topics.target`). Rank the opportunities:
+Keep only searches tied to what the product really does (`site.pitch`, `topics.target`). Rank the opportunities (an `agent` action of the tracker counts as an opportunity even without impressions):
 
 1. **A page with impressions but few clicks** (position 3 to 20, CTR well below the site's average): rewrite its
    title and description with the words of the search and a reason to click, never promising what the page does
    not hold. If the page does not really answer the search, add or sharpen the heading or paragraph that does.
-2. **An open `agent` action** of the tracker that affects search (missing or duplicate title or description, missing
-   `hreflang`, a page out of the sitemap, a broken internal link, a heavy page): fix one.
+2. **An open `agent` action** of the tracker (missing or duplicate title or description, missing `hreflang`, a page
+   out of the sitemap, a broken internal link, a heavy page…): **always eligible**, whatever the impressions — the
+   audit already judged it worth doing. Take the highest priority first (`P1`, then `P2`, then the oldest); a `P3`
+   only when no opportunity of type 1 or 3 is clearly better. Skip an action labeled `claude:fix` (the fix task
+   already handles it) and one whose page is under the cooldown. Fix it in the pull request with `Fixes #<number>`.
 3. **A search with no dedicated page** (impressions on a page that only mentions it in passing, or demand found in
    step 3): write an article (mode `repo` with a `repo.blog`, or a draft in mode `advise`). If an existing article
    already partly answers it, enrich that one instead.

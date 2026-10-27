@@ -106,7 +106,21 @@ a Markdown list. Format and tools: `skf-seo-pass/references/tracker.md`.
 No scheduling tool in this runtime: give the owner the prompt and the cron to paste into their scheduler, and say
 the pass can always be run by hand with `skf-seo-pass`.
 
-## 7. Hand over
+## 7. Schedule the fix task (GitHub issues only)
+
+When `tracker.type` is `github-issues`, the owner can label any issue `claude:fix` to have it fixed now, through a
+pull request (`skf-seo-pass/references/tracker.md`). Create a second scheduled task `Fix issues <site.name>`:
+
+- same repositories, connectors, model and tools as the pass;
+- prompt: [`references/fix-prompt.md`](references/fix-prompt.md) with the values filled in;
+- trigger: the GitHub event "issue labeled" on `tracker.repo` when the runtime supports event triggers (Claude
+  Code: a webhook trigger attached to the routine), otherwise every hour (`0 * * * *`: runs that find nothing stop
+  at once);
+- write its id to the profile (`routine.fixId`).
+
+Test it on a real issue the owner chooses: they add the label, the pull request appears, they merge it.
+
+## 8. Hand over
 
 Tell the owner, in a few lines:
 
@@ -114,7 +128,7 @@ Tell the owner, in a few lines:
 - what they will receive (a pull request and a message, or a deck and a message) and how often to expect it — once
   or twice a month, not every pass;
 - where their actions are (`tracker.url`) and that they get the list of what waits for them every
-  `tracker.digest`;
+  `tracker.digest`; that labeling any issue `claude:fix` gets it fixed in a pull request;
 - what they do: merge or close the pull request, close the issue or set the row to `Done` when they did an owner
   action, or apply the recommendation and say so (the journal entry becomes `applied`);
 - the next step: **`skf-seo-audit`** for a full picture and the first actions, if it has not run yet.

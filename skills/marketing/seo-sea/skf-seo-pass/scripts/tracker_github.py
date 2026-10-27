@@ -24,6 +24,7 @@ LABELS = {
     "seo:P1": ("B60205", "Blocking: indexing, errors"),
     "seo:P2": ("D93F0B", "Important"),
     "seo:P3": ("C5DEF5", "Polish"),
+    "claude:fix": ("7B4DFF", "Fix it now: Claude opens a pull request"),
 }
 
 
