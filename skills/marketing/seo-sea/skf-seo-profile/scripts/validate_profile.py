@@ -19,6 +19,8 @@ TRENDS_VIA = {"serpapi", "none"}
 CHANNELS = {"gmail", "outlook", "slack", "none"}
 WHEN = {"on-change", "every-pass"}
 DELIVERABLES = {"google-slides", "markdown"}
+TRACKERS = {"github-issues", "google-sheets"}
+DIGESTS = {"weekly", "every-pass", "none"}
 
 errors = []
 warnings = []
@@ -173,8 +175,25 @@ def check(profile):
     if when is not None and when not in WHEN:
         error("notify.when", f"must be one of {', '.join(sorted(WHEN))}")
 
+    # Tracker
+    tracker = need(profile, "tracker.type", str, TRACKERS)
+    if tracker == "github-issues":
+        repo = need(profile, "tracker.repo", str)
+        if repo and not re.match(r"^[^/\s]+/[^/\s]+$", repo):
+            error("tracker.repo", "expected owner/repo")
+        if get(profile, "tracker.projectNumber") is None:
+            warn("tracker.projectNumber", "no board: issues only")
+    elif tracker == "google-sheets":
+        if not get(profile, "tracker.sheetId"):
+            warn("tracker.sheetId", "not created yet: skf-seo-setup creates the sheet")
+    digest = get(profile, "tracker.digest")
+    if digest is not None and digest not in DIGESTS:
+        error("tracker.digest", f"must be one of {', '.join(sorted(DIGESTS))}")
+    if tracker and get(profile, "notify.channel") == "none":
+        warn("notify.channel", "none: the owner will never be told about the actions waiting for them")
+
     # Paths
-    for field in ("journal", "reports", "backlog"):
+    for field in ("journal", "reports"):
         need(profile, f"paths.{field}", str)
 
 

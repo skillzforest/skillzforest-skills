@@ -1,6 +1,6 @@
 ---
 name: skf-seo-setup
-description: Turns a validated .seo/profile.json into a running SEO agent — checks the workspace (the site's Git repository, or a dedicated seo-SITE repository for sites on a CMS), connects and tests each source and output named in the profile (Google Search Console, SerpApi for Google Trends, Gmail, Outlook or Slack, Google Slides, GitHub), creates the journal, reports folder and backlog, then schedules the recurring skf-seo-pass as a cloud task (a Claude Code routine) that reads the skills from the SkillzForest skills repository, and runs it once to prove it works. Use it right after skf-seo-profile, when a connection breaks, when the cadence or notification changes, or whenever someone asks to schedule, automate or (re)connect their SEO agent, or runs /skf-seo-setup.
+description: Turns a validated .seo/profile.json into a running SEO agent — checks the workspace (the site's Git repository, or a dedicated seo-SITE repository for sites on a CMS), connects and tests each source and output named in the profile (Google Search Console, SerpApi for Google Trends, Gmail, Outlook or Slack, Google Slides, GitHub), creates the action tracker (GitHub issues on a GitHub Project board, or a shared Google Sheet), the journal and the reports folder, then schedules the recurring skf-seo-pass as a cloud task (a Claude Code routine) that reads the skills from the SkillzForest skills repository, and runs it once to prove it works. Use it right after skf-seo-profile, when a connection breaks, when the cadence or notification changes, or whenever someone asks to schedule, automate or (re)connect their SEO agent, or runs /skf-seo-setup.
 ---
 
 # SEO setup
@@ -59,13 +59,35 @@ In the workspace, if absent:
 
 - `paths.journal` with a heading, one sentence on its format (`- YYYY-MM-DD — action — pages — status`) and an empty
   list;
-- `paths.reports` (with a `.gitkeep`);
-- `paths.backlog` with a heading and an empty checklist.
+- `paths.reports` (with a `.gitkeep`).
 
 Commit them with the profile: mode `repo` through a pull request the owner merges (or directly when they say so),
 mode `advise` on the workspace's base branch.
 
-## 5. Schedule the pass
+## 5. Create the action tracker
+
+Every action — audit findings, opportunities for later, what only the owner can do — goes to the tracker, never to
+a Markdown list. Format and tools: `skf-seo-pass/references/tracker.md`.
+
+- **`github-issues`**:
+  1. `python3 ../skf-seo-pass/scripts/tracker_github.py setup --repo <tracker.repo>` creates the `seo`, `seo:agent`,
+     `seo:owner`, `seo:P1`–`P3` labels.
+  2. Board: reuse `tracker.projectNumber`, or create one — `gh project create --owner <owner> --title "SEO
+     <site.name>"`, then `gh project link <number> --owner <owner> --repo <tracker.repo>`. Creating a board needs
+     the `project` scope: if `gh auth status` does not list it, ask the owner to run `gh auth refresh -s project`
+     (it opens the browser) and wait. No board wanted or possible: issues alone still work.
+  3. Write `projectOwner`, `projectNumber` and `url` (board, else the repository's issues filtered on `label:seo`)
+     to the profile.
+- **`google-sheets`** (connection `googlesheets`, and `googledrive` to share):
+  1. Create `SEO actions — <site.name>` with `GOOGLESHEETS_CREATE_GOOGLE_SHEET1`, write the header row of
+     `tracker.md` in the first tab, and note the tab's name in `tracker.sheetName`.
+  2. When the sheet's Google account is not `notify.to`, share it with `notify.to` as writer
+     (`GOOGLEDRIVE_CREATE_PERMISSION`, `type: user`, `role: writer`), after telling the owner.
+  3. Write `sheetId` and `url` to the profile.
+- Test: create one real action if one exists already (an owner action found during setup, such as "verify the
+  property" or "remove an old sitemap"), otherwise none — never a fake one.
+
+## 6. Schedule the pass
 
 1. Turn `cadence.schedule` into a cron **in UTC** and confirm it with the owner in their local time ("08:00 Paris
    = 07:00 UTC in winter, 06:00 in summer — the task stays on UTC"). Every 2 days: `0 7 */2 * *` (odd days of the
@@ -84,13 +106,15 @@ mode `advise` on the workspace's base branch.
 No scheduling tool in this runtime: give the owner the prompt and the cron to paste into their scheduler, and say
 the pass can always be run by hand with `skf-seo-pass`.
 
-## 6. Hand over
+## 7. Hand over
 
 Tell the owner, in a few lines:
 
 - where to see, pause or run the task (`routine.url`), and where each run's session appears;
 - what they will receive (a pull request and a message, or a deck and a message) and how often to expect it — once
   or twice a month, not every pass;
-- what they do: merge or close the pull request, or apply the recommendation and say so (the journal entry becomes
-  `applied`);
-- the next step: **`skf-seo-audit`** for a full picture and a backlog, if it has not run yet.
+- where their actions are (`tracker.url`) and that they get the list of what waits for them every
+  `tracker.digest`;
+- what they do: merge or close the pull request, close the issue or set the row to `Done` when they did an owner
+  action, or apply the recommendation and say so (the journal entry becomes `applied`);
+- the next step: **`skf-seo-audit`** for a full picture and the first actions, if it has not run yet.

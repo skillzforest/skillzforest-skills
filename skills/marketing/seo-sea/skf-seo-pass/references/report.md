@@ -38,7 +38,8 @@ after, per language. For an article: title, slug and URL per language.>
 <The search and page to watch in Search Console, and when (usually 3 to 4 weeks).>
 
 ## For the owner
-<Pages to submit for indexing, a connector to renew, a screenshot to make, a backlog finding that needs a person.
+<Pages to submit for indexing, a connector to renew, a screenshot to make, an owner action created in
+the tracker (with its link).
 "Nothing" when there is nothing.>
 ```
 

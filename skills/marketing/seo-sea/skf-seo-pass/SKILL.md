@@ -10,7 +10,8 @@ You improve a site's organic search, one careful step at a time. Everything abou
 first; if it is missing or invalid, stop and say that `skf-seo-profile` must be run.
 
 Tools for every source and output, by profile value: [`references/connectors.md`](references/connectors.md).
-Report layout: [`references/report.md`](references/report.md).
+Report layout: [`references/report.md`](references/report.md). Action tracker (GitHub issues or Google Sheet) and
+digest: [`references/tracker.md`](references/tracker.md).
 
 Write the report, the deck, the pull request and the notification in `style.reportLanguage`. Write site content in
 each site language, following `languages.list[].voice` and `style.rules`.
@@ -37,12 +38,13 @@ each site language, following `languages.list[].voice` and `style.rules`.
 ## 1. Take stock
 
 1. **Something already waiting for the owner?**
-   - Mode `repo`: an open pull request whose branch starts with `repo.branchPrefix` → stop without changing anything,
-     one sentence in the final answer.
+   - Mode `repo`: an open pull request whose branch starts with `repo.branchPrefix` → change nothing on the site: only
+     do the **Owner actions** section below, then stop, one sentence in the final answer.
    - Mode `advise`: count the journal lines marked `pending` (recommendations not applied yet). At
-     `advise.maxPending` (default 3) or more → stop, and remind the owner which ones wait.
-2. Read the journal (`paths.journal`), the latest reports (`paths.reports`) and the backlog (`paths.backlog`, the
-   audit's open findings).
+     `advise.maxPending` (default 3) or more → only do the **Owner actions** section, then stop, and remind
+     the owner which ones wait.
+2. Read the journal (`paths.journal`), the latest reports (`paths.reports`) and the **open actions** of the tracker
+   (`tracker.md`: `list` for GitHub issues, read the sheet otherwise).
 3. List existing content: in mode `repo` the articles under `repo.blog.dir` (title, `key` or slug, keywords, date)
    and `repo.pages`; in mode `advise` the site's sitemap (`<site.url>sitemap.xml` or `sitemap-index.xml`).
 4. Analysis window: the 28 days **ending 3 days ago** (Search Console data lags 2 to 3 days), and the 28 days
@@ -84,7 +86,7 @@ Keep only searches tied to what the product really does (`site.pitch`, `topics.t
 1. **A page with impressions but few clicks** (position 3 to 20, CTR well below the site's average): rewrite its
    title and description with the words of the search and a reason to click, never promising what the page does
    not hold. If the page does not really answer the search, add or sharpen the heading or paragraph that does.
-2. **An open audit finding** in the backlog that affects search (missing or duplicate title or description, missing
+2. **An open `agent` action** of the tracker that affects search (missing or duplicate title or description, missing
    `hreflang`, a page out of the sitemap, a broken internal link, a heavy page): fix one.
 3. **A search with no dedicated page** (impressions on a page that only mentions it in passing, or demand found in
    step 3): write an article (mode `repo` with a `repo.blog`, or a draft in mode `advise`). If an existing article
@@ -130,7 +132,9 @@ facts and the limits.
 1. Write `<paths.reports><YYYY-MM-DD>.md` following `references/report.md`.
 2. Add a line at the top of the journal's list: `- YYYY-MM-DD — <action in one line> — <pages or article> —
    <status>`, status `proposed` (mode `repo`) or `pending` (mode `advise`). Nothing done: no journal line.
-   When you fix a backlog finding, tick it in the backlog.
+   An action you fix: mode `repo`, write `Fixes #<number>` in the pull request (the issue closes at the merge) or set
+   the sheet row to `In progress` with the pull request link; mode `advise`, set it to `In progress` with the deck
+   link. Opportunities you saw but did not pick become new actions (`who: agent`), so the next passes find them.
 3. Mode `repo`, only if the site changed and the check passes: create `<repo.branchPrefix><YYYY-MM-DD>` from
    `repo.baseBranch`, commit everything (message: one sentence saying what changes and why, no co-author line),
    push **this branch**, open a pull request to `repo.baseBranch`: title under 70 characters, body = the report.
@@ -143,6 +147,17 @@ facts and the limits.
    the change in two or three lines, and the link to the pull request or the deck.
 6. Final answer, in `style.reportLanguage`: what you found, what you changed or recommend, the link (or why there
    is none), and anything the owner must do (pages to submit for indexing, a connector to renew).
+
+## Owner actions
+
+At every pass, even when nothing else is done:
+
+1. For each open `owner` action that you can check (Search Console sitemaps, indexing of a page, a page now live,
+   a title now changed on the live site), check it. Done: close it (GitHub: `tracker_github.py close` with a comment
+   saying what you saw; sheet: `Done` with the date). Not done: leave it.
+2. A new `owner` action found in this pass (an old sitemap to remove, a page to submit for indexing, a fact to
+   confirm): create it in the tracker.
+3. Send the digest when it is due (`tracker.digest`, `tracker.md`), and at once for a new `P1` owner action.
 
 ## Applied recommendations (mode `advise`)
 

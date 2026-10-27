@@ -10,32 +10,84 @@
   "languages": {
     "default": "en",
     "list": [
-      { "code": "en", "pathPrefix": "/", "voice": "you", "markets": ["US", "GB"] },
-      { "code": "fr", "pathPrefix": "/fr/", "voice": "vous", "markets": ["FR", "BE", "CA"] }
+      {
+        "code": "en",
+        "pathPrefix": "/",
+        "voice": "you",
+        "markets": [
+          "US",
+          "GB"
+        ]
+      },
+      {
+        "code": "fr",
+        "pathPrefix": "/fr/",
+        "voice": "vous",
+        "markets": [
+          "FR",
+          "BE",
+          "CA"
+        ]
+      }
     ]
   },
   "facts": {
-    "files": ["src/data/features.json", "src/data/pricing.json", "src/data/faq.json"],
-    "urls": ["https://invoicely.example/features/", "https://invoicely.example/pricing/"],
+    "files": [
+      "src/data/features.json",
+      "src/data/pricing.json",
+      "src/data/faq.json"
+    ],
+    "urls": [
+      "https://invoicely.example/features/",
+      "https://invoicely.example/pricing/"
+    ],
     "notes": "Stripe and PayPal payment links are included in every plan."
   },
   "topics": {
     "target": [
       {
         "theme": "create an invoice as a freelancer",
-        "seeds": { "en": ["freelance invoice", "how to invoice a client"], "fr": ["facture freelance", "faire une facture"] }
+        "seeds": {
+          "en": [
+            "freelance invoice",
+            "how to invoice a client"
+          ],
+          "fr": [
+            "facture freelance",
+            "faire une facture"
+          ]
+        }
       },
       {
         "theme": "chase unpaid invoices",
-        "seeds": { "en": ["unpaid invoice reminder", "late payment email"], "fr": ["relance facture impayée"] }
+        "seeds": {
+          "en": [
+            "unpaid invoice reminder",
+            "late payment email"
+          ],
+          "fr": [
+            "relance facture impayée"
+          ]
+        }
       }
     ],
-    "exclude": ["free invoice generator no sign up", "crack", "invoice template excel"],
-    "competitors": ["https://www.freshbooks.com/", "https://www.zoho.com/invoice/"]
+    "exclude": [
+      "free invoice generator no sign up",
+      "crack",
+      "invoice template excel"
+    ],
+    "competitors": [
+      "https://www.freshbooks.com/",
+      "https://www.zoho.com/invoice/"
+    ]
   },
   "style": {
     "reportLanguage": "en",
-    "rules": ["Never promise legal or tax advice", "Say \"invoice\", not \"bill\"", "No exclamation marks"]
+    "rules": [
+      "Never promise legal or tax advice",
+      "Say \"invoice\", not \"bill\"",
+      "No exclamation marks"
+    ]
   },
   "mode": "repo",
   "repo": {
@@ -45,8 +97,18 @@
     "pushToBaseDeploys": true,
     "check": "npm ci && npm run build",
     "pages": [
-      { "name": "Home", "url": "/", "file": "src/pages/index.astro", "fields": "title, description and hero texts; French in src/pages/fr/index.astro" },
-      { "name": "Pricing", "url": "/pricing/", "file": "src/pages/pricing.astro", "fields": "title, description, plan intros; French in src/pages/fr/pricing.astro" }
+      {
+        "name": "Home",
+        "url": "/",
+        "file": "src/pages/index.astro",
+        "fields": "title, description and hero texts; French in src/pages/fr/index.astro"
+      },
+      {
+        "name": "Pricing",
+        "url": "/pricing/",
+        "file": "src/pages/pricing.astro",
+        "fields": "title, description, plan intros; French in src/pages/fr/pricing.astro"
+      }
     ],
     "blog": {
       "dir": "src/content/blog/{lang}/",
@@ -55,12 +117,29 @@
       "images": "src/assets/blog/",
       "rules": "800 to 1,200 words, at least two internal links, one to /pricing/"
     },
-    "limits": { "titleMax": 60, "descriptionMin": 50, "descriptionMax": 160 },
-    "protected": ["src/pages/legal/", "src/styles/", ".github/", ".seo/profile.json"]
+    "limits": {
+      "titleMax": 60,
+      "descriptionMin": 50,
+      "descriptionMax": 160
+    },
+    "protected": [
+      "src/pages/legal/",
+      "src/styles/",
+      ".github/",
+      ".seo/profile.json"
+    ]
   },
   "sources": {
-    "searchConsole": { "via": "composio", "property": "sc-domain:invoicely.example", "account": "invoicely" },
-    "trends": { "via": "serpapi", "account": "invoicely", "maxCallsPerPass": 5 },
+    "searchConsole": {
+      "via": "composio",
+      "property": "sc-domain:invoicely.example",
+      "account": "invoicely"
+    },
+    "trends": {
+      "via": "serpapi",
+      "account": "invoicely",
+      "maxCallsPerPass": 5
+    },
     "suggest": true,
     "webSearch": true,
     "pagespeed": true
@@ -71,6 +150,22 @@
     "pageCooldownDays": 28,
     "maxActionsPerPass": 1
   },
-  "notify": { "channel": "gmail", "to": "owner@invoicely.example", "account": "invoicely", "when": "on-change" },
-  "paths": { "journal": ".seo/journal.md", "reports": ".seo/reports/", "backlog": ".seo/backlog.md" }
+  "notify": {
+    "channel": "gmail",
+    "to": "owner@invoicely.example",
+    "account": "invoicely",
+    "when": "on-change"
+  },
+  "tracker": {
+    "type": "github-issues",
+    "repo": "acme/invoicely-website",
+    "projectOwner": "acme",
+    "projectNumber": 3,
+    "url": "https://github.com/orgs/acme/projects/3",
+    "digest": "weekly"
+  },
+  "paths": {
+    "journal": ".seo/journal.md",
+    "reports": ".seo/reports/"
+  }
 }

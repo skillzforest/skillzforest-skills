@@ -131,13 +131,29 @@ Slides deck and a report, and the owner applies them in their CMS.
 | `account` | string | Optional. Connected account alias |
 | `when` | string | `on-change` (a pull request or a recommendation) or `every-pass` |
 
+### `tracker` (required)
+
+Where every action to do lives — audit findings, opportunities for later, things only the owner can do — so that
+nothing is forgotten. Details: `skf-seo-pass/references/tracker.md`.
+
+| Field | Type | Meaning |
+|---|---|---|
+| `type` | string | `github-issues` (one issue per action, on a GitHub Project board) or `google-sheets` (one row per action) |
+| `repo` | string | `github-issues`: repository holding the issues (`owner/repo`), usually the site's or the workspace's |
+| `projectOwner` | string | Optional. Owner (user or organization) of the GitHub Project board |
+| `projectNumber` | integer | Optional. Number of the board; absent: issues only |
+| `sheetId` | string | `google-sheets`: spreadsheet id (filled by `skf-seo-setup`) |
+| `sheetName` | string | `google-sheets`: tab holding the actions (`Actions`) |
+| `account` | string | Optional. Connected account alias for the sheet |
+| `url` | string | Link to the board or the sheet, given in every message (filled by `skf-seo-setup`) |
+| `digest` | string | How often the owner gets the list of actions waiting for them: `weekly` (default), `every-pass`, `none` |
+
 ### `paths` (required)
 
 | Field | Type | Meaning |
 |---|---|---|
 | `journal` | string | One line per applied action, read to respect the cadence (`.seo/journal.md`) |
 | `reports` | string | Folder of pass and audit reports (`.seo/reports/`) |
-| `backlog` | string | Findings of the audit not fixed yet (`.seo/backlog.md`) |
 
 ### `routine` (filled by `skf-seo-setup`)
 

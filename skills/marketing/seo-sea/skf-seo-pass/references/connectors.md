@@ -41,6 +41,11 @@ Never push to `repo.baseBranch`. Never merge, close or approve a pull request.
 Article drafts in mode `advise` go in the workspace (`<paths.reports>drafts/<date>-<slug>.<lang>.md`); the deck
 links to them.
 
+## Action tracker
+
+GitHub issues (`scripts/tracker_github.py`, or the GitHub tools / Composio `GITHUB_*` in a cloud run) or Google Sheets
+(`GOOGLESHEETS_*`, `GOOGLEDRIVE_CREATE_PERMISSION`): see [`tracker.md`](tracker.md).
+
 ## Notification
 
 | `notify.channel` | Tool | Recipient |
@@ -50,5 +55,5 @@ links to them.
 | `slack` | `SLACK_SEND_MESSAGE` (`channel`, `markdown_text`); resolve a channel name with `SLACK_FIND_CHANNELS` | `notify.to` only |
 | `none` | Nothing | — |
 
-The notification is the only message the agent ever sends: it never reads the mailbox or the workspace, never
+The notification and the actions digest (`tracker.md`) are the only messages the agent ever sends: it never reads the mailbox or the workspace, never
 writes to anyone else, never forwards.

@@ -112,12 +112,28 @@ Ask how the owner wants to hear about a pull request or a new recommendation: **
 365), **Slack**, or none (they watch GitHub or the deck). For a mailbox, the safest recipient is the connected
 account's own address. `when`: `on-change` (default) or `every-pass`.
 
-### 11. Write and check
+### 11. Action tracker
 
-1. Write `.seo/profile.json` with `paths` set to `.seo/journal.md`, `.seo/reports/`, `.seo/backlog.md` (keep
-   existing paths if the site already has a journal elsewhere).
+Every action the agent finds — and above all those only the owner can do — must land somewhere the owner sees and
+cannot forget. Ask:
+
+1. Does the owner use GitHub? Mode `repo` almost always: propose **GitHub issues** in the site's repository
+   (`tracker.repo`). Then ask whether they already have a GitHub Project board for it (`gh project list --owner
+   <owner>`): reuse it (`projectOwner`, `projectNumber`) or let `skf-seo-setup` create one named `SEO <site.name>`.
+2. No GitHub, or a team that lives in spreadsheets: **Google Sheets** — one row per action, shared with the owner's
+   address, created by `skf-seo-setup`.
+3. How often to receive the list of actions waiting for them: **weekly** (default), at every pass, or never
+   (discouraged: say why).
+
+The owner is told by `notify`, so the tracker never relies on them remembering to look. Details:
+`skf-seo-pass/references/tracker.md`.
+
+### 12. Write and check
+
+1. Write `.seo/profile.json` with `paths` set to `.seo/journal.md` and `.seo/reports/` (keep existing paths if the
+   site already has a journal elsewhere).
 2. Run `python3 scripts/validate_profile.py .seo/profile.json` (path relative to this skill's folder for the
    script). Fix every error; read the warnings to the owner and fix those they agree with.
-3. Show a short summary: mode, languages, themes, exclusions, sources, cadence, notification.
+3. Show a short summary: mode, languages, themes, exclusions, sources, cadence, notification, tracker.
 4. Next step: **`skf-seo-setup`**, which connects the sources, creates the journal and schedules the agent. In mode
    `repo`, the profile is committed with the rest of the setup, not now.
