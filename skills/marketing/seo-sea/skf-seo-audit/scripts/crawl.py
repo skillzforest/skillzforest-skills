@@ -119,35 +119,41 @@ class PageParser(HTMLParser):
 
 def sitemap_urls(site):
     """Every page URL listed by the site's sitemap(s)."""
-    candidates = []
+    declared = []
     status, _, _, body = fetch(urllib.parse.urljoin(site, "/robots.txt"))
     if status == 200:
-        candidates += re.findall(r"(?im)^\s*sitemap:\s*(\S+)", body.decode("utf-8", "replace"))
-    candidates += [urllib.parse.urljoin(site, p) for p in ("/sitemap-index.xml", "/sitemap_index.xml", "/sitemap.xml")]
+        declared = re.findall(r"(?im)^\s*sitemap:\s*(\S+)", body.decode("utf-8", "replace"))
+    defaults = [urllib.parse.urljoin(site, p) for p in ("/sitemap-index.xml", "/sitemap_index.xml", "/sitemap.xml")]
 
-    seen, pages = set(), []
-    queue = collections.deque(candidates)
-    while queue:
-        url = queue.popleft()
-        if url in seen:
-            continue
-        seen.add(url)
-        status, _, _, body = fetch(url)
-        if status != 200 or not body:
-            continue
-        try:
-            root = ET.fromstring(body)
-        except ET.ParseError:
-            continue
-        for loc in root.iter():
-            if loc.tag.endswith("loc") and loc.text:
-                target = loc.text.strip()
-                if root.tag.endswith("sitemapindex"):
-                    queue.append(target)
-                else:
-                    pages.append(target)
-        if pages:
-            break  # one working sitemap (index) is enough
+    def read_all(roots):
+        """Every page of these sitemaps, following sitemap indexes."""
+        seen, pages = set(), []
+        queue = collections.deque(roots)
+        while queue:
+            url = queue.popleft()
+            if url in seen:
+                continue
+            seen.add(url)
+            status, _, _, body = fetch(url)
+            if status != 200 or not body:
+                continue
+            try:
+                root = ET.fromstring(body)
+            except ET.ParseError:
+                continue
+            index = root.tag.endswith("sitemapindex")
+            for loc in root.iter():
+                if loc.tag.endswith("loc") and loc.text:
+                    (queue if index else pages).append(loc.text.strip())
+        return pages
+
+    # Every sitemap robots.txt declares; the usual addresses only when it declares none that works.
+    pages = read_all(declared)
+    if not pages:
+        for candidate in defaults:
+            pages = read_all([candidate])
+            if pages:
+                break
     return list(dict.fromkeys(pages))
 
 
