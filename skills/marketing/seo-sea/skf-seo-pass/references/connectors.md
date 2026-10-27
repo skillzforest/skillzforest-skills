@@ -35,7 +35,7 @@ Never push to `repo.baseBranch`. Never merge, close or approve a pull request.
 
 | `advise.deliverable` | How |
 |---|---|
-| `google-slides` | `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` (`title`, `markdown_text`: slides separated by `\n---\n`, `Theme: professional_gray` on the first line), or the runtime's Google Slides / Google Drive connector. Move it to `advise.driveFolder` when one is set and a Drive tool is available |
+| `google-slides` | 1. `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` (`title`, `markdown_text`: slides separated by `\n---\n`, `Theme: default` on the first line; the deck's text is kept in `<paths.reports><date>-deck.md`). 2. `GOOGLESLIDES_PRESENTATIONS_GET` with `fields` = `pageSize,slides(objectId,pageElements(objectId,size,transform,shape(shapeType,placeholder,text)))`, saved to a file. 3. `python3 scripts/brand_deck.py <that file> > requests.json` (SkillzForest colors and font, accent bar, footer — `references/brand.json`). 4. `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE` with those `requests`. Move it to `advise.driveFolder` when one is set and a Drive tool is available |
 | `markdown` | The report file itself, in the workspace |
 
 Article drafts in mode `advise` go in the workspace (`<paths.reports>drafts/<date>-<slug>.<lang>.md`); the deck

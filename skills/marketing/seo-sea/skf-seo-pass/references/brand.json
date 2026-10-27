@@ -1,0 +1,21 @@
+{
+  "name": "SkillzForest",
+  "source": "skillzforest-website/skillzforest.tokens.json (Modular Grid Forest)",
+  "font": "Inter",
+  "colors": {
+    "ink": "#192E3A",
+    "deepTeal": "#1E464E",
+    "forestTeal": "#236A62",
+    "midTeal": "#388779",
+    "green": "#43C891",
+    "slate700": "#50616C",
+    "mist100": "#DCE4E6",
+    "white": "#FFFFFF"
+  },
+  "slides": {
+    "cover": { "background": "ink", "title": "white", "body": "mist100", "accent": "green" },
+    "content": { "background": "white", "title": "forestTeal", "body": "ink", "accent": "green" },
+    "closing": { "background": "deepTeal", "title": "white", "body": "mist100", "accent": "green" }
+  },
+  "footer": "SkillzForest · SEO Factory"
+}
