@@ -18,7 +18,7 @@ SC_VIA = {"composio", "gum", "none"}
 TRENDS_VIA = {"serpapi", "none"}
 CHANNELS = {"gmail", "outlook", "slack", "none"}
 WHEN = {"on-change", "every-pass"}
-DELIVERABLES = {"google-slides", "markdown"}
+DELIVERABLES = {"google-slides", "xlsx", "markdown"}
 TRACKERS = {"github-issues", "google-sheets"}
 DIGESTS = {"weekly", "every-pass", "none"}
 

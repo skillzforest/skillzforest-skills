@@ -94,7 +94,7 @@ Slides deck and a report, and the owner applies them in their CMS.
 | Field | Type | Meaning |
 |---|---|---|
 | `cms` | string | WordPress, Webflow, Wix, Shopify, Squarespace, custom… (how the owner applies changes) |
-| `deliverable` | string | `google-slides` (default) or `markdown` |
+| `deliverable` | string | `google-slides` (default), `xlsx` (Excel workbook, `skf-seo-audit/scripts/export_xlsx.py`) or `markdown` |
 | `driveFolder` | string | Optional. Google Drive folder name or id for decks and drafts |
 | `maxPending` | integer | Recommendations left unapplied before the agent stops adding new ones (default 3) |
 

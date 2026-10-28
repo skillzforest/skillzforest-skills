@@ -31,6 +31,7 @@ AGENT = "Mozilla/5.0 (compatible; skf-seo-audit/0.1)"
 TITLE_MAX = 60
 DESC_MIN, DESC_MAX = 50, 160
 HEAVY_BYTES = 1_000_000
+CRAWL_DELAY = 0.2  # seconds between two pages; robots.txt can ask for more
 
 
 def fetch(url, timeout=15):
@@ -119,10 +120,16 @@ class PageParser(HTMLParser):
 
 def sitemap_urls(site):
     """Every page URL listed by the site's sitemap(s)."""
+    global CRAWL_DELAY
     declared = []
     status, _, _, body = fetch(urllib.parse.urljoin(site, "/robots.txt"))
     if status == 200:
-        declared = re.findall(r"(?im)^\s*sitemap:\s*(\S+)", body.decode("utf-8", "replace"))
+        text = body.decode("utf-8", "replace")
+        declared = re.findall(r"(?im)^\s*sitemap:\s*(\S+)", text)
+        # Respect the site's Crawl-delay (seconds between two requests), capped at 10 s.
+        delay = re.search(r"(?im)^\s*crawl-delay:\s*([\d.]+)", text)
+        if delay:
+            CRAWL_DELAY = min(float(delay.group(1)), 10.0)
     defaults = [urllib.parse.urljoin(site, p) for p in ("/sitemap-index.xml", "/sitemap_index.xml", "/sitemap.xml")]
 
     def read_all(roots):
@@ -182,8 +189,11 @@ def main():
         finding("high", "sitemap-missing", site, "no sitemap found in robots.txt, /sitemap-index.xml or /sitemap.xml: pages found by following links instead")
         urls = [site]
     if len(urls) > args.max:
-        finding("info", "crawl-truncated", site, f"{len(urls)} pages in the sitemap, {args.max} crawled")
-        urls = urls[: args.max]
+        # Large sitemap: an even sample across it (sitemaps are often sorted by section), home page first.
+        finding("info", "crawl-sampled", site, f"{len(urls)} pages in the sitemap, {args.max} crawled, spread evenly")
+        step = len(urls) / (args.max - 1)
+        urls = [site] + [urls[int(i * step)] for i in range(args.max - 1)]
+        urls = list(dict.fromkeys(urls))
 
     pages = {}
     queue = collections.deque(urls)
@@ -197,6 +207,15 @@ def main():
                 finding("medium", "link-redirect", url, f"redirects to {final}: link to the final URL")
             else:
                 finding("medium", "sitemap-redirect", url, f"redirects to {final}: list the final URL in the sitemap")
+        if status == 0:
+            # No answer at all: timeout, or the server's anti-bot protection stopped the crawler. Not a broken page.
+            finding("info", "not-checked", url, "no answer (timeout or anti-bot protection): not checked")
+            pages[normalize(url)] = page
+            continue
+        if 300 <= status < 400:
+            finding("medium", "sitemap-redirect" if not follow_links else "link-redirect", url, f"HTTP {status}: list or link the final URL")
+            pages[normalize(url)] = page
+            continue
         if status != 200:
             finding("high", "page-error", url, f"HTTP {status}")
             pages[normalize(url)] = page
@@ -215,7 +234,7 @@ def main():
                 internal.add(normalize(absolute))
         page["internalLinks"] = sorted(internal)
         pages[normalize(url)] = page
-        time.sleep(0.2)  # be gentle with the server
+        time.sleep(CRAWL_DELAY)  # be gentle with the server
         if follow_links:
             # No sitemap: discover pages through internal links, breadth first, up to --max.
             for target in sorted(internal):
@@ -281,7 +300,10 @@ def main():
     for key, p in pages.items():
         if p.get("status") == 200 and key not in linked and key != normalize(site):
             finding("low", "orphan-page", p["url"], "in the sitemap but no page links to it")
-    known_bad = {k for k, p in pages.items() if p.get("status") not in (200, None)}
+    known_bad = {k for k, p in pages.items() if p.get("status") not in (200, None, 0)}
+    unanswered = sum(1 for p in pages.values() if p.get("status") == 0)
+    if unanswered > len(pages) / 4:
+        finding("medium", "crawl-blocked", site, f"{unanswered} of {len(pages)} pages did not answer: the site probably throttles robots; findings cover the other pages only")
     for p in ok:
         for target in p.get("internalLinks", []):
             if target in known_bad:
