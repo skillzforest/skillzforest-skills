@@ -157,6 +157,8 @@ At every pass, even when nothing else is done, when `sources.pagespeed` is true 
 variable is set (without a key the shared quota is almost always exhausted: say once in the final answer that a
 free key is missing, and skip):
 
+0. Check the key without printing it: `[ -n "$PAGESPEED_KEY" ] && echo key || echo no key`. Never say a key
+   is missing without running this check.
 1. Measure the home page and the two pages with the most impressions (or the first two `repo.pages`), mobile:
    `python3 ../skf-seo-audit/scripts/pagespeed.py <urls> --strategy mobile --csv <paths.reports>pagespeed.csv`.
    Commit the history file with the rest (mode `repo`: in the pull request if there is one, otherwise leave it for

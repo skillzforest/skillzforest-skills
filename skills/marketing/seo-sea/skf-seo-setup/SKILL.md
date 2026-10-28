@@ -87,26 +87,49 @@ a Markdown list. Format and tools: `skf-seo-pass/references/tracker.md`.
 - Test: create one real action if one exists already (an owner action found during setup, such as "verify the
   property" or "remove an old sitemap"), otherwise none — never a fake one.
 
-## 6. Schedule the pass
+## 6. The cloud environment
+
+Scheduled tasks run in a cloud environment. The default one (Claude Code: **Trusted** network) blocks most of what
+the agent needs — Google autocomplete, the fact sources of an article, the site itself, PageSpeed — and holds no key.
+Have the owner create one environment for the SEO tasks (once per account, shared by all their sites):
+
+1. Claude Code (app or claude.ai/code), **Code** tab, environment selector under the message box > **Cloud** >
+   **Add a cloud environment** (or **New environment** > Cloud): name `SEO`.
+2. **Network access**: **Full** — or **Custom** with at least `suggestqueries.google.com`, `www.googleapis.com`, the
+   site's own domain and the domains of `facts.urls`.
+3. **Environment variables**: `PAGESPEED_KEY=<key>` (free key: Google Cloud console > APIs > PageSpeed Insights API >
+   Credentials > API key, restricted to that API). A network secret (host `www.googleapis.com`, header
+   `X-goog-api-key`, no prefix) is safer when the account allows it; the variable is the fallback.
+4. Save, then get its id: in a terminal, `claude` then `/remote-env`, pick `SEO`; the id is written to
+   `remote.defaultEnvironmentId` in `~/.claude/settings.json`. Use it for every task below.
+
+Check it with a one-off task in that environment running `env | grep -o '^PAGESPEED[A-Z_]*'` (names only, never
+values), `pagespeed.py` on the home page and a request to `suggestqueries.google.com`.
+
+## 7. Schedule the pass
 
 1. Turn `cadence.schedule` into a cron **in UTC** and confirm it with the owner in their local time ("08:00 Paris
    = 07:00 UTC in winter, 06:00 in summer — the task stays on UTC"). Every 2 days: `0 7 */2 * *` (odd days of the
    month; the 31st and the 1st run back to back). Write it to `cadence.cron`.
 2. Create the scheduled task with the runtime's scheduling tool (Claude Code: the `schedule` skill / routines):
    - name `SEO <site.name>`;
+   - environment: the `SEO` environment of step 6;
    - repositories: the workspace **and** the skills repository;
    - connectors: Composio (and any other the profile needs);
    - model: a capable, economical one (Claude Sonnet) unless the owner prefers otherwise;
    - tools: shell, file read/write/edit, search, web search and fetch, skills;
    - prompt: [`references/routine-prompt.md`](references/routine-prompt.md) with the values filled in.
 3. Write `routine.id`, `routine.url` and `routine.skillsRepo` to the profile and commit.
+   Updating a task later (Claude Code routines API): send the **whole** `job_config.ccr` — environment, session
+   context (model, repositories, tools) and the prompt event. A partial `job_config` replaces the existing one and
+   silently drops the prompt and repositories.
 4. Run the task once now and read its log: it must reach Search Console (or say why not), respect the cadence, and
    end with a clear answer. Fix and rerun until it does.
 
 No scheduling tool in this runtime: give the owner the prompt and the cron to paste into their scheduler, and say
 the pass can always be run by hand with `skf-seo-pass`.
 
-## 7. Schedule the fix task (GitHub issues only)
+## 8. Schedule the fix task (GitHub issues only)
 
 When `tracker.type` is `github-issues`, the owner can label any issue `claude:fix` to have it fixed now, through a
 pull request (`skf-seo-pass/references/tracker.md`). Create a second scheduled task `Fix issues <site.name>`:
@@ -120,7 +143,7 @@ pull request (`skf-seo-pass/references/tracker.md`). Create a second scheduled t
 
 Test it on a real issue the owner chooses: they add the label, the pull request appears, they merge it.
 
-## 8. Hand over
+## 9. Hand over
 
 Tell the owner, in a few lines:
 
