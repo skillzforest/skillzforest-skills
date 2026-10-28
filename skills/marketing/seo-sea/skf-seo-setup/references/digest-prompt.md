@@ -10,13 +10,23 @@ Send the weekly SEO digest for these sites: <Site A> (<owner/repo-a>, board <url
 
 1. For each repository, list (read only) the open issues labeled `seo` and the open pull requests whose branch starts
    with `claude/` (SEO passes and claude:fix fixes).
-2. Write one plain-text email, in <language>, short and scannable:
-   - first line: the date, the number of sites, of pull requests to review and of owner actions;
-   - "À VALIDER": each open pull request, one line (site, number, title) and its link on the next line;
-   - "À FAIRE PAR TOI": each open issue labeled `seo:owner`, P1 first, one line (site, number, priority, title) and
-     its link;
-   - "PRIS EN CHARGE PAR L'AGENT": the open `seo:agent` issues, grouped by site on one line each, no links;
-   - the board links on one line; a last line: "Pour faire corriger un ticket tout de suite : étiquette claude:fix."
+2. Write one plain-text email in <language>, grouped BY SITE, each site with its board link on its own line and
+   three sub-lists sorted by priority, with visible priority markers:
+
+   SEO — point du <date> · <n> PR à valider · <n> actions pour toi · <n> prises par l'agent
+   Priorités : 🔴 P1 bloquant · 🟠 P2 important · 🔵 P3 finition
+   ━━━━━━━━━━━━━━━━━━
+   <SITE IN CAPITALS>
+   Board : <board url>
+   ✅ À VALIDER (pull requests)   — one line per pull request, its link on the next line
+   👤 À FAIRE PAR TOI             — <emoji> P<x> · #<n> — <title>, link on the next line
+   🤖 PRIS EN CHARGE PAR L'AGENT  — same format; "(correction en cours)" when the issue has the label claude:fix
+   (empty sub-lists omitted; "Rien en attente." for a site with nothing open)
+   ━━━━━━━━━━━━━━━━━━
+   FAIRE CORRIGER UN TICKET TOUT DE SUITE
+   Sans attendre la prochaine passe de l'agent : ouvre le ticket sur GitHub, clique sur « Labels » dans la colonne de
+   droite et ajoute l'étiquette « claude:fix ». Claude prépare la correction en quelques minutes et t'envoie une pull
+   request à valider ; le ticket se ferme quand tu la fusionnes.
 3. Nothing open anywhere: send nothing and say so.
 4. Send it with Composio GMAIL_SEND_EMAIL, account "<alias>", only to <address>, subject
    "SEO — actions en attente (<sites>)", include_signature false.

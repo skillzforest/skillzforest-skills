@@ -18,7 +18,7 @@ Whatever the tracker, the owner is told by `notify` (email or Slack): a digest o
 |---|---|
 | **id** | Stable fingerprint, `<rule>:<page path or theme>`, e.g. `title-duplicate:/docs/administration/`, `sitemap-old:www.romkade.com`, `content-gap:sunrise-2027`. Never two open actions with the same id |
 | **title** | What to do, in `style.reportLanguage`, under 80 characters, starting with a verb: « Supprimer l'ancien sitemap www.romkade.com dans Search Console » |
-| **who** | `agent` — the SEO pass can do it (titles, descriptions, sitemap entries in code, articles, links); `owner` — only a person can (Search Console settings, indexing requests, CMS changes in mode `advise`, legal or factual review, decisions) |
+| **who** | `agent` — anything that lives in the repository, whatever the folder: pages, layouts, documentation sites built from it, blog or demo content (MDX, Markdown), sitemap, links, titles. `owner` — only what no commit can do: Search Console settings, indexing requests, DNS, a CMS or back office without an API the agent can use, legal or factual sign-off, decisions. When in doubt, `agent` |
 | **priority** | `P1` blocking (not indexable, errors, wrong canonical, broken sitemap) · `P2` important (template issues on many pages, pages with impressions and few clicks, content gaps with clear demand) · `P3` polish |
 | **page** | URL concerned, or the theme for a content gap |
 | **problem** | What is wrong, with the figure that shows it |
