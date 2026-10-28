@@ -17,11 +17,15 @@ validation, and reminds the owner of theirs. Search Console stays read only. Web
 
 ## 1. Crawl the site
 
+A site not online yet (or a staging copy): build and start it on the computer (`npm run build && npm start`, with
+whatever demo-data switch it has) and crawl `http://localhost:<port>/`; Search Console and PageSpeed are then skipped.
+
 ```bash
 python3 scripts/crawl.py <site.url> --max 300 --out <paths.reports>audit-<YYYY-MM-DD>-crawl.json
 ```
 
-It reads the sitemap and every page in it, and lists findings by severity (`high`, `medium`, `low`, `info`) and
+It reads every sitemap robots.txt declares (or follows internal links from the home page when there is none)
+and every page found, and lists findings by severity (`high`, `medium`, `low`, `info`) and
 rule (`title-missing`, `description-duplicate`, `h1-count`, `canonical-elsewhere`, `noindex-in-sitemap`,
 `hreflang-not-reciprocal`, `img-alt-missing`, `broken-internal-link`, `orphan-page`, `structured-data-missing`…).
 

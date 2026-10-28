@@ -177,19 +177,26 @@ def main():
         findings.append({"severity": severity, "rule": rule, "page": page, "detail": detail})
 
     urls = sitemap_urls(site)
-    if not urls:
-        finding("high", "sitemap-missing", site, "no sitemap found in robots.txt, /sitemap-index.xml or /sitemap.xml")
+    follow_links = not urls
+    if follow_links:
+        finding("high", "sitemap-missing", site, "no sitemap found in robots.txt, /sitemap-index.xml or /sitemap.xml: pages found by following links instead")
         urls = [site]
     if len(urls) > args.max:
         finding("info", "crawl-truncated", site, f"{len(urls)} pages in the sitemap, {args.max} crawled")
         urls = urls[: args.max]
 
     pages = {}
-    for url in urls:
+    queue = collections.deque(urls)
+    queued = {normalize(u) for u in urls}
+    while queue:
+        url = queue.popleft()
         status, final, headers, body = fetch(url)
         page = {"url": url, "status": status, "final": final, "bytes": len(body)}
         if final and normalize(final) != normalize(url):
-            finding("medium", "sitemap-redirect", url, f"redirects to {final}: list the final URL in the sitemap")
+            if follow_links:
+                finding("medium", "link-redirect", url, f"redirects to {final}: link to the final URL")
+            else:
+                finding("medium", "sitemap-redirect", url, f"redirects to {final}: list the final URL in the sitemap")
         if status != 200:
             finding("high", "page-error", url, f"HTTP {status}")
             pages[normalize(url)] = page
@@ -209,6 +216,12 @@ def main():
         page["internalLinks"] = sorted(internal)
         pages[normalize(url)] = page
         time.sleep(0.2)  # be gentle with the server
+        if follow_links:
+            # No sitemap: discover pages through internal links, breadth first, up to --max.
+            for target in sorted(internal):
+                if target not in queued and len(queued) < args.max and not re.search(r"\.(pdf|zip|png|jpe?g|webp|svg|mp4|xml|txt)$", target):
+                    queued.add(target)
+                    queue.append(target)
 
         if not html.title:
             finding("high", "title-missing", url)
