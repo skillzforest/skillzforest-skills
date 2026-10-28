@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-seo-article",
+  "name": "SEO Article",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "marketing",
+  "subcategory": "seo-sea",
+  "description": "Writes the next article of a content plan in every language of the site, from its brief, the product's facts and cited sources, checks it, and brings it to the owner for validation without ever publishing: a pull request, a draft in the CMS through its API, or a Markdown and HTML file to paste into any back office — then moves its ticket to review.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unsupported",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

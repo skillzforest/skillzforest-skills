@@ -19,7 +19,9 @@ TRENDS_VIA = {"serpapi", "none"}
 CHANNELS = {"gmail", "outlook", "slack", "none"}
 WHEN = {"on-change", "every-pass"}
 DELIVERABLES = {"google-slides", "xlsx", "markdown"}
-TRACKERS = {"github-issues", "google-sheets"}
+TRACKERS = {"github-issues", "jira", "google-sheets"}
+PUBLISH = {"repo", "cms", "markdown"}
+CMS_TYPES = {"wordpress", "drupal", "contentful", "strapi", "webflow", "ghost", "custom"}
 DIGESTS = {"weekly", "every-pass", "none"}
 
 errors = []
@@ -166,12 +168,32 @@ def check(profile):
         value = need(profile, f"cadence.{field}", int)
         if value is not None and value < low:
             error(f"cadence.{field}", f"at least {low}")
-    per_week = get(profile, "cadence.articlesPerWeek")
-    if per_week is not None:
-        if not isinstance(per_week, int) or not 1 <= per_week <= 7:
-            error("cadence.articlesPerWeek", "an integer between 1 and 7")
-        if not get(profile, "repo.blog") and get(profile, "mode") == "repo":
-            error("cadence.articlesPerWeek", "needs repo.blog: where the articles go")
+    if get(profile, "cadence.articlesPerWeek") is not None:
+        warn("cadence.articlesPerWeek", "moved to content.perWeek (skf-seo-content-audit)")
+
+    # Content plan (optional)
+    if get(profile, "content") is not None:
+        for field, low, high in (("articles", 1, 100), ("perWeek", 1, 3)):
+            value = need(profile, f"content.{field}", int)
+            if value is not None and not low <= value <= high:
+                error(f"content.{field}", f"between {low} and {high}")
+        need(profile, "content.schedule", str)
+        publish = need(profile, "content.publish", str, PUBLISH)
+        if publish == "repo" and get(profile, "mode") != "repo":
+            error("content.publish", "repo needs mode repo")
+        if publish == "repo" and not get(profile, "repo.blog"):
+            warn("repo.blog", "no blog yet: the plan's first article ticket creates the blog section")
+        if publish == "cms":
+            need(profile, "content.cms.type", str, CMS_TYPES)
+            need(profile, "content.cms.baseUrl", str)
+            token = need(profile, "content.cms.tokenEnv", str)
+            if token and not re.match(r"^[A-Z][A-Z0-9_]*$", token):
+                error("content.cms.tokenEnv", "the NAME of an environment variable (UPPER_CASE), never the credential")
+            if get(profile, "content.cms.type") == "custom" and not get(profile, "content.cms.options.create"):
+                error("content.cms.options.create", "a custom API needs the endpoint that creates a draft")
+        pending = get(profile, "content.maxPending")
+        if pending is not None and (not isinstance(pending, int) or pending < 1):
+            error("content.maxPending", "at least 1")
 
     # Notification
     channel = need(profile, "notify.channel", str, CHANNELS)
@@ -189,6 +211,9 @@ def check(profile):
             error("tracker.repo", "expected owner/repo")
         if get(profile, "tracker.projectNumber") is None:
             warn("tracker.projectNumber", "no board: issues only")
+    elif tracker == "jira":
+        need(profile, "tracker.jiraSite", str)
+        need(profile, "tracker.jiraProject", str)
     elif tracker == "google-sheets":
         if not get(profile, "tracker.sheetId"):
             warn("tracker.sheetId", "not created yet: skf-seo-setup creates the sheet")

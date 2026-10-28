@@ -121,9 +121,26 @@ Slides deck and a report, and the owner applies them in their CMS.
 | `articleEveryDays` | integer | Minimum days between two new articles (14) |
 | `pageCooldownDays` | integer | Days before the same page is touched again (28) |
 | `maxActionsPerPass` | integer | Always 1 unless the owner insists |
-| `articlesPerWeek` | integer | Optional. New articles a week written by a dedicated article task (`skf-seo-setup` step 7b), from the SEO data. The pass then leaves new articles to that task |
-| `articleSchedule` | string | Optional, with `articlesPerWeek`. Human words, e.g. `Tuesday and Friday at 09:00 Europe/Paris` |
-| `articleCron` | string | Filled by `skf-seo-setup`: the article task's cron in UTC |
+
+### `content` (optional: the blog's content plan)
+
+Written by `skf-seo-content-audit`, read by `skf-seo-article`. Present: articles are planned and written by those
+two skills at this pace, and `skf-seo-pass` no longer writes new articles itself (it turns the gaps it finds into
+`content-gap:` actions for the next plan).
+
+| Field | Type | Meaning |
+|---|---|---|
+| `articles` | integer | Articles in the current plan (asked to the owner) |
+| `perWeek` | integer | Articles written a week, 1 to 3 |
+| `schedule` | string | Human words, e.g. `Tuesday and Friday at 09:00 Europe/Paris` |
+| `cron` | string | Filled by setup: the writer's cron in UTC |
+| `publish` | string | `repo` (pull requests), `cms` (drafts in the CMS through its API) or `markdown` (files to paste) — `skf-seo-article/references/publishers.md` |
+| `cms` | object | `publish: cms`: `type` (`wordpress`, `drupal`, `contentful`, `strapi`, `webflow`, `ghost`, `custom`), `baseUrl`, `tokenEnv` (environment variable holding the credential — never the credential), `userEnv`, `options`, `editUrl` |
+| `markdown` | object | `publish: markdown`: `dir` (default `<paths.reports>articles/`), `html` (default true) |
+| `planDir` | string | Folder of the current plan's briefs (`<paths.reports>content-plan-<date>/`) |
+| `maxPending` | integer | Articles waiting for validation before the writer pauses (default 2) |
+| `length` | string | Optional. Target length, e.g. `900-1400` words |
+| `author` | string | Optional. Author shown on articles |
 
 ### `notify` (required)
 
@@ -141,7 +158,10 @@ nothing is forgotten. Details: `skf-seo-pass/references/tracker.md`.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `type` | string | `github-issues` (one issue per action, on a GitHub Project board) or `google-sheets` (one row per action) |
+| `type` | string | `github-issues` (one issue per action, on a GitHub Project board), `jira` (one Jira issue per action) or `google-sheets` (one row per action) |
+| `jiraSite` | string | `jira`: the Jira address, `https://<team>.atlassian.net` |
+| `jiraProject` | string | `jira`: the project key (`SEO`, `WEB`…) |
+| `jiraIssueType` | string | Optional. Issue type for actions and articles (default `Task`) |
 | `repo` | string | `github-issues`: repository holding the issues (`owner/repo`), usually the site's or the workspace's |
 | `projectOwner` | string | Optional. Owner (user or organization) of the GitHub Project board |
 | `projectNumber` | integer | Optional. Number of the board; absent: issues only |

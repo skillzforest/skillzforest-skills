@@ -66,6 +66,10 @@ mode `advise` on the workspace's base branch.
 
 ## 5. Create the action tracker
 
+Jira (`tracker.type: jira`): connect the Jira toolkit in Composio (alias `tracker.account`), check with one read
+(the project `tracker.jiraProject` exists and the account can create issues in it), and use labels instead of
+GitHub's (`tracker.md`, Jira).
+
 Every action — audit findings, opportunities for later, what only the owner can do — goes to the tracker, never to
 a Markdown list. Format and tools: `skf-seo-pass/references/tracker.md`.
 
@@ -129,12 +133,16 @@ values), `pagespeed.py` on the home page and a request to `suggestqueries.google
 No scheduling tool in this runtime: give the owner the prompt and the cron to paste into their scheduler, and say
 the pass can always be run by hand with `skf-seo-pass`.
 
-### 7b. Schedule the article task (when `cadence.articlesPerWeek` is set)
+### 7b. Content plan and article task (optional)
 
-A third task `SEO articles <site.name>`, same environment, repositories, connectors, model and tools as the pass,
-on `cadence.articleSchedule` turned into a cron in UTC (write it to `cadence.articleCron`; twice a week:
-`0 8 * * 2,5`). Prompt: [`references/routine-prompt.md`](references/routine-prompt.md) with, in step 1, "Run an
-**article pass**: follow the section Article pass of skf-seo-pass/SKILL.md". Write its id to `routine.articleId`.
+Ask whether the owner wants blog articles written regularly. Yes: run `skf-seo-content-audit` (it asks how many
+and how often, writes the plan and the tickets, and how articles are validated: pull request, CMS draft or Markdown
+file). It then needs a third task `SEO articles <site.name>`: same environment, repositories, connectors, model and
+tools as the pass, on `content.schedule` turned into a cron in UTC (write it to `content.cron`; twice a week:
+`0 8 * * 2,5`), prompt [`references/routine-prompt.md`](references/routine-prompt.md) with, in step 1,
+"Follow skills/marketing/seo-sea/skf-seo-article/SKILL.md (one article)". Write its id to `routine.articleId`.
+Publishing through a CMS (`content.publish: cms`): the cloud environment needs the variable `content.cms.tokenEnv`
+(and `userEnv`) — tell the owner its exact name and where to set it, the way PAGESPEED_KEY is set (step 6).
 
 ## 8. Schedule the fix task (GitHub issues only)
 

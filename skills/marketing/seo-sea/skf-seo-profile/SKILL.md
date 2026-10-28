@@ -108,7 +108,8 @@ Do not connect anything here: `skf-seo-setup` does it and tests each connection.
 Propose `every 2 days at 08:00` in the owner's time zone, one action per pass, a new article at most every 14 days
 and no page touched again before 28 days (Google needs that long to measure a change). A young site with no
 traffic can run weekly. A site that needs content (a blog to fill, a young site) can also get **articles every
-week** from a dedicated task (`cadence.articlesPerWeek`, 1 or 2, with `articleSchedule`, e.g. Tuesday and Friday).
+week**: say that `skf-seo-content-audit` plans them (how many, how often, how they are validated) once the setup is
+done — do not ask about it here.
 
 ### 10. Notification
 
@@ -122,7 +123,8 @@ Every action the agent finds — and above all those only the owner can do — m
 cannot forget. Ask:
 
 1. Does the owner use GitHub? Mode `repo` almost always: propose **GitHub issues** in the site's repository
-   (`tracker.repo`). Then ask whether they already have a GitHub Project board for it (`gh project list --owner
+   (`tracker.repo`). A team that works in **Jira**: a Jira project (`tracker.jiraSite`, `tracker.jiraProject`),
+   connected through Composio. Then, for GitHub, ask whether they already have a GitHub Project board for it (`gh project list --owner
    <owner>`): reuse it (`projectOwner`, `projectNumber`) or let `skf-seo-setup` create one named `SEO <site.name>`.
 2. No GitHub, or a team that lives in spreadsheets: **Google Sheets** — one row per action, shared with the owner's
    address, created by `skf-seo-setup`.

@@ -7,6 +7,7 @@ do — becomes **one item in a tracker**, never a line lost in a Markdown file. 
 | `tracker.type` | Where the actions live | When |
 |---|---|---|
 | `github-issues` | One GitHub issue per action, in `tracker.repo`, on the GitHub Project board `tracker.project` when there is one | The owner uses GitHub (default in mode `repo`) |
+| `jira` | One Jira issue per action in the project `tracker.jiraProject` of `tracker.jiraSite`, through Composio (`tracker.account`) | The owner's team works in Jira |
 | `google-sheets` | One row per action in the Google Sheet `tracker.sheetId`, shared with `notify.to` | No GitHub, or the owner prefers a sheet (default in mode `advise`) |
 
 Whatever the tracker, the owner is told by `notify` (email or Slack): a digest of open owner actions every
@@ -29,8 +30,9 @@ Whatever the tracker, the owner is told by `notify` (email or Slack): a digest o
 
 ## GitHub issues (`tracker.type: github-issues`)
 
-Labels (created by setup): `seo`, `seo:agent`, `seo:owner`, `seo:P1`, `seo:P2`, `seo:P3`, `seo:scorecard` and
-`claude:fix`.
+Labels (created by setup): `seo`, `seo:agent`, `seo:owner`, `seo:P1`, `seo:P2`, `seo:P3`, `seo:scorecard`,
+`claude:fix`, and for article tickets `article`, `article:planned`, `article:review`, `article:changes`,
+`article:approved`, `article:published`, `article:abandoned`.
 
 `seo:scorecard` marks the one issue per site that holds the SEO scorecard (`SKILL.md`, Scorecard): its body is the
 latest card, its comments the history. It is not an action: leave it out of every list, count and digest of actions.
@@ -72,6 +74,49 @@ A pull request that fixes an action says `Fixes #<number>` in its body: the issu
 
 The board: a GitHub Project (`tracker.project`) with the default Status field (Todo, In Progress, Done). Every issue
 is added to it. Creating a board needs the `project` scope (`gh auth refresh -s project`).
+
+## Jira (`tracker.type: jira`)
+
+Through the Composio Jira toolkit, account `tracker.account` (look the exact tool names up with the toolkit's
+search: create issue, edit issue, search with JQL, transition issue, add comment, list transitions). Issue type
+`Task` (or `tracker.jiraIssueType`), labels `seo`, `seo-agent` or `seo-owner`, `seo-P1`/`P2`/`P3` (Jira labels take
+no colon), summary = the action's title, description = the same body as a GitHub issue, the `seo-id` marker on its
+last line. Find an action by JQL: `project = <key> AND labels = seo AND text ~ "seo-id: <id>"`. Close = transition
+to the project's done status with a comment. `claude:fix` has no Jira equivalent: the owner asks in the chat or
+labels the action `claude-fix`, which the next pass treats like an open `agent` action of priority `P1`.
+
+## Article tickets
+
+The content plan (`skf-seo-content-audit`) opens one ticket per article; `skf-seo-article` moves it along:
+
+| Status | GitHub labels | Jira | Google Sheet (tab `Articles`) | Meaning |
+|---|---|---|---|---|
+| Planned | `seo`, `article`, `article:planned` | first status, label `article` | `Planned` | In the plan, with its date |
+| To review | `article`, `article:review` | « In Review » (or the closest), comment with the link | `To review` | Written: pull request, CMS draft or `.md` file waiting for the owner |
+| Changes | `article:changes` added | label `article-changes` | `Changes` | The owner asked for changes in a comment |
+| Approved | `article:approved` | « Approved » or the closest | `Approved` | `markdown` mode: validated, to paste |
+| Published | closed, `article:published` | done status, the URL in a comment | `Published` + URL | Live on the site |
+| Abandoned | closed, `article:abandoned` | « Won't do » | `Abandoned` | Not worth writing any more (reason in a comment) |
+
+Ticket body:
+
+```markdown
+**Publication** : <date> · **Type** : <new|update|news|pillar|setup>
+**Recherche visée** : <main search per language>
+**Pourquoi** : <the brief's evidence in two lines>
+**Brief** : <link to the brief file>
+**Validation** : <pull request | brouillon dans <CMS> | fichier .md à coller>
+
+Relisez l'article quand le ticket passe à « À valider », puis publiez-le (fusion, « Publier » dans le CMS, ou collage
+du fichier) et passez le ticket à « Publié » avec l'adresse.
+<!-- seo-id: article:<slug> -->
+```
+
+`python3 scripts/tracker_github.py article --repo OWNER/REPO --id article:<slug> --status <status> [--title … --body-file …]
+[--comment …]` creates the ticket (first call, with title and body) or moves it; `published` and `abandoned` close it.
+
+Article tickets are not SEO actions: the pass and the digest count them separately (`article:*`), and a pass never
+fixes one. The sheet keeps them in an `Articles` tab: ID, Date, Type, Title, Target, Status, Brief, Link, URL.
 
 ## Google Sheets (`tracker.type: google-sheets`)
 

@@ -7,6 +7,8 @@ Usage:
                              --body-file FILE [--project-owner OWNER --project-number N]
     tracker_github.py list   --repo OWNER/REPO [--who agent|owner] [--state open|closed|all]
     tracker_github.py close  --repo OWNER/REPO --id ID [--comment TEXT]
+    tracker_github.py article --repo OWNER/REPO --id article:SLUG --status planned|review|changes|approved|published|abandoned
+                             [--title TITLE --body-file FILE] [--comment TEXT] [--project-owner OWNER --project-number N]
 
 Every issue carries a hidden marker `<!-- seo-id: ID -->` in its body: upsert finds it again instead of opening a
 duplicate. Output is JSON on stdout. Requires gh, signed in (`gh auth status`); a board needs the `project` scope.
@@ -26,6 +28,13 @@ LABELS = {
     "seo:P3": ("C5DEF5", "Polish"),
     "seo:scorecard": ("0E8A16", "SEO scorecard of the site (not an action)"),
     "claude:fix": ("7B4DFF", "Fix it now: Claude opens a pull request"),
+    "article": ("FBCA04", "Blog article of the content plan"),
+    "article:planned": ("FEF2C0", "Article planned, with its date"),
+    "article:review": ("F9D0C4", "Article written: waiting for the owner's review"),
+    "article:changes": ("E99695", "Changes asked on the article"),
+    "article:approved": ("C2E0C6", "Article validated: to publish"),
+    "article:published": ("0E8A16", "Article live on the site"),
+    "article:abandoned": ("D4C5F9", "Article no longer worth writing"),
 }
 
 
@@ -102,6 +111,45 @@ def cmd_upsert(args):
     return {"action": "reopened", "url": issue["url"]}
 
 
+ARTICLE_STATUSES = ("planned", "review", "changes", "approved", "published", "abandoned")
+
+
+def cmd_article(args):
+    """Create an article ticket or move it to another status (references/tracker.md, Article tickets)."""
+    issue = find(args.repo, args.id)
+    status_label = f"article:{args.status}"
+    if issue is None:
+        if not (args.title and args.body_file):
+            raise SystemExit("a new article ticket needs --title and --body-file")
+        with open(args.body_file, encoding="utf-8") as handle:
+            body = handle.read().rstrip()
+        if marker(args.id) not in body:
+            body += f"\n{marker(args.id)}\n"
+        url = gh("issue", "create", "-R", args.repo, "--title", args.title, "--body", body,
+                 "--label", "seo", "--label", "article", "--label", status_label).strip()
+        add_to_project(args, url)
+        return {"action": "created", "url": url, "status": args.status}
+
+    number = str(issue["url"].rsplit("/", 1)[-1])
+    edit = ["issue", "edit", number, "-R", args.repo, "--add-label", status_label]
+    for label in issue["labels"]:
+        if label["name"].startswith("article:") and label["name"] != status_label:
+            # "changes" is added on top of "review"; any other status replaces the previous one.
+            if not (args.status == "changes" and label["name"] == "article:review"):
+                edit += ["--remove-label", label["name"]]
+    if args.title:
+        edit += ["--title", args.title]
+    gh(*edit)
+    if args.comment:
+        gh("issue", "comment", number, "-R", args.repo, "--body", args.comment)
+    if args.status in ("published", "abandoned") and issue["state"] == "OPEN":
+        gh("issue", "close", number, "-R", args.repo)
+    elif issue["state"] != "OPEN":
+        gh("issue", "reopen", number, "-R", args.repo)
+    add_to_project(args, issue["url"])
+    return {"action": "moved", "url": issue["url"], "status": args.status}
+
+
 def cmd_list(args):
     state = {"open": "open", "closed": "closed", "all": "all"}[args.state]
     command = ["issue", "list", "-R", args.repo, "--state", state, "--label", "seo", "--limit", "500",
@@ -113,8 +161,8 @@ def cmd_list(args):
         body = issue.pop("body") or ""
         seo_id = body.split("<!-- seo-id: ", 1)[1].split(" -->", 1)[0] if "<!-- seo-id: " in body else None
         names = [label["name"] for label in issue.pop("labels")]
-        if "seo:scorecard" in names:
-            continue  # the scorecard is not an action
+        if "seo:scorecard" in names or "article" in names:
+            continue  # the scorecard and article tickets are not actions
         priority = next((n.split(":")[1] for n in names if n in ("seo:P1", "seo:P2", "seo:P3")), None)
         who = "owner" if "seo:owner" in names else "agent" if "seo:agent" in names else None
         items.append({**issue, "id": seo_id, "priority": priority, "who": who})
@@ -153,9 +201,19 @@ def main():
     ls.add_argument("--who", choices=("agent", "owner"))
     ls.add_argument("--state", choices=("open", "closed", "all"), default="open")
     sub.choices["close"].add_argument("--comment")
+    art = sub.add_parser("article")
+    art.add_argument("--repo", required=True)
+    art.add_argument("--id", required=True)
+    art.add_argument("--status", choices=ARTICLE_STATUSES, required=True)
+    art.add_argument("--title")
+    art.add_argument("--body-file")
+    art.add_argument("--comment")
+    art.add_argument("--project-owner")
+    art.add_argument("--project-number", type=int)
 
     args = parser.parse_args()
-    handler = {"setup": cmd_setup, "upsert": cmd_upsert, "list": cmd_list, "close": cmd_close}[args.command]
+    handler = {"setup": cmd_setup, "upsert": cmd_upsert, "list": cmd_list, "close": cmd_close,
+               "article": cmd_article}[args.command]
     json.dump(handler(args), sys.stdout, ensure_ascii=False, indent=2)
     print()
     return 0
