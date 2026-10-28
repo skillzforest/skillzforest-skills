@@ -121,6 +121,9 @@ Slides deck and a report, and the owner applies them in their CMS.
 | `articleEveryDays` | integer | Minimum days between two new articles (14) |
 | `pageCooldownDays` | integer | Days before the same page is touched again (28) |
 | `maxActionsPerPass` | integer | Always 1 unless the owner insists |
+| `articlesPerWeek` | integer | Optional. New articles a week written by a dedicated article task (`skf-seo-setup` step 7b), from the SEO data. The pass then leaves new articles to that task |
+| `articleSchedule` | string | Optional, with `articlesPerWeek`. Human words, e.g. `Tuesday and Friday at 09:00 Europe/Paris` |
+| `articleCron` | string | Filled by `skf-seo-setup`: the article task's cron in UTC |
 
 ### `notify` (required)
 

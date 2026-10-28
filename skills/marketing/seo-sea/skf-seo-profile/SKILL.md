@@ -107,7 +107,8 @@ Do not connect anything here: `skf-seo-setup` does it and tests each connection.
 
 Propose `every 2 days at 08:00` in the owner's time zone, one action per pass, a new article at most every 14 days
 and no page touched again before 28 days (Google needs that long to measure a change). A young site with no
-traffic can run weekly.
+traffic can run weekly. A site that needs content (a blog to fill, a young site) can also get **articles every
+week** from a dedicated task (`cadence.articlesPerWeek`, 1 or 2, with `articleSchedule`, e.g. Tuesday and Friday).
 
 ### 10. Notification
 

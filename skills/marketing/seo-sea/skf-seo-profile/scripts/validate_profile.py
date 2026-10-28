@@ -166,6 +166,12 @@ def check(profile):
         value = need(profile, f"cadence.{field}", int)
         if value is not None and value < low:
             error(f"cadence.{field}", f"at least {low}")
+    per_week = get(profile, "cadence.articlesPerWeek")
+    if per_week is not None:
+        if not isinstance(per_week, int) or not 1 <= per_week <= 7:
+            error("cadence.articlesPerWeek", "an integer between 1 and 7")
+        if not get(profile, "repo.blog") and get(profile, "mode") == "repo":
+            error("cadence.articlesPerWeek", "needs repo.blog: where the articles go")
 
     # Notification
     channel = need(profile, "notify.channel", str, CHANNELS)

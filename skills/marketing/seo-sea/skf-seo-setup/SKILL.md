@@ -129,6 +129,13 @@ values), `pagespeed.py` on the home page and a request to `suggestqueries.google
 No scheduling tool in this runtime: give the owner the prompt and the cron to paste into their scheduler, and say
 the pass can always be run by hand with `skf-seo-pass`.
 
+### 7b. Schedule the article task (when `cadence.articlesPerWeek` is set)
+
+A third task `SEO articles <site.name>`, same environment, repositories, connectors, model and tools as the pass,
+on `cadence.articleSchedule` turned into a cron in UTC (write it to `cadence.articleCron`; twice a week:
+`0 8 * * 2,5`). Prompt: [`references/routine-prompt.md`](references/routine-prompt.md) with, in step 1, "Run an
+**article pass**: follow the section Article pass of skf-seo-pass/SKILL.md". Write its id to `routine.articleId`.
+
 ## 8. Schedule the fix task (GitHub issues only)
 
 When `tracker.type` is `github-issues`, the owner can label any issue `claude:fix` to have it fixed now, through a

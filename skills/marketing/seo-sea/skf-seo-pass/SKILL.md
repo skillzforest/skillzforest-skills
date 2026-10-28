@@ -38,7 +38,8 @@ each site language, following `languages.list[].voice` and `style.rules`.
 ## 1. Take stock
 
 1. **Something already waiting for the owner?**
-   - Mode `repo`: an open pull request whose branch starts with `repo.branchPrefix` → change nothing on the site: only
+   - Mode `repo`: an open pull request whose branch starts with `repo.branchPrefix` (article pull requests,
+     `<repo.branchPrefix>article-`, do not count) → change nothing on the site: only
      do the **Speed**, **Scorecard** and **Owner actions** sections below, then stop, one sentence in the final answer.
    - Mode `advise`: count the journal lines marked `pending` (recommendations not applied yet). At
      `advise.maxPending` (default 3) or more → only do the **Speed**, **Scorecard** and **Owner actions** sections,
@@ -93,7 +94,9 @@ Keep only searches tied to what the product really does (`site.pitch`, `topics.t
    already handles it) and one whose page is under the cooldown. Fix it in the pull request with `Fixes #<number>`.
 3. **A search with no dedicated page** (impressions on a page that only mentions it in passing, or demand found in
    step 3): write an article (mode `repo` with a `repo.blog`, or a draft in mode `advise`). If an existing article
-   already partly answers it, enrich that one instead.
+   already partly answers it, enrich that one instead. When `cadence.articlesPerWeek` is set, the article task
+   writes new articles: create or update a `content-gap:<theme>` action (`who: agent`, the search and its figures)
+   for it instead, and pick another opportunity.
 4. **The home page**: change its title or description only when the data clearly shows a main search (several dozen
    impressions) badly served. It matters more than anything else: one change at a time, well argued.
 
@@ -173,6 +176,26 @@ free key is missing, and skip):
    Give the figures and the PageSpeed report link (`https://pagespeed.web.dev/analysis?url=<page>`) in the action.
 3. When an open `speed:` action's page is back to normal, close it with the new figures.
 4. Report the three scores in the pass report (or the final answer) on one line.
+
+## Article pass
+
+When the prompt asks for an **article pass** (the article task of `cadence.articlesPerWeek`), write one new article
+instead of a normal pass:
+
+1. Read the profile, the journal, the existing articles (`repo.blog.dir`) and the open actions, as in step 1. Two
+   article pull requests (branches `<repo.branchPrefix>article-`) already wait for the owner → write nothing, stop,
+   one sentence: articles must not pile up unread.
+2. Pick the subject, in this order: an open `content-gap:` action of the tracker (`P1`, `P2`, then the oldest); a
+   search with impressions and no dedicated page (step 2); the demand found in step 3 on `topics.target`; a recent,
+   checkable piece of news on those themes from the sources `facts.notes` allows. Never a subject an existing
+   article already answers (enrich it in a normal pass instead), never one matching `topics.exclude`.
+3. Write it as step 5 says (every language, `repo.blog.format`, `repo.blog.rules`, internal links, the product
+   section), every outside fact with its source. Check (step 6).
+4. Branch `<repo.branchPrefix>article-<YYYY-MM-DD>`, one commit, push that branch only, a pull request whose body is
+   the subject, why it was chosen (the figures or the news, with links), the target searches and the sources;
+   `Fixes #<number>` when it answers a `content-gap:` action. Journal line `article`, notify as in step 7.
+5. No Search Console figures and no demand on any theme: write nothing and say why — an article nobody searches for
+   is not worth the owner's review.
 
 ## Scorecard
 
