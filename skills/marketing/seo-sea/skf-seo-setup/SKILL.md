@@ -143,7 +143,13 @@ pull request (`skf-seo-pass/references/tracker.md`). Create a second scheduled t
 
 Test it on a real issue the owner chooses: they add the label, the pull request appears, they merge it.
 
-## 9. Hand over
+## 9. One digest for several sites
+
+When the owner already has other sites on the SEO factory, propose a single weekly email for all of them: set
+`tracker.digest` to `none` in every profile and create (or extend) one `SEO digest` task with
+[`references/digest-prompt.md`](references/digest-prompt.md), the SEO environment and every site's repository.
+
+## 10. Hand over
 
 Tell the owner, in a few lines:
 

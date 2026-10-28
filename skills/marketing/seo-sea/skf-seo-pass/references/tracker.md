@@ -100,5 +100,6 @@ At every pass, when the last digest is older than `tracker.digest` (date kept in
 - the open `owner` actions, `P1` first then oldest first, each on one line: priority, title, link (issue or sheet);
 - one line on what the agent fixed since the last digest, and the link to the board or sheet.
 
-Nothing open for the owner: no digest. A new `P1` owner action: tell the owner in the same pass, without waiting
+Nothing open for the owner: no digest. An owner who follows several sites gets one consolidated digest instead
+(`tracker.digest: none` in each profile, one `SEO digest` task: `skf-seo-setup/references/digest-prompt.md`). A new `P1` owner action: tell the owner in the same pass, without waiting
 for the digest.
