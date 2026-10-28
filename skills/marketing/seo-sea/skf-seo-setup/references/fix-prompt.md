@@ -10,7 +10,9 @@ Fix one GitHub issue the owner asked for, on <owner/repo>.
 
 1. List the open issues of <owner/repo> labeled `claude:fix`. Drop those that already have an open pull request
    from a branch starting with `claude/fix-<number>-` or a comment from a previous run linking one. None left: stop,
-   one sentence. Otherwise take the oldest.
+   one sentence. Otherwise take the oldest. Adding several labels at once starts several runs at the same moment:
+   also drop an issue that already has a remote branch `claude/fix-<number>-*` (`git ls-remote origin`), and check
+   again right before pushing — if another run pushed one meanwhile, stop without pushing.
 2. The skills live in the other checked-out repository (<skills repo>). Follow
    skills/development/code/skf-github-issue-fix/SKILL.md exactly on that issue. When the `gh` command line is not
    available or not signed in, build the issue context yourself with the GitHub tools (title, body, every comment,
