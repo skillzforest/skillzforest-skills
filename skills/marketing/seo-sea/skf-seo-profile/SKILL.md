@@ -45,7 +45,8 @@ skf-seo-profile  →  .seo/profile.json  →  skf-seo-setup  →  skf-seo-audit 
 
 ### 2. The site
 
-Fetch the home page. Propose `site.name`, `site.url`, `site.pitch` (what it does, for whom, in two sentences),
+Fetch the home page with and without `www` and follow the redirects: `site.url` is the final address, the one the
+page's canonical names (never assume one form). Propose `site.name`, `site.url`, `site.pitch` (what it does, for whom, in two sentences),
 `site.audience` and `site.business` (free, freemium, paid, open source). Ask the owner to correct.
 
 ### 3. Languages
