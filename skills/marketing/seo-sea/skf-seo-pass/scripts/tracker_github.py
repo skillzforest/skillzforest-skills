@@ -24,6 +24,7 @@ LABELS = {
     "seo:P1": ("B60205", "Blocking: indexing, errors"),
     "seo:P2": ("D93F0B", "Important"),
     "seo:P3": ("C5DEF5", "Polish"),
+    "seo:scorecard": ("0E8A16", "SEO scorecard of the site (not an action)"),
     "claude:fix": ("7B4DFF", "Fix it now: Claude opens a pull request"),
 }
 
@@ -112,6 +113,8 @@ def cmd_list(args):
         body = issue.pop("body") or ""
         seo_id = body.split("<!-- seo-id: ", 1)[1].split(" -->", 1)[0] if "<!-- seo-id: " in body else None
         names = [label["name"] for label in issue.pop("labels")]
+        if "seo:scorecard" in names:
+            continue  # the scorecard is not an action
         priority = next((n.split(":")[1] for n in names if n in ("seo:P1", "seo:P2", "seo:P3")), None)
         who = "owner" if "seo:owner" in names else "agent" if "seo:agent" in names else None
         items.append({**issue, "id": seo_id, "priority": priority, "who": who})

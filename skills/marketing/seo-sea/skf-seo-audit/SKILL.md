@@ -120,11 +120,14 @@ one page, a template, a new article). Order:
    to check it. Group a finding repeated on many pages into one action listing the pages. Re-running the audit
    updates existing actions and never duplicates them; an open action whose problem is gone is closed with a
    comment saying so.
-3. **Deck** (Google Slides, `connectors.md`), in mode `advise` always, in mode `repo` when the owner wants one:
+3. **Scorecard**: once the actions are in the tracker, publish the site's first scorecard (or the new one) exactly as
+   `skf-seo-pass/SKILL.md`, section Scorecard, says — the passes then update it, so the owner follows one number
+   from audit to audit. Put its first line at the top of the report's summary.
+4. **Deck** (Google Slides, `connectors.md`), in mode `advise` always, in mode `repo` when the owner wants one:
    title, the site in five figures, the top 5 fixes (problem, why it matters, what to do), the content gaps, the
    speed, what the agent will do next and what the owner must do. One idea per slide, numbers over adjectives.
-4. Commit the report to the workspace (mode `repo`: on a branch `<repo.branchPrefix>audit-<date>`
+5. Commit the report to the workspace (mode `repo`: on a branch `<repo.branchPrefix>audit-<date>`
    with a pull request, never on `repo.baseBranch`; mode `advise`: on the workspace's base branch).
-5. Notify (`notify`) with the five-line summary, the number of new actions for the agent and for the owner, the
+6. Notify (`notify`) with the scorecard line, the five-line summary, the number of new actions for the agent and for the owner, the
    owner's `P1` actions one per line, and the links to the deck and the tracker (`tracker.url`).
-6. Final answer: the summary, the links, and the owner actions created.
+7. Final answer: the scorecard line, the summary, the links, and the owner actions created.

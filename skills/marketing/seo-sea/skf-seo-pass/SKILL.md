@@ -39,10 +39,10 @@ each site language, following `languages.list[].voice` and `style.rules`.
 
 1. **Something already waiting for the owner?**
    - Mode `repo`: an open pull request whose branch starts with `repo.branchPrefix` → change nothing on the site: only
-     do the **Owner actions** section below, then stop, one sentence in the final answer.
+     do the **Speed**, **Scorecard** and **Owner actions** sections below, then stop, one sentence in the final answer.
    - Mode `advise`: count the journal lines marked `pending` (recommendations not applied yet). At
-     `advise.maxPending` (default 3) or more → only do the **Owner actions** section, then stop, and remind
-     the owner which ones wait.
+     `advise.maxPending` (default 3) or more → only do the **Speed**, **Scorecard** and **Owner actions** sections,
+     then stop, and remind the owner which ones wait.
 2. Read the journal (`paths.journal`), the latest reports (`paths.reports`) and the **open actions** of the tracker
    (`tracker.md`: `list` for GitHub issues, read the sheet otherwise).
 3. List existing content: in mode `repo` the articles under `repo.blog.dir` (title, `key` or slug, keywords, date)
@@ -173,6 +173,32 @@ free key is missing, and skip):
    Give the figures and the PageSpeed report link (`https://pagespeed.web.dev/analysis?url=<page>`) in the action.
 3. When an open `speed:` action's page is back to normal, close it with the new figures.
 4. Report the three scores in the pass report (or the final answer) on one line.
+
+## Scorecard
+
+At every pass, even when nothing else is done, measure the site the same way so the owner sees whether its SEO is
+good and where it is heading — continuous SEO needs a number that moves:
+
+1. Crawl the live site: `python3 ../skf-seo-audit/scripts/crawl.py <site.url> --max 100 --out /tmp/crawl.json`.
+2. Count the open tracker actions by priority (`P1,P2,P3`, the scorecard item itself excluded).
+3. Search Console totals of the window and of the previous one (step 2), when there is a property.
+4. Read the previous card: the tracker item `seo-id: scorecard` (GitHub: the issue labeled `seo:scorecard`; sheet:
+   the tab `Scorecard`). Save its body to `/tmp/previous.md`.
+5. `python3 scripts/scorecard.py --site <site.name> --crawl /tmp/crawl.json --pagespeed <paths.reports>pagespeed.csv
+   --actions <P1,P2,P3> [--sc <clicks,impressions,position> --sc-prev <…>] --previous /tmp/previous.md
+   --lang <style.reportLanguage>` prints the card: a score out of 100 (technical /50, speed /25, open actions /25),
+   a status 🟢 / 🟠 / 🔴 and the change since the previous card.
+6. Publish it, never on the base branch:
+   - GitHub issues: one issue per site, title `📊 Tableau de bord SEO — <site.name>` (in `style.reportLanguage`),
+     labels `seo` and `seo:scorecard`, body = the card. Create it once, then edit its body at every pass and add a
+     comment with one line, `<date> — <summary>`, so the comments are the history. Never close it, never give it
+     `seo:agent`, `seo:owner` or `claude:fix`.
+   - Google Sheets: a tab `Scorecard`, one row per pass (date, score, status, technical, speed, actions, clicks,
+     impressions, position).
+7. Give the card's first line in the pass report and the final answer.
+
+The score is a trend indicator, not an absolute grade: say so when the owner asks. A score that drops 10 points or
+more since the previous card, or turns 🔴, is told to the owner in the same pass, with the cause (which part fell).
 
 ## Owner actions
 

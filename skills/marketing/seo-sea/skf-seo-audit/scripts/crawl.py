@@ -297,8 +297,9 @@ def main():
     linked = set()
     for p in ok:
         linked.update(p.get("internalLinks", []))
+    sampled = any(f["rule"] == "crawl-sampled" for f in findings)  # a sample cannot tell who links to a page
     for key, p in pages.items():
-        if p.get("status") == 200 and key not in linked and key != normalize(site):
+        if not sampled and p.get("status") == 200 and key not in linked and key != normalize(site):
             finding("low", "orphan-page", p["url"], "in the sitemap but no page links to it")
     known_bad = {k for k, p in pages.items() if p.get("status") not in (200, None, 0)}
     unanswered = sum(1 for p in pages.values() if p.get("status") == 0)

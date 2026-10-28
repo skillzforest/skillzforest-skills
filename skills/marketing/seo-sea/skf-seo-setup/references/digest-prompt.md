@@ -9,15 +9,24 @@ Replace the `<…>` values.
 Send the weekly SEO digest for these sites: <Site A> (<owner/repo-a>, board <url-a>), <Site B> (<owner/repo-b>, board <url-b>).
 
 1. For each repository, list (read only) the open issues labeled `seo` and the open pull requests whose branch starts
-   with `claude/` (SEO passes and claude:fix fixes).
+   with `claude/` (SEO passes and claude:fix fixes). The issue labeled `seo:scorecard` is not an action: read its
+   body (the latest scorecard: score out of 100, status, technical, speed, actions, Search Console) and its last
+   comments (the history), and leave it out of the lists.
 2. Write one plain-text email in <language>, grouped BY SITE, each site with its board link on its own line and
    three sub-lists sorted by priority, with visible priority markers:
 
    SEO — point du <date> · <n> PR à valider · <n> actions pour toi · <n> prises par l'agent
    Priorités : 🔴 P1 bloquant · 🟠 P2 important · 🔵 P3 finition
+
+   ÉTAT DES SITES (note sur 100, mesurée à chaque passe)
+   🟢 <site> 92/100 (▲ +4 en 7 j) · 🟠 <site> 74/100 (=) · 🔴 <site> 55/100 (▼ −8)   — one per site, worst first
    ━━━━━━━━━━━━━━━━━━
-   <SITE IN CAPITALS>
+   <SITE IN CAPITALS> — <status emoji> <score>/100 (<change over the last 7 days, from the scorecard comments>)
+   Technique <n>/50 · Vitesse <n>/25 · Actions <n>/25 · Search Console 28 j : <clicks> clics (<change>),
+   <impressions> impressions, position <position>   — "pas encore mesuré" when the site has no scorecard yet
+   Ce qui fait bouger la note : <one sentence: the part that changed most and why, from the history>
    Board : <board url>
+   Tableau de bord : <scorecard issue url>
    ✅ À VALIDER (pull requests)   — one line per pull request, its link on the next line
    👤 À FAIRE PAR TOI             — <emoji> P<x> · #<n> — <title>, link on the next line
    🤖 PRIS EN CHARGE PAR L'AGENT  — same format; "(correction en cours)" when the issue has the label claude:fix

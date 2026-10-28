@@ -29,7 +29,11 @@ Whatever the tracker, the owner is told by `notify` (email or Slack): a digest o
 
 ## GitHub issues (`tracker.type: github-issues`)
 
-Labels (created by setup): `seo`, `seo:agent`, `seo:owner`, `seo:P1`, `seo:P2`, `seo:P3`, and `claude:fix`.
+Labels (created by setup): `seo`, `seo:agent`, `seo:owner`, `seo:P1`, `seo:P2`, `seo:P3`, `seo:scorecard` and
+`claude:fix`.
+
+`seo:scorecard` marks the one issue per site that holds the SEO scorecard (`SKILL.md`, Scorecard): its body is the
+latest card, its comments the history. It is not an action: leave it out of every list, count and digest of actions.
 
 `claude:fix` is the owner's switch: put on any issue (agent or owner), it starts the fix task (`skf-seo-setup`,
 step 6) that fixes that issue with `skf-github-issue-fix` and opens a pull request — even in protected files, for
