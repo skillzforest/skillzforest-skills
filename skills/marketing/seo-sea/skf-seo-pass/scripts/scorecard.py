@@ -13,6 +13,8 @@ Score (out of 100, parts without data are left out and the rest scaled up):
     actions    /25  25 - 8 per open P1, 3 per open P2, 1 per open P3
 Status: red under 60 or with an open P1, orange under 80, green otherwise.
 Search Console figures (28 days) are shown with their change but are not part of the score: a young site has none.
+They give the visibility stage instead, shown next to the score: starting (under 100 impressions in 28 days),
+growing (under 1,000), established — a sound site nobody finds yet is not "good SEO".
 
 Prints the Markdown card (for the scorecard issue body), then writes the JSON (embedded in the card as a comment, so
 the next pass and the digest can read it back). Standard library only.
@@ -37,6 +39,7 @@ TEXT = {
         "position": "position moyenne", "pages": "pages vérifiées", "clean": "sans problème", "since": "depuis le",
         "status": {"green": "🟢 bon", "orange": "🟠 à surveiller", "red": "🔴 à corriger"}, "none": "pas de données",
         "updated": "Mis à jour par la passe SEO du",
+        "visibility": "Visibilité", "stages": {"starting": "🌱 démarrage", "growing": "📈 en progression", "established": "✅ installée"},
     },
     "en": {
         "title": "SEO scorecard", "score": "SEO score", "technical": "Technical", "speed": "Speed",
@@ -44,6 +47,7 @@ TEXT = {
         "position": "average position", "pages": "pages checked", "clean": "without problems", "since": "since",
         "status": {"green": "🟢 good", "orange": "🟠 to watch", "red": "🔴 to fix"}, "none": "no data",
         "updated": "Updated by the SEO pass of",
+        "visibility": "Visibility", "stages": {"starting": "🌱 starting", "growing": "📈 growing", "established": "✅ established"},
     },
 }
 
@@ -148,7 +152,9 @@ def main():
         diff = score - previous["score"]
         change = f"▲ +{diff}" if diff > 0 else f"▼ {diff}" if diff < 0 else "="
         delta = f" ({change} {t['since']} {previous.get('date')})"
-    data["summary"] = f"{t['status'][status]} {score}/100{delta}"
+    stage = None if not sc else "starting" if sc[1] < 100 else "growing" if sc[1] < 1000 else "established"
+    data["visibility"] = stage
+    data["summary"] = f"{t['status'][status]} {score}/100{delta}" + (f" · {t['visibility']} {t['stages'][stage]}" if stage else "")
 
     none = t["none"]
     tech_cell = f"{tech}/50 — {clean}/{checked} {t['pages']} {t['clean']}" if tech is not None else none
@@ -156,7 +162,8 @@ def main():
     lines = [
         f"## {t['title']} — {args.site}",
         "",
-        f"**{t['score']} : {score}/100** — {t['status'][status]}{delta}",
+        f"**{t['score']} : {score}/100** — {t['status'][status]}{delta}"
+        + (f" · **{t['visibility']} : {t['stages'][stage]}**" if stage else ""),
         "",
         "| | |",
         "|---|---|",

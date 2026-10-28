@@ -22,6 +22,8 @@ Send the weekly SEO digest for these sites: <Site A> (<owner/repo-a>, board <url
    🟢 <site> 92/100 (▲ +4 en 7 j) · 🟠 <site> 74/100 (=) · 🔴 <site> 55/100 (▼ −8)   — one per site, worst first
    ━━━━━━━━━━━━━━━━━━
    <SITE IN CAPITALS> — <status emoji> <score>/100 (<change over the last 7 days, from the scorecard comments>)
+   · Visibilité <stage: 🌱 démarrage, 📈 en progression, ✅ installée> — the score is the site's health, the stage
+   says whether people find it yet: say it plainly when a healthy site is still starting
    Technique <n>/50 · Vitesse <n>/25 · Actions <n>/25 · Search Console 28 j : <clicks> clics (<change>),
    <impressions> impressions, position <position>   — "pas encore mesuré" when the site has no scorecard yet
    Ce qui fait bouger la note : <one sentence: the part that changed most and why, from the history>
