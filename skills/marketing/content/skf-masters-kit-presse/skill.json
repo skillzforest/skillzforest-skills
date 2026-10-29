@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-masters-kit-presse",
+  "name": "Masters Kit Presse",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "marketing",
+  "subcategory": "content",
+  "description": "Reads a website's brand (colors, fonts, logos, tone), checks contrast and derives a dark and a light palette, then builds two reusable masters to present a digital product to the press, bloggers and influencers: a 16:9 deck (Google Slides or .pptx, 17 slides with filling notes) and a document (Google Docs or .docx) combining a press release, a creators brief and a Q&A. Standard launch outline, {{FIELD}} placeholders, no invented product content.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unknown",
+    "perplexity": "unknown",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}
