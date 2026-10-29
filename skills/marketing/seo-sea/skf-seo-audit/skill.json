@@ -3,7 +3,7 @@
   "id": "skf-seo-audit",
   "name": "SEO Audit",
   "publisher": "SkillzForest",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "category": "marketing",
   "subcategory": "seo-sea",
   "description": "Full SEO audit of a site driven by .seo/profile.json: sitemap crawl (titles, descriptions, headings, canonical, hreflang, alt texts, structured data, broken links), PageSpeed Insights, Search Console indexing and performance, demand and competitor gaps — delivered as a prioritized report, a Google Slides deck and a backlog that skf-seo-pass works through.",

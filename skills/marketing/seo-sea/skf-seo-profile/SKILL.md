@@ -1,6 +1,6 @@
 ---
 name: skf-seo-profile
-description: Builds the SEO profile of a website, step by step with its owner — product and audience, languages, where the product's facts live, themes to rank for and searches to avoid, writing rules, whether the site lives in a Git repository (the agent edits it through pull requests) or not (the agent advises through Google Slides), data sources (Search Console, Google Trends), cadence and how to notify the owner — then writes and validates .seo/profile.json, the single input of the whole SEO factory (skf-seo-setup, skf-seo-audit, skf-seo-pass). Use it whenever someone wants to start continuous SEO on a site, set up an SEO agent, describe a site for SEO, or change an existing SEO profile, or runs /skf-seo-profile.
+description: Builds the SEO profile of a website, step by step with its owner — product and audience, languages, where the product's facts live, themes to rank for and searches to avoid, writing rules, whether the site lives in a Git repository (the agent edits it through pull requests) or not (the agent advises through Google Slides), data sources (Search Console, Google Trends), cadence and how to notify the owner, asking only what the SEO skills installed next to it need (audit and alerts, automatic fixes, blog articles) — then writes and validates .seo/profile.json, the single input of every SEO skill (skf-seo-setup, skf-seo-audit, skf-seo-watch, skf-seo-pass, skf-seo-content-audit, skf-seo-article). It also holds the files they share: connectors, action tracker, autocomplete and deck scripts. Use it whenever someone wants to start continuous SEO on a site, set up an SEO agent, describe a site for SEO, or change an existing SEO profile, or runs /skf-seo-profile.
 ---
 
 # SEO profile
@@ -10,12 +10,17 @@ about the site, and nothing they could work out alone. The format is described f
 [`references/profile.md`](references/profile.md); a complete example is
 [`templates/profile.example.json`](templates/profile.example.json). Read both before the first question.
 
-The SEO factory, for the owner's orientation:
+Every SEO skill starts here, for the owner's orientation:
 
 ```text
-skf-seo-profile  →  .seo/profile.json  →  skf-seo-setup  →  skf-seo-audit (once, then now and then)
-                                                          →  skf-seo-pass  (scheduled, every few days)
+skf-seo-profile  →  .seo/profile.json  →  skf-seo-setup  →  skf-seo-audit  →  skf-seo-watch  (alerts by email)
+                                                                           →  skf-seo-pass   (fixes, every few days)
+                                                          →  skf-seo-content-audit  →  skf-seo-article  (blog)
 ```
+
+This skill also holds what the others share: [`references/connectors.md`](references/connectors.md) (tools per
+source and output), [`references/tracker.md`](references/tracker.md) (actions, tickets, digest),
+`scripts/suggest.py` (Google autocomplete), `scripts/tracker_github.py` and `scripts/brand_deck.py`.
 
 ## How to interview
 
@@ -28,10 +33,30 @@ skf-seo-profile  →  .seo/profile.json  →  skf-seo-setup  →  skf-seo-audit 
 - Never put a password, an API key or a token in the profile: accounts are connected in the connectors (Composio,
   gum), the profile only names them.
 - Editing an existing profile: read it, ask only about what the owner wants to change, keep everything else.
+- **Which site**: the site of the current workspace; anything less obvious (no repository, several sites, another
+  site named) → ask its address or repository first (`references/profile.md`, Which site).
 
 ## Steps
 
+### 0. What the owner runs (`features`)
+
+List the SEO skills installed next to this one (sibling folders holding a `SKILL.md`; in a scheduled run, the skills
+repository) and propose `features` from them (`references/profile.md`):
+
+- `skf-seo-audit` → `audit`; `skf-seo-watch` → `watch`; `skf-seo-pass` → `pass`;
+- `skf-seo-content-audit` and `skf-seo-article` → `blog`;
+- `skf-github-issue-fix` (with `skf-github-issue-brief`) → `fix`, proposed only with a GitHub issues tracker (step
+  11): the owner labels an issue `claude:fix` to have it fixed in a pull request.
+
+Say in one sentence what the site will get (« an audit, then an email when something degrades », « an audit, then
+a pull request every few days », « a content plan and articles at your pace »…) and let the owner remove a feature.
+Every later step asks only what those features use: skip the rest. Editing an existing profile without `features`:
+it ran the former SEO factory, propose the features its fields show (`validate_profile.py` says which).
+
 ### 1. The workspace and the mode
+
+Nothing edits the site without `pass` or `blog`: with `audit` and `watch` alone, the mode is **`advise`** (the
+agent only reads the site; the profile, journal and reports live in a small dedicated repository) — skip to step 2.
 
 1. Are you inside the site's Git repository (`git rev-parse --show-toplevel`, a `package.json`, `astro.config.*`,
    `next.config.*`, `hugo.toml`, `_config.yml`, `content/`)? Then propose mode **`repo`**: the agent edits the site
@@ -65,7 +90,7 @@ show them (`facts.urls`). Ask whether something true is on no page yet (`facts.n
 
 1. From the pitch and the site's pages, propose 3 to 6 **themes** the product genuinely answers (a problem, a task,
    a comparison people search for), each with 2 to 6 **beginnings of searches** per language, as people type them
-   (`how to invoice`, `anbernic add games`). If `skf-seo-pass` is installed, check a few with its
+   (`how to invoice`, `anbernic add games`). Check a few with
    `scripts/suggest.py <lang> "<beginning>"` and keep the ones Google completes.
 2. Propose **exclusions**: searches with volume the site must never chase — piracy and cracks, "free" for a paid
    product, competitors' brand names, off-topic meanings of the same word. Ask the owner to add their own.
@@ -86,8 +111,9 @@ medical, results). Ask the language for reports and emails (`style.reportLanguag
   put them in the command itself (`npm ci && PUBLIC_X=… npm test`); never a secret. Propose
   `repo.protected`: legal pages, layouts and styles, CI, the `.seo/` profile itself. Branch prefix: `claude/seo-`.
   Read the limits the checks enforce (title and description lengths) into `repo.limits`.
-- Mode `advise`: ask the CMS, whether decks go to Google Slides (default) or stay as Markdown, an optional Google
-  Drive folder, and how many unapplied recommendations may pile up before the agent waits (3).
+- Mode `advise`: ask the CMS, whether decks go to Google Slides (default), an Excel workbook or stay as Markdown, an
+  optional Google Drive folder, and, with `pass`, how many unapplied recommendations may pile up before the agent
+  waits (3).
 
 ### 8. Data sources
 
@@ -105,15 +131,19 @@ Do not connect anything here: `skf-seo-setup` does it and tests each connection.
 
 ### 9. Cadence
 
-Propose `every 2 days at 08:00` in the owner's time zone, one action per pass, a new article at most every 14 days
-and no page touched again before 28 days (Google needs that long to measure a change). A young site with no
-traffic can run weekly. A site that needs content (a blog to fill, a young site) can also get **articles every
-week**: say that `skf-seo-content-audit` plans them (how many, how often, how they are validated) once the setup is
-done — do not ask about it here.
+- `pass`: propose `every 2 days at 08:00` in the owner's time zone, one action per pass, a new article at most every
+  14 days and no page touched again before 28 days (Google needs that long to measure a change). A young site with
+  no traffic can run weekly.
+- `watch` (without `pass`): propose `every Monday at 08:00` in the owner's time zone, and the alert thresholds
+  (`alerts`): an email when the score loses 10 points, when clicks or impressions fall by 30 % over 28 days (only
+  above 100 impressions: below, it is noise), when a key page leaves Google's index, a page breaks or speed
+  regresses; plus a short monthly summary even when all is well (`alerts.summary`).
+- `blog`: its pace is asked by `skf-seo-content-audit` (how many articles, how often, how they are validated) once
+  the setup is done — do not ask about it here.
 
 ### 10. Notification
 
-Ask how the owner wants to hear about a pull request or a new recommendation: **Gmail**, **Outlook** (Microsoft
+Ask how the owner wants to hear about a pull request, a recommendation, an alert or an article to review: **Gmail**, **Outlook** (Microsoft
 365), **Slack**, or none (they watch GitHub or the deck). For a mailbox, the safest recipient is the connected
 account's own address. `when`: `on-change` (default) or `every-pass`.
 
@@ -132,7 +162,9 @@ cannot forget. Ask:
    (discouraged: say why).
 
 The owner is told by `notify`, so the tracker never relies on them remembering to look. Details:
-`skf-seo-pass/references/tracker.md`.
+[`references/tracker.md`](references/tracker.md).
+
+`fix` (step 0) needs GitHub issues: with Jira or a sheet, drop it and say why.
 
 ### 12. Write and check
 
@@ -140,6 +172,6 @@ The owner is told by `notify`, so the tracker never relies on them remembering t
    site already has a journal elsewhere).
 2. Run `python3 scripts/validate_profile.py .seo/profile.json` (path relative to this skill's folder for the
    script). Fix every error; read the warnings to the owner and fix those they agree with.
-3. Show a short summary: mode, languages, themes, exclusions, sources, cadence, notification, tracker.
+3. Show a short summary: features, mode, languages, themes, exclusions, sources, cadence, notification, tracker.
 4. Next step: **`skf-seo-setup`**, which connects the sources, creates the journal and schedules the agent. In mode
    `repo`, the profile is committed with the rest of the setup, not now.

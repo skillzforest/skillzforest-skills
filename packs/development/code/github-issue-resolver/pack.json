@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "id": "github-issue-resolver",
-  "name": "GitHub Issue Resolver",
+  "name": "From GitHub ticket to code",
   "publisher": "SkillzForest",
   "category": "development",
   "subcategory": "code",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
-  "description": "Turn GitHub Issues into reviewed fixes in Claude Code: installs the GitHub CLI if needed, gathers each issue's full context — text, comments, screenshots, attachments — one at a time or for a whole Project board at once, then investigates, reproduces and implements the minimal fix, and links the pushed commit or pull request back on the issue.",
+  "description": "Have Claude Code fix your GitHub issues for you, with your approval: it gathers each issue's full context (text, comments, screenshots, attachments), one at a time or for a whole Project board at once, then investigates, reproduces and makes the minimal fix, runs your tests and hands you a commit or a pull request linked back on the issue. Installs the GitHub CLI when needed. Works on any repository, any kind of bug or small feature.",
   "tags": [
     "github",
     "issues",

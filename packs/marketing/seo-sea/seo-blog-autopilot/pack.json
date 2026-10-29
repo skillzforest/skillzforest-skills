@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "seo-blog-autopilot",
+  "name": "SEO Blog Autopilot",
+  "publisher": "SkillzForest",
+  "category": "marketing",
+  "subcategory": "seo-sea",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Blog articles that answer what your audience really searches, written at your pace and never published without you. Describe the site once, say how many articles you want and how often: the agent studies the demand (Search Console, Google autocomplete, Google Trends, what already ranks), writes a content plan with one brief per article and one ticket each on GitHub, Jira or a Google Sheet, then writes the articles one by one in every language of the site from your product's facts and cited sources. Each one waits for your validation: a pull request, a draft in your CMS (WordPress, Drupal, Contentful, Strapi, Webflow, Ghost or a custom API) or a Markdown file to paste. Creates the blog section when the site has none.",
+  "tags": [
+    "articles",
+    "blog",
+    "cms",
+    "content",
+    "editorial-calendar",
+    "google-trends",
+    "search-console",
+    "seo"
+  ],
+  "skills": [
+    "skf-seo-profile",
+    "skf-seo-setup",
+    "skf-seo-content-audit",
+    "skf-seo-article"
+  ],
+  "ordered": true
+}

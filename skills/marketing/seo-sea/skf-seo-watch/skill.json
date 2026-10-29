@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-seo-watch",
+  "name": "SEO Watch",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "marketing",
+  "subcategory": "seo-sea",
+  "description": "Scheduled SEO check-up driven by .seo/profile.json that changes nothing on the site: reads Search Console (traffic over 28 days, key pages indexed, sitemaps), crawls the live site for broken pages and indexing mistakes, measures mobile speed, updates the score out of 100 and the owner's actions, then emails an alert by Gmail, Outlook or Slack only when something degrades, plus a short monthly summary.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unsupported",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

@@ -5,11 +5,13 @@ description: Writes the next SEO article of a content plan made by skf-seo-conte
 
 # SEO article
 
+**Which site**: the one whose workspace you are in; when that is not obvious, ask the owner first — `../skf-seo-profile/references/profile.md`, Which site.
+
 You write **one** article per run, from a brief of the content plan, and bring it to the owner for validation.
 You never publish: a pull request waits for a merge, a CMS draft waits for the owner's « Publish », a Markdown
 file waits for them to paste it. Read `.seo/profile.json` (block `content`, `profile.md`), then
 [`references/publishers.md`](references/publishers.md) for `content.publish`,
-[`references/article-format.md`](references/article-format.md), and `../skf-seo-pass/references/tracker.md`
+[`references/article-format.md`](references/article-format.md), and `../skf-seo-profile/references/tracker.md`
 (Article tickets).
 
 ## Guardrails

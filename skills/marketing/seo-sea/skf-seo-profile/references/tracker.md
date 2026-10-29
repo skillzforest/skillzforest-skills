@@ -1,8 +1,9 @@
 # Action tracker
 
-Every action the SEO factory finds — an audit finding, an opportunity left for later, something only the owner can
-do — becomes **one item in a tracker**, never a line lost in a Markdown file. The tracker is chosen in the profile
-(`tracker.type`) and set up by `skf-seo-setup`.
+Every action the SEO skills find — an audit finding, an opportunity left for later, something only the owner can
+do, an article to write — becomes **one item in a tracker**, never a line lost in a Markdown file. The tracker is
+chosen in the profile (`tracker.type`) and set up by `skf-seo-setup`. This file is shared by every SEO skill; paths
+below are relative to the `skf-seo-profile` folder.
 
 | `tracker.type` | Where the actions live | When |
 |---|---|---|
@@ -17,8 +18,8 @@ Whatever the tracker, the owner is told by `notify` (email or Slack): a digest o
 
 | Field | Meaning |
 |---|---|
-| **id** | Stable fingerprint, `<rule>:<page path or theme>`, e.g. `title-duplicate:/docs/administration/`, `sitemap-old:www.romkade.com`, `content-gap:sunrise-2027`. Never two open actions with the same id |
-| **title** | What to do, in `style.reportLanguage`, under 80 characters, starting with a verb: « Supprimer l'ancien sitemap www.romkade.com dans Search Console » |
+| **id** | Stable fingerprint, `<rule>:<page path or theme>`, e.g. `title-duplicate:/docs/administration/`, `sitemap-old:www.example.com`, `content-gap:sunrise-2027`. Never two open actions with the same id |
+| **title** | What to do, in `style.reportLanguage`, under 80 characters, starting with a verb: « Supprimer l'ancien sitemap www.example.com dans Search Console » |
 | **who** | `agent` — anything that lives in the repository, whatever the folder: pages, layouts, documentation sites built from it, blog or demo content (MDX, Markdown), sitemap, links, titles. `owner` — only what no commit can do: Search Console settings, indexing requests, DNS, a CMS or back office without an API the agent can use, legal or factual sign-off, decisions. When in doubt, `agent` |
 | **priority** | `P1` blocking (not indexable, errors, wrong canonical, broken sitemap) · `P2` important (template issues on many pages, pages with impressions and few clicks, content gaps with clear demand) · `P3` polish |
 | **page** | URL concerned, or the theme for a content gap |
@@ -31,15 +32,18 @@ Whatever the tracker, the owner is told by `notify` (email or Slack): a digest o
 ## GitHub issues (`tracker.type: github-issues`)
 
 Labels (created by setup): `seo`, `seo:agent`, `seo:owner`, `seo:P1`, `seo:P2`, `seo:P3`, `seo:scorecard`,
-`claude:fix`, and for article tickets `article`, `article:planned`, `article:review`, `article:changes`,
+`claude:fix` (only with `features: fix`), and for article tickets `article`, `article:planned`, `article:review`, `article:changes`,
 `article:approved`, `article:published`, `article:abandoned`.
 
-`seo:scorecard` marks the one issue per site that holds the SEO scorecard (`SKILL.md`, Scorecard): its body is the
-latest card, its comments the history. It is not an action: leave it out of every list, count and digest of actions.
+`seo:scorecard` marks the one issue per site that holds the SEO scorecard (`skf-seo-audit/references/scorecard.md`):
+its body is the latest card, its comments the history. It is not an action: leave it out of every list, count and
+digest of actions.
 
-`claude:fix` is the owner's switch: put on any issue (agent or owner), it starts the fix task (`skf-seo-setup`,
-step 6) that fixes that issue with `skf-github-issue-fix` and opens a pull request — even in protected files, for
-that issue only. The SEO pass leaves those issues to it.
+`claude:fix` is the owner's switch, only when the profile's `features` holds `fix` (the GitHub issue skills
+`skf-github-issue-brief` and `skf-github-issue-fix` are installed): put on any issue (agent or owner), it starts the
+fix task (`skf-seo-setup`, step 8) that fixes that issue with `skf-github-issue-fix` and opens a pull request — even
+in protected files, for that issue only. The SEO pass leaves those issues to it. Without `fix`, setup creates no
+`claude:fix` label and no message mentions it.
 
 Issue body:
 
@@ -149,6 +153,18 @@ At every pass, when the last digest is older than `tracker.digest` (date kept in
 - the open `owner` actions, `P1` first then oldest first, each on one line: priority, title, link (issue or sheet);
 - one line on what the agent fixed since the last digest, and the link to the board or sheet.
 
-Nothing open for the owner: no digest. An owner who follows several sites gets one consolidated digest instead
+Nothing open for the owner: no digest. Without `skf-seo-pass` (no agent to do them), `agent` actions are listed too,
+under « To have done by your developer or agency », since nobody else will. An owner who follows several sites gets one consolidated digest instead
 (`tracker.digest: none` in each profile, one `SEO digest` task: `skf-seo-setup/references/digest-prompt.md`). A new `P1` owner action: tell the owner in the same pass, without waiting
 for the digest.
+
+## Owner actions (every scheduled run)
+
+At every run of `skf-seo-pass` or `skf-seo-watch`, even when nothing else is done:
+
+1. For each open `owner` action that you can check (Search Console sitemaps, indexing of a page, a page now live,
+   a title now changed on the live site), check it. Done: close it (GitHub: `tracker_github.py close` with a comment
+   saying what you saw; Jira: done transition; sheet: `Done` with the date). Not done: leave it.
+2. A new `owner` action found in this run (an old sitemap to remove, a page to submit for indexing, a fact to
+   confirm): create it in the tracker.
+3. Send the digest when it is due (`tracker.digest`, section Digest), and at once for a new `P1` owner action.

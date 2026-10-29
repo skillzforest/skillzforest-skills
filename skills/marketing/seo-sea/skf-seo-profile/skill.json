@@ -3,10 +3,10 @@
   "id": "skf-seo-profile",
   "name": "SEO Profile",
   "publisher": "SkillzForest",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "category": "marketing",
   "subcategory": "seo-sea",
-  "description": "Interviews a site owner step by step — product, audience, languages, facts, themes to rank for and searches to avoid, writing rules, Git repository or CMS, Search Console and Google Trends sources, cadence, notification — and writes the validated .seo/profile.json that drives the whole SEO factory.",
+  "description": "Interviews a site owner step by step (product, audience, languages, facts, themes to rank for and searches to avoid, writing rules, Git repository or CMS, Search Console and Google Trends sources, cadence, notification), asking only what the installed SEO skills need, and writes the validated .seo/profile.json every SEO skill reads. Also holds what they share: connectors, action tracker, autocomplete and deck scripts.",
   "compatibility": {
     "claude-code": "native",
     "claude-ai": "unknown",

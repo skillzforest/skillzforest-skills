@@ -1,13 +1,40 @@
 # The SEO profile (`.seo/profile.json`)
 
-One JSON file per site. Every skill of the SEO factory reads it; none of them hard-codes anything about a site.
+One JSON file per site. Every SEO skill reads it; none of them hard-codes anything about a site.
 It lives in the site's **workspace**: the site's own Git repository (mode `repo`), or a small dedicated Git
 repository that only holds the profile, the journal and the reports (mode `advise`).
 
 Validate it with `python3 scripts/validate_profile.py <path/to/profile.json>` (from the `skf-seo-profile` folder).
 A complete example: [`templates/profile.example.json`](../templates/profile.example.json).
 
+## Which site
+
+Every SEO skill works on **one** site, named by its profile — none of them knows a site by itself:
+
+1. The site is the one whose workspace you are in: `.seo/profile.json` at the root of the current Git repository
+   (`git rev-parse --show-toplevel`), or the one the scheduled task's prompt names.
+2. Ask the owner which site (its address or repository) before anything else when it is not that obvious: no
+   profile in the current workspace, several profiles under the current folder, or a request naming another site.
+   Never guess, never take a site from an earlier conversation, never mix two sites' accounts, trackers or reports.
+3. The site chosen has no profile: run `skf-seo-profile` for it first (or, for `skf-seo-audit`, its one-shot audit
+   from the address).
+
 ## Fields
+
+### `features` (required)
+
+What the owner runs on this site, from the SEO skills installed next to `skf-seo-profile` (a pack installs a set of
+them). Setup schedules only these, the other skills read it to stay in their lane.
+
+| Value | Skills | What it adds |
+|---|---|---|
+| `audit` | `skf-seo-audit` | Full audit, report, actions in the tracker, score out of 100 |
+| `watch` | `skf-seo-watch` | Scheduled check-up that changes nothing and emails an alert when something degrades |
+| `pass` | `skf-seo-pass` | Scheduled improvement: a pull request (mode `repo`) or a recommendation in a deck (mode `advise`) |
+| `blog` | `skf-seo-content-audit`, `skf-seo-article` | Content plan and articles written at a chosen pace, validated before publication |
+| `fix` | `skf-github-issue-brief`, `skf-github-issue-fix` | The `claude:fix` label on GitHub issues (tracker `github-issues` only) |
+
+`pass` and `watch` together: setup schedules the pass only, which already does what the watch does.
 
 ### `site` (required)
 
@@ -62,7 +89,8 @@ testimonial that is not in these sources.
 
 ### `mode` (required)
 
-`"repo"` — the agent edits the site in its Git repository and opens a pull request for the owner to merge.
+`"repo"` — the agent edits the site in its Git repository and opens a pull request for the owner to merge. Only
+when `features` holds `pass` or `blog` (with articles published by pull request): nothing else edits the site.
 `"advise"` — no repository: the agent writes recommendations (exact texts to paste, article drafts) into a Google
 Slides deck and a report, and the owner applies them in their CMS.
 
@@ -116,16 +144,27 @@ Slides deck and a report, and the owner applies them in their CMS.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `schedule` | string | Human words, e.g. `every 2 days at 08:00 Europe/Paris` (setup turns it into a cron) |
+| `schedule` | string | Human words, e.g. `every 2 days at 08:00 Europe/Paris` for a pass, `every Monday at 08:00 Europe/Paris` for a watch (setup turns it into a cron). Absent with `features` `blog` alone |
 | `cron` | string | Optional. Filled by `skf-seo-setup`: the cron in UTC |
-| `articleEveryDays` | integer | Minimum days between two new articles (14) |
-| `pageCooldownDays` | integer | Days before the same page is touched again (28) |
-| `maxActionsPerPass` | integer | Always 1 unless the owner insists |
+| `articleEveryDays` | integer | `pass` only. Minimum days between two new articles (14) |
+| `pageCooldownDays` | integer | `pass` only. Days before the same page is touched again (28) |
+| `maxActionsPerPass` | integer | `pass` only. Always 1 unless the owner insists |
+
+### `alerts` (optional, `watch`)
+
+When `skf-seo-watch` emails the owner. Absent: the defaults below.
+
+| Field | Type | Meaning |
+|---|---|---|
+| `scoreDrop` | integer | Points lost by the score since the previous check that trigger an alert (10) |
+| `trafficDrop` | integer | Percent of clicks or impressions lost over 28 days, compared with the 28 days before (30) |
+| `minImpressions` | integer | Below this many impressions over 28 days, traffic changes are noise and never alert (100) |
+| `summary` | string | `monthly` (default): a short state of the site even when nothing is wrong; `none` |
 
 ### `content` (optional: the blog's content plan)
 
-Written by `skf-seo-content-audit`, read by `skf-seo-article`. Present: articles are planned and written by those
-two skills at this pace, and `skf-seo-pass` no longer writes new articles itself (it turns the gaps it finds into
+Written by `skf-seo-content-audit`, read by `skf-seo-article` (`features: blog`). Present: articles are planned and
+written by those two skills at this pace, and `skf-seo-pass`, when installed, no longer writes new articles itself (it turns the gaps it finds into
 `content-gap:` actions for the next plan).
 
 | Field | Type | Meaning |
@@ -149,12 +188,12 @@ two skills at this pace, and `skf-seo-pass` no longer writes new articles itself
 | `channel` | string | `gmail`, `outlook`, `slack` or `none` |
 | `to` | string | Mailbox address (`gmail`, `outlook`) or channel name (`slack`). For a mailbox, the connected account's own address is the safe choice |
 | `account` | string | Optional. Connected account alias |
-| `when` | string | `on-change` (a pull request or a recommendation) or `every-pass` |
+| `when` | string | `on-change` (a pull request, a recommendation, an alert or an article to review) or `every-pass` |
 
 ### `tracker` (required)
 
 Where every action to do lives — audit findings, opportunities for later, things only the owner can do — so that
-nothing is forgotten. Details: `skf-seo-pass/references/tracker.md`.
+nothing is forgotten. Details: [`tracker.md`](tracker.md).
 
 | Field | Type | Meaning |
 |---|---|---|
@@ -182,6 +221,8 @@ nothing is forgotten. Details: `skf-seo-pass/references/tracker.md`.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `id` | string | Scheduled task id |
+| `id` | string | Scheduled task id of the pass or the watch |
+| `articleId` | string | Optional. Scheduled task id of the article writer (`blog`) |
+| `fixId` | string | Optional. Scheduled task id of the `claude:fix` task (`fix`) |
 | `url` | string | Where to see and pause it |
 | `skillsRepo` | string | Repository the scheduled task clones to read the skills |

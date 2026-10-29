@@ -1,5 +1,9 @@
 {
   "schemaVersion": 1,
+  "features": [
+    "audit",
+    "pass"
+  ],
   "site": {
     "name": "Invoicely",
     "url": "https://invoicely.example/",

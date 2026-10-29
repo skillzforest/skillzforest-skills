@@ -1,12 +1,23 @@
 ---
 name: skf-seo-setup
-description: Turns a validated .seo/profile.json into a running SEO agent — checks the workspace (the site's Git repository, or a dedicated seo-SITE repository for sites on a CMS), connects and tests each source and output named in the profile (Google Search Console, SerpApi for Google Trends, Gmail, Outlook or Slack, Google Slides, GitHub), creates the action tracker (GitHub issues on a GitHub Project board, or a shared Google Sheet), the journal and the reports folder, then schedules the recurring skf-seo-pass as a cloud task (a Claude Code routine) that reads the skills from the SkillzForest skills repository, and runs it once to prove it works. Use it right after skf-seo-profile, when a connection breaks, when the cadence or notification changes, or whenever someone asks to schedule, automate or (re)connect their SEO agent, or runs /skf-seo-setup.
+description: Turns a validated .seo/profile.json into a running SEO agent — checks the workspace (the site's Git repository, or a dedicated seo-SITE repository for sites on a CMS), connects and tests each source and output named in the profile (Google Search Console, SerpApi for Google Trends, Gmail, Outlook or Slack, Google Slides, GitHub), creates the action tracker (GitHub issues on a GitHub Project board, or a shared Google Sheet), the journal and the reports folder, then schedules only what the profile's features ask for, as cloud tasks (Claude Code routines) that read the skills from the SkillzForest skills repository — the alert check-up (skf-seo-watch), the improvement pass (skf-seo-pass), the article writer (skf-seo-article) and the claude:fix task — and runs each once to prove it works. Use it right after skf-seo-profile, when a connection breaks, when the cadence or notification changes, or whenever someone asks to schedule, automate or (re)connect their SEO agent, or runs /skf-seo-setup.
 ---
 
 # SEO setup
 
+**Which site**: the one whose workspace you are in; when that is not obvious, ask the owner first — `../skf-seo-profile/references/profile.md`, Which site.
+
 You make the SEO agent of a site run on its own. Input: **`.seo/profile.json`** (made by `skf-seo-profile`; format:
-`skf-seo-profile/references/profile.md`). Tools by profile value: `skf-seo-pass/references/connectors.md`.
+`../skf-seo-profile/references/profile.md`). Tools by profile value: `../skf-seo-profile/references/connectors.md`.
+Its `features` say what to set up — only that:
+
+| `features` | Scheduled task | Step |
+|---|---|---|
+| `watch` (without `pass`) | `SEO watch <site.name>`: check-up and email alerts, changes nothing | 7 |
+| `pass` | `SEO <site.name>`: one improvement per pass, pull request or deck | 7 |
+| `blog` | `SEO articles <site.name>`: the next article of the plan | 7b |
+| `fix` | `Fix issues <site.name>`: the issues labeled `claude:fix` | 8 |
+| `audit` | none: the owner runs it right after the setup (step 10), then every few months | — |
 Talk to the owner in their language; one step at a time; say what you are about to do before anything that leaves
 their computer (connecting an account, creating a repository, scheduling a task, sending a test message).
 
@@ -17,7 +28,8 @@ sign-in pages, which you open as links.
 
 Run `python3 ../skf-seo-profile/scripts/validate_profile.py .seo/profile.json` (paths relative to this skill's
 folder for the script). Errors: send the owner back to `skf-seo-profile`. Then read the profile and list what this
-setup will connect, from its values.
+setup will connect and schedule, from its values. A feature whose skills are not installed (no sibling folder, and
+not in the skills repository the tasks read): say which pack brings it, and leave it out.
 
 ## 2. The workspace
 
@@ -46,8 +58,8 @@ failing test.
 | `notify.channel: gmail` | `gmail` | Picks the mailbox and accepts the permissions | `GMAIL_SEND_EMAIL` of a short test message to `notify.to`, after telling the owner |
 | `notify.channel: outlook` | `outlook` | Signs in with the Microsoft account | `OUTLOOK_SEND_EMAIL` test message to `notify.to` |
 | `notify.channel: slack` | `slack` | Authorizes the workspace, invites the app to the channel | `SLACK_FIND_CHANNELS` then a test `SLACK_SEND_MESSAGE` |
-| `advise.deliverable: google-slides` (or an audit deck) | `googleslides` (and `googledrive` for `advise.driveFolder`) | Picks the Google account | `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` of a one-slide test deck; give its link |
-| `mode: repo` | GitHub, through the Claude GitHub app (and `github` in Composio as a fallback) | Installs the app on the repository | List the repository's open pull requests |
+| `advise.deliverable: google-slides` (or an audit deck; `features` `audit` or `pass`) | `googleslides` (and `googledrive` for `advise.driveFolder`) | Picks the Google account | `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` of a one-slide test deck; give its link |
+| `mode: repo`, or `tracker.type: github-issues` | GitHub, through the Claude GitHub app (and `github` in Composio as a fallback) | Installs the app on the repository | List the repository's open pull requests |
 
 Search Console on a new site: if the property is not verified yet, walk the owner through it (Search Console > Add
 property > Domain with a DNS record, or URL prefix with an HTML tag) and through submitting the sitemap. Data arrives
@@ -71,11 +83,12 @@ Jira (`tracker.type: jira`): connect the Jira toolkit in Composio (alias `tracke
 GitHub's (`tracker.md`, Jira).
 
 Every action — audit findings, opportunities for later, what only the owner can do — goes to the tracker, never to
-a Markdown list. Format and tools: `skf-seo-pass/references/tracker.md`.
+a Markdown list. Format and tools: `../skf-seo-profile/references/tracker.md`.
 
 - **`github-issues`**:
-  1. `python3 ../skf-seo-pass/scripts/tracker_github.py setup --repo <tracker.repo>` creates the `seo`, `seo:agent`,
-     `seo:owner`, `seo:P1`–`P3` labels.
+  1. `python3 ../skf-seo-profile/scripts/tracker_github.py setup --repo <tracker.repo>` creates the `seo`,
+     `seo:agent`, `seo:owner`, `seo:P1`–`P3` labels (without `features` `fix`, delete the `claude:fix` label it
+     adds when the owner never used it: `gh label delete claude:fix --repo <tracker.repo> --yes`).
   2. Board: reuse `tracker.projectNumber`, or create one — `gh project create --owner <owner> --title "SEO
      <site.name>"`, then `gh project link <number> --owner <owner> --repo <tracker.repo>`. Creating a board needs
      the `project` scope: if `gh auth status` does not list it, ask the owner to run `gh auth refresh -s project`
@@ -110,19 +123,22 @@ Have the owner create one environment for the SEO tasks (once per account, share
 Check it with a one-off task in that environment running `env | grep -o '^PAGESPEED[A-Z_]*'` (names only, never
 values), `pagespeed.py` on the home page and a request to `suggestqueries.google.com`.
 
-## 7. Schedule the pass
+## 7. Schedule the pass or the watch
+
+`features` without `pass` nor `watch` (a blog alone): skip to 7b.
 
 1. Turn `cadence.schedule` into a cron **in UTC** and confirm it with the owner in their local time ("08:00 Paris
    = 07:00 UTC in winter, 06:00 in summer — the task stays on UTC"). Every 2 days: `0 7 */2 * *` (odd days of the
-   month; the 31st and the 1st run back to back). Write it to `cadence.cron`.
+   month; the 31st and the 1st run back to back). Every Monday (watch): `0 7 * * 1`. Write it to `cadence.cron`.
 2. Create the scheduled task with the runtime's scheduling tool (Claude Code: the `schedule` skill / routines):
-   - name `SEO <site.name>`;
+   - name `SEO <site.name>` (pass) or `SEO watch <site.name>` (watch);
    - environment: the `SEO` environment of step 6;
    - repositories: the workspace **and** the skills repository;
    - connectors: Composio (and any other the profile needs);
    - model: a capable, economical one (Claude Sonnet) unless the owner prefers otherwise;
    - tools: shell, file read/write/edit, search, web search and fetch, skills;
-   - prompt: [`references/routine-prompt.md`](references/routine-prompt.md) with the values filled in.
+   - prompt: [`references/routine-prompt.md`](references/routine-prompt.md) with the values filled in, and in step
+     1 `skf-seo-pass/SKILL.md` or `skf-seo-watch/SKILL.md`.
 3. Write `routine.id`, `routine.url` and `routine.skillsRepo` to the profile and commit.
    Updating a task later (Claude Code routines API): send the **whole** `job_config.ccr` — environment, session
    context (model, repositories, tools) and the prompt event. A partial `job_config` replaces the existing one and
@@ -131,25 +147,28 @@ values), `pagespeed.py` on the home page and a request to `suggestqueries.google
    end with a clear answer. Fix and rerun until it does.
 
 No scheduling tool in this runtime: give the owner the prompt and the cron to paste into their scheduler, and say
-the pass can always be run by hand with `skf-seo-pass`.
+the pass (or the watch) can always be run by hand with `skf-seo-pass` (or `skf-seo-watch`).
 
-### 7b. Content plan and article task (optional)
+### 7b. Content plan and article task (`features` `blog`)
 
-Ask whether the owner wants blog articles written regularly. Yes: run `skf-seo-content-audit` (it asks how many
+Run `skf-seo-content-audit` now unless the owner prefers later (it asks how many
 and how often, writes the plan and the tickets, and how articles are validated: pull request, CMS draft or Markdown
-file). It then needs a third task `SEO articles <site.name>`: same environment, repositories, connectors, model and
-tools as the pass, on `content.schedule` turned into a cron in UTC (write it to `content.cron`; twice a week:
+file). It then needs a task `SEO articles <site.name>`: same environment, repositories (the workspace and the skills
+repository), connectors, model and tools as step 7, on `content.schedule` turned into a cron in UTC (write it to `content.cron`; twice a week:
 `0 8 * * 2,5`), prompt [`references/routine-prompt.md`](references/routine-prompt.md) with, in step 1,
 "Follow skills/marketing/seo-sea/skf-seo-article/SKILL.md (one article)". Write its id to `routine.articleId`.
 Publishing through a CMS (`content.publish: cms`): the cloud environment needs the variable `content.cms.tokenEnv`
 (and `userEnv`) — tell the owner its exact name and where to set it, the way PAGESPEED_KEY is set (step 6).
 
-## 8. Schedule the fix task (GitHub issues only)
+## 8. Schedule the fix task (`features` `fix`)
 
-When `tracker.type` is `github-issues`, the owner can label any issue `claude:fix` to have it fixed now, through a
-pull request (`skf-seo-pass/references/tracker.md`). Create a second scheduled task `Fix issues <site.name>`:
+Only when `features` holds `fix` (the skills `skf-github-issue-brief` and `skf-github-issue-fix` are installed) and
+`tracker.type` is `github-issues`: the owner can then label any issue `claude:fix` to have it fixed now, through a
+pull request (`../skf-seo-profile/references/tracker.md`). Without them, skip this step and never mention
+`claude:fix`; the owner who wants it adds the GitHub issue skills, then reruns this step. Create a scheduled task
+`Fix issues <site.name>`:
 
-- same repositories, connectors, model and tools as the pass;
+- same repositories, connectors, model and tools as step 7;
 - prompt: [`references/fix-prompt.md`](references/fix-prompt.md) with the values filled in;
 - trigger: the GitHub event "issue labeled" on `tracker.repo` when the runtime supports event triggers (Claude
   Code: a webhook trigger attached to the routine), otherwise every hour (`0 * * * *`: runs that find nothing stop
@@ -168,11 +187,13 @@ When the owner already has other sites on the SEO factory, propose a single week
 
 Tell the owner, in a few lines:
 
-- where to see, pause or run the task (`routine.url`), and where each run's session appears;
-- what they will receive (a pull request and a message, or a deck and a message) and how often to expect it — once
-  or twice a month, not every pass;
+- where to see, pause or run each task (`routine.url`), and where each run's session appears;
+- what they will receive and how often: an alert email only when something degrades, and a short monthly summary
+  (watch); a pull request or a deck with a message, once or twice a month, not every pass (pass); an article to
+  validate at the chosen pace (blog);
 - where their actions are (`tracker.url`) and that they get the list of what waits for them every
-  `tracker.digest`; that labeling any issue `claude:fix` gets it fixed in a pull request;
+  `tracker.digest`; with `fix`, that labeling any issue `claude:fix` gets it fixed in a pull request;
 - what they do: merge or close the pull request, close the issue or set the row to `Done` when they did an owner
   action, or apply the recommendation and say so (the journal entry becomes `applied`);
-- the next step: **`skf-seo-audit`** for a full picture and the first actions, if it has not run yet.
+- the next step: with `audit`, **`skf-seo-audit`** for a full picture and the first actions, if it has not run
+  yet (the watch and the pass work from its actions and its first score).

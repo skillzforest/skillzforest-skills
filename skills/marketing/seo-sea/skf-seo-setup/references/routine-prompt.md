@@ -6,11 +6,12 @@ checked out side by side: the **workspace** (the site's repository, or the dedic
 profile's report language anyway).
 
 ```text
-Run one SEO pass on the workspace <workspace repo, e.g. acme/invoicely-website>.
+Run one SEO <pass | watch check-up | article> on the workspace <workspace repo, e.g. acme/invoicely-website>.
 
 1. The skills live in the other checked-out repository (<skills repo>), under
-   skills/marketing/seo-sea/. Read skf-seo-pass/SKILL.md and follow it exactly, using its scripts and
-   references from that folder. The profile is .seo/profile.json at the root of the workspace.
+   skills/marketing/seo-sea/. Read <skf-seo-pass | skf-seo-watch | skf-seo-article>/SKILL.md and follow it exactly,
+   using its scripts and references and those of the sibling skills it names (skf-seo-profile, skf-seo-audit).
+   The profile is .seo/profile.json at the root of the workspace.
 2. Connectors: use the Composio connector with the accounts named in the profile. If a source fails, follow the
    skill (stop or carry on as it says) and explain why in the final answer.
 3. Mode repo: never push to the base branch — that publishes the site. Work on a branch starting with the profile's
@@ -25,4 +26,5 @@ Run one SEO pass on the workspace <workspace repo, e.g. acme/invoicely-website>.
    pull request or deck (or why there is none).
 ```
 
-For an audit run (on demand, or quarterly), the same prompt with `skf-seo-audit/SKILL.md` in step 1.
+Pick the skill of the task: `skf-seo-pass` (feature `pass`), `skf-seo-watch` (feature `watch`), `skf-seo-article`
+(feature `blog`). For an audit run (on demand, or quarterly), the same prompt with `skf-seo-audit/SKILL.md` in step 1.

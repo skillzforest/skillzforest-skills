@@ -3,7 +3,7 @@
   "id": "skf-seo-content-audit",
   "name": "SEO Content Audit",
   "publisher": "SkillzForest",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "category": "marketing",
   "subcategory": "seo-sea",
   "description": "SEO audit for a blog: asks how many articles and how often, studies the demand (Search Console, autocomplete, Google Trends, what ranks, the site's own content), writes one Markdown brief per article and one ticket per article on a GitHub board, a Jira project or a Google Sheet, and sets how articles are validated before publication — pull requests (creating the blog section when there is none), CMS drafts (WordPress, Drupal, Contentful, Strapi, Webflow, Ghost, custom API) or ready-to-paste Markdown.",

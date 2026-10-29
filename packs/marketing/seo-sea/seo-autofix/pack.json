@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "seo-autofix",
+  "name": "SEO Audit & Auto-Fixes",
+  "publisher": "SkillzForest",
+  "category": "marketing",
+  "subcategory": "seo-sea",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "A full SEO audit, then an agent that fixes your site's SEO one change at a time, always with your approval. Describe the site once, connect Search Console, Google Trends and a mailbox, get the audit, its score out of 100 and the prioritized actions, then every few days the agent picks the best opportunity backed by the data (a title and description that earn more clicks, an audit finding, a missing section) and hands it to you: a pull request to merge when the site lives in a Git repository, the exact text to paste in Google Slides when it runs on a CMS. It also tracks speed, the score and the actions only you can do, with a weekly email of what waits for you.",
+  "tags": [
+    "audit",
+    "automation",
+    "cms",
+    "github",
+    "google-trends",
+    "pagespeed",
+    "pull-requests",
+    "search-console",
+    "seo"
+  ],
+  "skills": [
+    "skf-seo-profile",
+    "skf-seo-setup",
+    "skf-seo-audit",
+    "skf-seo-pass"
+  ],
+  "ordered": true
+}

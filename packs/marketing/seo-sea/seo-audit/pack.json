@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "seo-audit",
+  "name": "SEO Audit & Alerts",
+  "publisher": "SkillzForest",
+  "category": "marketing",
+  "subcategory": "seo-sea",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Know where your site stands in Google and hear about it the day something goes wrong. Describe the site once, connect Search Console and a mailbox, get a full audit (crawl, mobile speed, indexing, search demand) with a report, a score out of 100 and a prioritized list of actions on a GitHub board, a Jira project or a shared Google Sheet. A weekly check-up then watches the site without ever changing it and emails you only when the score drops, traffic falls, a key page leaves Google's index, a page breaks or speed regresses, plus a short monthly summary. Any site, on a Git repository or a CMS; one-shot audits of any other site as an Excel workbook.",
+  "tags": [
+    "alerts",
+    "audit",
+    "excel",
+    "google-trends",
+    "jira",
+    "monitoring",
+    "pagespeed",
+    "search-console",
+    "seo"
+  ],
+  "skills": [
+    "skf-seo-profile",
+    "skf-seo-setup",
+    "skf-seo-audit",
+    "skf-seo-watch"
+  ],
+  "ordered": true
+}

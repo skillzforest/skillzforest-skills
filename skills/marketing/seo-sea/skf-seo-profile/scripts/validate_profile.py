@@ -23,6 +23,8 @@ TRACKERS = {"github-issues", "jira", "google-sheets"}
 PUBLISH = {"repo", "cms", "markdown"}
 CMS_TYPES = {"wordpress", "drupal", "contentful", "strapi", "webflow", "ghost", "custom"}
 DIGESTS = {"weekly", "every-pass", "none"}
+FEATURES = {"audit", "watch", "pass", "blog", "fix"}
+SUMMARIES = {"monthly", "none"}
 
 errors = []
 warnings = []
@@ -62,8 +64,29 @@ def need(obj, path, kind, allowed=None):
     return value
 
 
+def features_of(profile):
+    """The profile's features; a profile written before they existed ran the whole SEO factory."""
+    value = get(profile, "features")
+    if value is None:
+        warn("features", "missing: read as the former SEO factory (audit, pass, and blog or fix when configured)")
+        legacy = {"audit", "pass"}
+        if get(profile, "content") is not None:
+            legacy.add("blog")
+        if get(profile, "tracker.type") == "github-issues":
+            legacy.add("fix")
+        return legacy
+    if not isinstance(value, list) or not value:
+        error("features", "expected a non-empty list")
+        return set()
+    for item in value:
+        if item not in FEATURES:
+            error("features", f"unknown {item!r}: must be among {', '.join(sorted(FEATURES))}")
+    return set(value)
+
+
 def check(profile):
     need(profile, "schemaVersion", int)
+    features = features_of(profile)
 
     # Site
     url = need(profile, "site.url", str)
@@ -115,6 +138,8 @@ def check(profile):
 
     # Mode
     mode = need(profile, "mode", str, MODES)
+    if mode == "repo" and features and not features & {"pass", "blog"}:
+        warn("mode", "repo without pass or blog: nothing edits the site, advise with a dedicated workspace is simpler")
     if mode == "repo":
         repo_url = need(profile, "repo.url", str)
         if repo_url and not re.match(r"^https://github\.com/[^/]+/[^/]+$", repo_url):
@@ -162,12 +187,23 @@ def check(profile):
         if calls is not None and not 0 < calls <= 20:
             error("sources.trends.maxCallsPerPass", "between 1 and 20")
 
-    # Cadence
-    need(profile, "cadence.schedule", str)
-    for field, low in (("articleEveryDays", 1), ("pageCooldownDays", 7), ("maxActionsPerPass", 1)):
-        value = need(profile, f"cadence.{field}", int)
-        if value is not None and value < low:
-            error(f"cadence.{field}", f"at least {low}")
+    # Cadence: the pass and the watch run on it, the blog has its own (content.schedule)
+    if features & {"pass", "watch"}:
+        need(profile, "cadence.schedule", str)
+    if "pass" in features:
+        for field, low in (("articleEveryDays", 1), ("pageCooldownDays", 7), ("maxActionsPerPass", 1)):
+            value = need(profile, f"cadence.{field}", int)
+            if value is not None and value < low:
+                error(f"cadence.{field}", f"at least {low}")
+    if "blog" in features and get(profile, "content") is None:
+        warn("content", "not planned yet: skf-seo-content-audit writes it")
+    for field in ("scoreDrop", "trafficDrop", "minImpressions"):
+        value = get(profile, f"alerts.{field}")
+        if value is not None and (not isinstance(value, int) or isinstance(value, bool) or value < 1):
+            error(f"alerts.{field}", "a positive integer")
+    summary = get(profile, "alerts.summary")
+    if summary is not None and summary not in SUMMARIES:
+        error("alerts.summary", f"must be one of {', '.join(sorted(SUMMARIES))}")
     if get(profile, "cadence.articlesPerWeek") is not None:
         warn("cadence.articlesPerWeek", "moved to content.perWeek (skf-seo-content-audit)")
 
@@ -220,6 +256,8 @@ def check(profile):
     digest = get(profile, "tracker.digest")
     if digest is not None and digest not in DIGESTS:
         error("tracker.digest", f"must be one of {', '.join(sorted(DIGESTS))}")
+    if "fix" in features and tracker != "github-issues":
+        error("features", "fix (the claude:fix label) needs tracker.type github-issues")
     if tracker and get(profile, "notify.channel") == "none":
         warn("notify.channel", "none: the owner will never be told about the actions waiting for them")
 

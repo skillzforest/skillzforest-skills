@@ -3,10 +3,10 @@
   "id": "skf-seo-setup",
   "name": "SEO Setup",
   "publisher": "SkillzForest",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "category": "marketing",
   "subcategory": "seo-sea",
-  "description": "Turns a validated .seo/profile.json into a running SEO agent: prepares the workspace, connects and tests Search Console, SerpApi (Google Trends), Gmail, Outlook or Slack, Google Slides and GitHub, creates the journal and backlog, schedules the recurring SEO pass as a cloud task and runs it once.",
+  "description": "Turns a validated .seo/profile.json into a running SEO agent: prepares the workspace, connects and tests Search Console, SerpApi (Google Trends), Gmail, Outlook or Slack, Google Slides, GitHub or Jira, creates the journal and the action tracker, then schedules only what the profile's features ask for (alert check-up, improvement pass, article writer, claude:fix task) as cloud tasks and runs each once.",
   "compatibility": {
     "claude-code": "native",
     "claude-ai": "unknown",

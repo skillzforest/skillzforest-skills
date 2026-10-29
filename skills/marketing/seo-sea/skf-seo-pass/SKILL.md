@@ -5,13 +5,16 @@ description: Runs one continuous-SEO pass on a website described by .seo/profile
 
 # SEO pass
 
+**Which site**: the one whose workspace you are in; when that is not obvious, ask the owner first — `../skf-seo-profile/references/profile.md`, Which site.
+
 You improve a site's organic search, one careful step at a time. Everything about the site is in
 **`.seo/profile.json`** at the root of the workspace (format: `skf-seo-profile/references/profile.md`). Read it
 first; if it is missing or invalid, stop and say that `skf-seo-profile` must be run.
 
-Tools for every source and output, by profile value: [`references/connectors.md`](references/connectors.md).
-Report layout: [`references/report.md`](references/report.md). Action tracker (GitHub issues or Google Sheet) and
-digest: [`references/tracker.md`](references/tracker.md).
+Tools for every source and output, by profile value: `../skf-seo-profile/references/connectors.md`.
+Report layout: [`references/report.md`](references/report.md). Action tracker (GitHub issues, Jira or Google Sheet)
+and digest: `../skf-seo-profile/references/tracker.md`. The site's audit (`skf-seo-audit`) is the pass's starting
+point: its actions are the pass's work list, and the pass reuses its crawler, PageSpeed script and scorecard.
 
 Write the report, the deck, the pull request and the notification in `style.reportLanguage`. Write site content in
 each site language, following `languages.list[].voice` and `style.rules`.
@@ -71,7 +74,7 @@ Keep the useful raw rows (query, page, impressions, clicks, CTR, position) for t
 
 Always useful, essential while Search Console shows fewer than about 200 impressions over 28 days:
 
-- **Autocomplete** (`sources.suggest`): for each language, run `scripts/suggest.py` on the `topics.target[].seeds`
+- **Autocomplete** (`sources.suggest`): for each language, run `../skf-seo-profile/scripts/suggest.py` on the `topics.target[].seeds`
   of that language and on variations (product type + verb, brand + task, "how to", "best", "vs"). Use
   `--country` with the language's first market when it has one.
 - **Google Trends** (`sources.trends.via: serpapi`): at most `sources.trends.maxCallsPerPass` calls, and only when
@@ -92,7 +95,7 @@ Keep only searches tied to what the product really does (`site.pitch`, `topics.t
    out of the sitemap, a broken internal link, a heavy page…): **always eligible**, whatever the impressions — the
    audit already judged it worth doing. Take the highest priority first (`P1`, then `P2`, then the oldest); a `P3`
    only when no opportunity of type 1 or 3 is clearly better. Skip an action labeled `claude:fix` (the fix task
-   already handles it) and one whose page is under the cooldown. Fix it in the pull request with `Fixes #<number>`.
+   already handles it, when the owner has it: `skf-seo-setup` step 8) and one whose page is under the cooldown. Fix it in the pull request with `Fixes #<number>`.
 3. **A search with no dedicated page** (impressions on a page that only mentions it in passing, or demand found in
    step 3): write an article (mode `repo` with a `repo.blog`, or a draft in mode `advise`). If an existing article
    already partly answers it, enrich that one instead. When the profile has a `content` block, new articles belong
@@ -157,69 +160,25 @@ facts and the limits.
 
 ## Speed
 
-At every pass, even when nothing else is done, when `sources.pagespeed` is true and the `PAGESPEED_KEY` environment
-variable is set (without a key the shared quota is almost always exhausted: say once in the final answer that a
-free key is missing, and skip):
-
-0. Check the key without printing it: `[ -n "$PAGESPEED_KEY" ] && echo key || echo no key`. Never say a key
-   is missing without running this check.
-1. Measure the home page and the two pages with the most impressions (or the first two `repo.pages`), mobile:
-   `python3 ../skf-seo-audit/scripts/pagespeed.py <urls> --strategy mobile --csv <paths.reports>pagespeed.csv`.
-   Commit the history file with the rest (mode `repo`: in the pull request if there is one, otherwise leave it for
-   the next one — never push to the base branch for it; mode `advise`: on the workspace's base branch).
-2. Compare with the previous line of the same page in the history. Create or update one tracker action
-   (`id: speed:<page path>`, `who: agent` when the cause is in the site's code — heavy images, scripts, fonts —
-   `owner` when it is the host or a third-party script) when:
-   - performance is under 50 (`P2`), or under 90 for the home page (`P3`);
-   - performance lost 15 points or more since the previous measure (`P2`: a regression, say which change may have
-     caused it);
-   - LCP over 4 s or CLS over 0.25 (`P2`).
-   Give the figures and the PageSpeed report link (`https://pagespeed.web.dev/analysis?url=<page>`) in the action.
-3. When an open `speed:` action's page is back to normal, close it with the new figures.
-4. Report the three scores in the pass report (or the final answer) on one line.
+At every pass, even when nothing else is done: follow `../skf-seo-audit/references/speed.md` (three pages measured
+on mobile, a `speed:` action on a slow page or a regression).
 
 ## Articles
 
 When the profile has a `content` block, new articles are planned by `skf-seo-content-audit` and written by
-`skf-seo-article` on their own schedule: a pass never writes a new article then. A prompt asking for an
-**article pass** means: follow `skf-seo-article/SKILL.md` instead of this skill.
+`skf-seo-article` on their own schedule: a pass never writes a new article
+then. A prompt asking for an **article pass** means: follow `skf-seo-article/SKILL.md` instead of this skill (when
+it is not installed, say so and write nothing).
 
 ## Scorecard
 
-At every pass, even when nothing else is done, measure the site the same way so the owner sees whether its SEO is
-good and where it is heading — continuous SEO needs a number that moves:
-
-1. Crawl the live site: `python3 ../skf-seo-audit/scripts/crawl.py <site.url> --max 100 --out /tmp/crawl.json`.
-2. Count the open tracker actions by priority (`P1,P2,P3`, the scorecard item itself excluded).
-3. Search Console totals of the window and of the previous one (step 2), when there is a property.
-4. Read the previous card: the tracker item `seo-id: scorecard` (GitHub: the issue labeled `seo:scorecard`; sheet:
-   the tab `Scorecard`). Save its body to `/tmp/previous.md`.
-5. `python3 scripts/scorecard.py --site <site.name> --crawl /tmp/crawl.json --pagespeed <paths.reports>pagespeed.csv
-   --actions <P1,P2,P3> [--sc <clicks,impressions,position> --sc-prev <…>] --previous /tmp/previous.md
-   --lang <style.reportLanguage>` prints the card: a score out of 100 (technical /50, speed /25, open actions /25),
-   a status 🟢 / 🟠 / 🔴 and the change since the previous card.
-6. Publish it, never on the base branch:
-   - GitHub issues: one issue per site, title `📊 Tableau de bord SEO — <site.name>` (in `style.reportLanguage`),
-     labels `seo` and `seo:scorecard`, body = the card. Create it once, then edit its body at every pass and add a
-     comment with one line, `<date> — <summary>`, so the comments are the history. Never close it, never give it
-     `seo:agent`, `seo:owner` or `claude:fix`.
-   - Google Sheets: a tab `Scorecard`, one row per pass (date, score, status, technical, speed, actions, clicks,
-     impressions, position).
-7. Give the card's first line in the pass report and the final answer.
-
-The score is a trend indicator, not an absolute grade: say so when the owner asks. A score that drops 10 points or
-more since the previous card, or turns 🔴, is told to the owner in the same pass, with the cause (which part fell).
+At every pass, even when nothing else is done: update the site's score out of 100 as
+`../skf-seo-audit/references/scorecard.md` says, and give its first line in the pass report and the final answer.
 
 ## Owner actions
 
-At every pass, even when nothing else is done:
-
-1. For each open `owner` action that you can check (Search Console sitemaps, indexing of a page, a page now live,
-   a title now changed on the live site), check it. Done: close it (GitHub: `tracker_github.py close` with a comment
-   saying what you saw; sheet: `Done` with the date). Not done: leave it.
-2. A new `owner` action found in this pass (an old sitemap to remove, a page to submit for indexing, a fact to
-   confirm): create it in the tracker.
-3. Send the digest when it is due (`tracker.digest`, `tracker.md`), and at once for a new `P1` owner action.
+At every pass, even when nothing else is done: check, close and remind the owner's actions as
+`../skf-seo-profile/references/tracker.md`, section Owner actions, says.
 
 ## Applied recommendations (mode `advise`)
 

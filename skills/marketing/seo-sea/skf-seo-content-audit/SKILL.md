@@ -5,10 +5,12 @@ description: SEO audit for blog content — asks how many articles the owner wan
 
 # SEO content audit
 
+**Which site**: the one whose workspace you are in; when that is not obvious, ask the owner first — `../skf-seo-profile/references/profile.md`, Which site.
+
 You turn search demand into a **content plan**: N articles worth writing for this site, each with a brief precise
 enough for `skf-seo-article` to write it without guessing, each tracked as a ticket, each going through the owner's
 validation before anything is published. Everything about the site is in `.seo/profile.json`
-(`skf-seo-profile/references/profile.md`); no profile → run `skf-seo-profile` first (it takes a few minutes and
+(`../skf-seo-profile/references/profile.md`); no profile → run `skf-seo-profile` first (it takes a few minutes and
 this skill needs its themes, exclusions, languages and facts).
 
 The content factory:
@@ -21,7 +23,8 @@ skf-seo-content-audit  →  N briefs (.md) + N tickets (board)  →  skf-seo-art
 
 Read first: [`references/brief.md`](references/brief.md) (the brief format),
 [`../skf-seo-article/references/publishers.md`](../skf-seo-article/references/publishers.md) (validation and
-publication per platform), `../skf-seo-pass/references/tracker.md` (tickets) and `connectors.md` (sources).
+publication per platform), `../skf-seo-profile/references/tracker.md` (tickets) and
+`../skf-seo-profile/references/connectors.md` (sources).
 
 Write the plan, briefs, tickets and messages in `style.reportLanguage`; article titles and searches in each site
 language.
@@ -79,7 +82,7 @@ For each theme of `topics.target` and each language:
   (position 8 to 40, few clicks), questions (`how`, `why`, `which`, `comment`, `pourquoi`, `quel`…), queries
   already bringing clicks to an article that a deeper one would serve better. Window: the last 3 months ending 3
   days ago.
-- **Autocomplete**: `../skf-seo-pass/scripts/suggest.py <lang> "<seed>"` on the seeds and on question forms
+- **Autocomplete**: `../skf-seo-profile/scripts/suggest.py <lang> "<seed>"` on the seeds and on question forms
   (`how to <seed>`, `<seed> vs`, `best <seed>`, `<seed> for <audience>`), with `--country` when the language has a
   market.
 - **Google Trends** (`sources.trends`, within `maxCallsPerPass` × 2): compare the candidate themes; rising related
@@ -116,7 +119,7 @@ pull request — then fills `repo.blog` in the profile in the same pull request.
 
 ## 6. Tickets
 
-One ticket per article, following `../skf-seo-pass/references/tracker.md` (section Article tickets):
+One ticket per article, following `../skf-seo-profile/references/tracker.md` (section Article tickets):
 
 - id `article:<slug>`, title `Article — <title>` (or `Mise à jour — <page>` for an update), type, publication
   date, the brief's summary and a link to the brief file;
@@ -133,10 +136,10 @@ l'adresse de l'article. »
 
 Write the `content` block of the profile (`profile.md`): `articles`, `perWeek`, `schedule`, `cron` (UTC), `publish`
 and its settings (`cms` or `markdown`), `planDir`, `maxPending` (default 2: the writer waits when that many
-articles wait for validation). Validate it (`skf-seo-profile/scripts/validate_profile.py`).
+articles wait for validation). Validate it (`../skf-seo-profile/scripts/validate_profile.py`).
 
 Then schedule the writer: a task `SEO articles <site.name>` as `skf-seo-setup` step 7b says (same environment,
-repositories and connectors as the pass; its prompt runs `skf-seo-article`). In mode `cms`, the environment must
+repositories and connectors as the other SEO tasks; its prompt runs `skf-seo-article`). In mode `cms`, the environment must
 hold the CMS credential's variable: give the owner the exact variable name and where to set it, never ask them to
 paste the secret in the chat. No scheduler: say the owner can run `skf-seo-article` by hand at each slot.
 

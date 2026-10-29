@@ -28,13 +28,21 @@ Packs are filed like skills: under the site category and subcategory they're lis
 
 When the skills build on each other (the second works from what the first produced), set `"ordered": true`: `skills` is then the order to use them in, and the site and the Manager show them as numbered steps — mirror it with the back office's « Les skills s'utilisent dans cet ordre » box. `github-issue-resolver` is ordered (context, then fix); `presales-scoping` is not.
 
+The SEO packs share `skf-seo-profile` (the profile, and the connectors, tracker and scripts every SEO skill uses) and
+`skf-seo-setup`; the profile's `features` field records which SEO skills the owner has, so each pack works alone and
+setup schedules only what it holds. A skill may belong to several packs.
+
 A pack **only references** skills by name — it never embeds a copy of a skill's files. Skills are resolved from [`skills/`](../skills/) at build time by [`scripts/build-pack.js`](../scripts/build-pack.js), wherever they're filed.
 
 ## Packs in this repository
 
 | Pack | Folder | Skills |
 |---|---|---|
-| GitHub Issue Resolver | [`development/code/github-issue-resolver/`](development/code/github-issue-resolver/pack.json) | `skf-github-issue-brief`, `skf-github-issue-fix` |
+| From GitHub ticket to code | [`development/code/github-issue-resolver/`](development/code/github-issue-resolver/pack.json) | `skf-github-issue-brief`, `skf-github-issue-fix` |
+| SEO Audit & Alerts | [`marketing/seo-sea/seo-audit/`](marketing/seo-sea/seo-audit/pack.json) | `skf-seo-profile`, `skf-seo-setup`, `skf-seo-audit`, `skf-seo-watch` |
+| SEO Audit & Auto-Fixes | [`marketing/seo-sea/seo-autofix/`](marketing/seo-sea/seo-autofix/pack.json) | `skf-seo-profile`, `skf-seo-setup`, `skf-seo-audit`, `skf-seo-pass` |
+| SEO Blog Autopilot | [`marketing/seo-sea/seo-blog-autopilot/`](marketing/seo-sea/seo-blog-autopilot/pack.json) | `skf-seo-profile`, `skf-seo-setup`, `skf-seo-content-audit`, `skf-seo-article` |
+| SEO Factory | [`marketing/seo-sea/seo-factory/`](marketing/seo-sea/seo-factory/pack.json) | every SEO skill, with the GitHub issue skills |
 | Presales Scoping Pack | [`development/code/presales-scoping/`](development/code/presales-scoping/pack.json) | the 11 `presales-*` skills |
 
 ## Building a pack
