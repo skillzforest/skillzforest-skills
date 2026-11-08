@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-growth-report",
+  "name": "Growth Report",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "marketing",
+  "subcategory": "content",
+  "description": "Growth director's reporting across projects: weekly measures from analytics, Search Console, CRM, SEO scorecards and the tracker (awareness, acquisition, pipeline, operations), a three-line daily point, and a weekly review with decisions to take, KPIs per project, experiments, trade-offs and missing data. Never invents a figure; email only as a draft.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unknown",
+    "perplexity": "unknown",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

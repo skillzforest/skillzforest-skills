@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "growth-marketing",
+  "name": "Growth Marketing",
+  "publisher": "SkillzForest",
+  "category": "marketing",
+  "subcategory": "content",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Grow a product's audience without guesswork: describe the project once (audiences, personas, goals, channels), get a sourced weekly market watch (trends, competitors, communities, media, creators, events), a scored channel strategy with 30 and 90 day plans and bounded experiments, ready-to-publish campaigns (posts, video scripts, press kits, calendar with UTM links) and a weekly review of what works. Every action waits for the owner's one-word decision on a GitHub board; nothing is published without approval.",
+  "tags": ["growth", "marketing", "market-research", "competitor-monitoring", "channel-strategy", "campaigns", "press-kit", "video-script", "github-projects", "reporting"],
+  "skills": ["skf-growth-profile", "skf-market-intel", "skf-channel-strategy", "skf-campaign-studio", "skf-growth-report", "skf-growth-tracker"],
+  "ordered": true
+}

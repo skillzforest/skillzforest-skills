@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-market-intel",
+  "name": "Market Intelligence",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "marketing",
+  "subcategory": "content",
+  "description": "Weekly, sourced market watch per project: trends, competitors, audience needs, communities and their self-promotion rules, media and sections, creators, companies and partners showing a need, events and editorial calendars. Every finding carries source, dates and confidence; the strongest become tracker opportunities. One sub-agent per project when several are covered.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unknown",
+    "perplexity": "unknown",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

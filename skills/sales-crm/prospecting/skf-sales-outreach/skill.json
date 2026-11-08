@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-sales-outreach",
+  "name": "Sales Outreach",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "sales-crm",
+  "subcategory": "prospecting",
+  "description": "Personalized first messages, demo and partnership proposals, press pitches and a single follow-up for organizations the owner approved; reads replies, drafts answers, updates the CRM, records refusals and opt-outs for good, flags what needs the owner. Each message needs its own approval; drafts only, the owner sends. No mass mailing, no B2C cold messages.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unknown",
+    "perplexity": "unknown",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "growth-factory",
+  "name": "Growth Factory",
+  "publisher": "SkillzForest",
+  "category": "marketing",
+  "subcategory": "content",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "A growth and business development team for several products at once, run by scheduled agents: sourced market watch, channel strategy, campaigns, B2B prospecting and partnerships, measured weekly, all tracked on one GitHub board where the owner answers each decision in one word. Works alongside the SEO Factory, reusing its profiles and articles. Nothing public or binding happens without the owner's approval.",
+  "tags": ["growth", "business-development", "multi-project", "scheduled-agents", "github-projects", "prospecting", "campaigns", "reporting"],
+  "skills": ["skf-growth-profile", "skf-growth-tracker", "skf-market-intel", "skf-channel-strategy", "skf-prospect-pipeline", "skf-sales-outreach", "skf-campaign-studio", "skf-growth-report"],
+  "ordered": true
+}

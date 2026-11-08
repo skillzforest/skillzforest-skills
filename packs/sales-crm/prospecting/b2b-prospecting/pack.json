@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "b2b-prospecting",
+  "name": "B2B Prospecting",
+  "publisher": "SkillzForest",
+  "category": "sales-crm",
+  "subcategory": "prospecting",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Targeted B2B prospecting that respects people and platforms: an ideal customer profile, organizations found from legal public sources with dated need signals, a fixed scoring grid, CRM records under the right project, personalized first messages that prove you looked, one follow-up, replies summarized and refusals honoured for good. Weekly caps, drafts only: the owner approves and sends every message.",
+  "tags": ["prospecting", "lead-generation", "lead-scoring", "crm", "hubspot", "outreach", "partnerships", "press-relations", "gdpr"],
+  "skills": ["skf-growth-profile", "skf-prospect-pipeline", "skf-sales-outreach", "skf-growth-tracker", "skf-growth-report"],
+  "ordered": true
+}
