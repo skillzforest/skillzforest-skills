@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "id": "example",
+  "name": "Example App",
+  "status": "draft",
+  "reportLanguage": "en",
+  "site": { "url": "https://www.example.com/", "languages": ["en", "fr"] },
+  "seoProfile": { "repo": "example/example-website", "path": ".seo/profile.json" },
+  "model": "b2b",
+  "stage": "launched",
+  "goals": [
+    { "id": "signups-30d", "horizon": "30d", "objective": "Get the first qualified trial accounts", "metric": "trial sign-ups per week (PostHog)", "baseline": null, "target": null, "basis": "hypothesis" },
+    { "id": "demos-90d", "horizon": "90d", "objective": "Book demos with target companies", "metric": "demos held (CRM)", "baseline": 0, "target": 6, "basis": "owner" }
+  ],
+  "audiences": [
+    { "id": "ops-teams", "name": "Operations teams in mid-size retailers", "kind": "customer", "description": "Teams that re-type spreadsheet data into web back offices every week.", "where": ["LinkedIn groups of e-commerce managers", "retail trade fairs"], "basis": "site" }
+  ],
+  "personas": [
+    { "id": "ops-manager", "audience": "ops-teams", "name": "Operations manager", "role": "Head of operations", "job": "Keep product data up to date across several back offices", "pains": ["manual copy and paste", "errors in product sheets"], "triggers": ["catalogue migration", "new marketplace"], "objections": ["data security", "IT approval"], "basis": "hypothesis" }
+  ],
+  "icp": {
+    "industries": ["online retail"],
+    "companySize": "20 to 500 employees",
+    "geos": ["FR", "BE"],
+    "roles": ["Head of operations", "E-commerce manager"],
+    "signals": ["job ad for a data-entry operator", "announced catalogue migration"],
+    "disqualifiers": ["already uses a PIM with a native import"]
+  },
+  "partners": [
+    { "kind": "integrator", "why": "agencies that build back offices for the target companies", "examples": [] }
+  ],
+  "channels": {
+    "candidates": ["seo", "linkedin", "newsletters", "partners", "events"],
+    "excluded": [{ "id": "tiktok", "reason": "the buyers are not there" }],
+    "accounts": [{ "platform": "linkedin", "handle": "Example App", "status": "unknown" }],
+    "socialProfile": null
+  },
+  "media": { "languages": ["en", "fr"], "themes": ["retail operations", "no-code automation"], "creatorsSource": null },
+  "outreach": {
+    "b2bEmail": true,
+    "b2cDirect": false,
+    "maxNewContactsPerWeek": 15,
+    "maxFirstMessagesPerWeek": 5,
+    "sender": null,
+    "crm": { "type": "hubspot", "projectProperty": "growth_project", "value": "example" }
+  },
+  "measurement": {
+    "posthog": { "via": "mcp", "organizationId": "", "projectId": "12345", "host": "eu" },
+    "searchConsole": { "via": "composio", "account": "seo-google", "property": "sc-domain:example.com" },
+    "other": [{ "metric": "demo requests", "source": "CRM", "how": "deals created with source = website" }],
+    "unavailable": ["activation rate: no activation event tracked yet"]
+  },
+  "constraints": ["Never quote a price that is not on the pricing page"],
+  "assets": [{ "kind": "video", "ref": "example/example-video" }],
+  "openQuestions": ["Which mailbox sends the B2B emails?"]
+}

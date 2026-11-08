@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-growth-tracker",
+  "name": "Growth Tracker",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "development",
+  "subcategory": "code",
+  "description": "Single entry point of growth actions into GitHub: one issue per action with a growth-id fingerprint (no duplicates), Project board fields filled, owner decisions read from comments (APPROVE, CHANGE, POSTPONE, REJECT, also in French) and logged, board set up once. Helper script prints GraphQL documents, works locally and in cloud runs.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unknown",
+    "perplexity": "unknown",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

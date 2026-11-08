@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-prospect-pipeline",
+  "name": "Prospect Pipeline",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "sales-crm",
+  "subcategory": "prospecting",
+  "description": "Finds and qualifies client companies, partners, prescribers and media from legal public sources, with provenance and dated need signals, scores them (fit, signal, potential, feasibility, confidence), classifies A, B or C, deduplicates against the CRM and the tracker, records organizations and professional contacts in the CRM under the project property, and proposes the best ones as owner decisions. Weekly caps, no bulk lists, no B2C individuals.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unknown",
+    "perplexity": "unknown",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}
