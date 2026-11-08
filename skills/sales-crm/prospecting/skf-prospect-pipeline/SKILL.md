@@ -40,18 +40,24 @@ address, partner program, public professional address). When no legitimate route
 ## 4. Record
 
 1. Pipeline file `pipeline/YYYY-Www.md`, organizations only, committed to the workspace.
-2. CRM (profile `validated`): for each A organization, a company record (name, domain, industry, source URL, score,
-   class, signal) and, when a legitimate professional contact was found, a contact record linked to it (name, role,
-   professional address, source URL, legal basis « intérêt légitime B2B » for EU business contacts), both with the
-   project property set to the profile's value. Search the CRM by domain first: update, never duplicate. Never
-   create a record for a private individual.
+2. CRM, only for organizations the owner approved (profile `validated`). A proposed organization is not written to
+   the CRM: the pipeline file and the tracker item are enough until the owner answers APPROVE. On approval (this run
+   or a later one, `skf-growth-tracker` mode decisions), create or update the company record (name, domain,
+   industry, source URL, score, class, signal) and, when a legitimate professional contact was found, a contact
+   record linked to it (name, role, professional address, source URL, legal basis « intérêt légitime B2B » for EU
+   business contacts), both with the project property set to the profile's value. Search the CRM by domain first:
+   update, never duplicate. Never create a record for a private individual. Use the CRM access named by
+   `outreach.crm` (`account` when set); when the only access available asks for a confirmation per write that the
+   run cannot give, write nothing, add the label `needs:owner` to the item and list the records to create in the
+   final answer.
 3. Tracker, through `skf-growth-tracker` (mode log): one item per A organization, type `prospect` (or `media`),
    growth-id `prospect:<project>:<domain>`, Status Decision, label `decision:pending`, Pole BizDev, Nature Prospect
    or Media/Partner, Score, Confidence, Effort, with the decision layout: opportunity, kind, signal, why now, proposed
    approach (channel, angle, offer), risks, recommendation, link to the CRM record. No personal data in the issue.
 
 When a project uses HubSpot for the first time, check that the project property exists on companies and contacts; if
-it does not, create it (internal CRM setting, no outside effect) and say so in the report.
+it does not, create it (internal CRM setting, no outside effect) with the values of every project of the workspace and
+say so in the report.
 
 ## 5. Final answer
 
