@@ -1,0 +1,29 @@
+{
+  "marque": "Exemplia",
+  "produit": "Exemplia App",
+  "site": "exemplia.example",
+  "signature": "Une phrase de signature relevée sur le site",
+  "theme_site": "sombre",
+  "couleurs": {
+    "fond_sombre": "#0B0D1A",
+    "fond_clair": "#F4F5FB",
+    "texte": "#F4F5FB",
+    "texte_secondaire": "#A9AEC8",
+    "primaire": "#22D3EE",
+    "secondaire": "#A855F7",
+    "accent": "#F472B6",
+    "bordure": "#2A2F4A"
+  },
+  "polices": {
+    "titres": {"famille": "Archivo", "graisse": "800", "google_fonts": true},
+    "texte": {"famille": "Atkinson Hyperlegible", "google_fonts": true}
+  },
+  "logos": [
+    {"role": "principal", "url": "https://exemplia.example/brand/logo.png", "fond_lisible": "sombre"},
+    {"role": "monogramme", "url": "https://exemplia.example/brand/monogram.png", "fond_lisible": "les deux"}
+  ],
+  "forme": {"rayon": "12px", "style_cartes": "fond légèrement éclairci, bordure fine"},
+  "ton": {"adresse": "vous", "traits": ["phrases courtes", "verbes d'action", "enthousiaste sans superlatifs"]},
+  "sources": ["https://exemplia.example/brand/design-system.md", "styles calculés de https://exemplia.example/"],
+  "a_verifier": []
+}

@@ -1,0 +1,87 @@
+{
+  "langue": "fr",
+  "titre_fichier": "{{MARQUE}} - Communiqué et fiche créateurs - MASTER",
+  "blocs": [
+    {"type": "consigne", "texte": "Master à copier pour chaque campagne. Remplacer chaque champ {{...}}, laisser [à compléter] ce qui n'est pas connu, puis supprimer toutes les consignes en gris. Partie A : une page, deux au maximum."},
+
+    {"type": "logo"},
+    {"type": "etiquette", "texte": "COMMUNIQUÉ DE PRESSE · {{VILLE}}, le {{DATE}}"},
+    {"type": "titre", "texte": "{{TITRE_COMMUNIQUE}}"},
+    {"type": "consigne", "texte": "Titre : bénéfice + nom du produit, 12 mots au plus."},
+    {"type": "chapeau", "texte": "{{CHAPEAU}}"},
+    {"type": "consigne", "texte": "Chapeau : qui, quoi, pour qui, quand, où, en trois lignes. Il doit se suffire à lui-même."},
+
+    {"type": "h2", "texte": "{{INTERTITRE_PROBLEME}}"},
+    {"type": "para", "texte": "{{PARAGRAPHE_PROBLEME}}"},
+    {"type": "consigne", "texte": "Le problème vécu par l'utilisateur, avec un exemple concret. Un chiffre seulement s'il est sourcé."},
+
+    {"type": "h2", "texte": "{{INTERTITRE_SOLUTION}}"},
+    {"type": "para", "texte": "{{PARAGRAPHE_SOLUTION}}"},
+    {"type": "puces", "items": ["{{FONCTION_1_TITRE}} : {{FONCTION_1_BENEFICE}}", "{{FONCTION_2_TITRE}} : {{FONCTION_2_BENEFICE}}", "{{FONCTION_3_TITRE}} : {{FONCTION_3_BENEFICE}}"]},
+    {"type": "consigne", "texte": "Trois à cinq fonctions disponibles aujourd'hui, en bénéfices. Les fonctions d'IA sont présentées comme telles."},
+
+    {"type": "h2", "texte": "Disponibilité et prix"},
+    {"type": "para", "texte": "{{PRODUIT_NOM}} est disponible sur {{PLATEFORMES}} depuis le {{DATE_LANCEMENT}}. Prix : {{PRIX}}. {{LIEN_PRODUIT}}"},
+
+    {"type": "citation", "texte": "{{CITATION}}", "auteur": "{{PORTE_PAROLE}}, {{PORTE_PAROLE_FONCTION}}"},
+
+    {"type": "encadre", "titre": "Chiffres clés", "items": ["{{CHIFFRE_1}} : {{CHIFFRE_1_LEGENDE}}", "{{CHIFFRE_2}} : {{CHIFFRE_2_LEGENDE}}", "{{CHIFFRE_3}} : {{CHIFFRE_3_LEGENDE}}"]},
+    {"type": "consigne", "texte": "Chiffres vérifiés et datés uniquement. Supprimer l'encadré plutôt que d'y mettre un chiffre douteux."},
+
+    {"type": "h2", "texte": "À propos de {{MARQUE}}"},
+    {"type": "para", "texte": "{{A_PROPOS}}"},
+    {"type": "consigne", "texte": "Trois à cinq lignes : qui, depuis quand, mission, site."},
+
+    {"type": "h2", "texte": "Contact presse"},
+    {"type": "para", "texte": "{{CONTACT_PRESSE}} · {{EMAIL_PRESSE}} · {{TELEPHONE_PRESSE}}"},
+    {"type": "para", "texte": "Kit presse, logos et visuels : {{LIEN_KIT_PRESSE}}"},
+
+    {"type": "saut"},
+
+    {"type": "etiquette", "texte": "FICHE CRÉATEURS · BLOGUEURS ET INFLUENCEURS"},
+    {"type": "titre", "texte": "Parler de {{PRODUIT_NOM}}"},
+
+    {"type": "h2", "texte": "Le produit en trois phrases"},
+    {"type": "para", "texte": "{{PRODUIT_TROIS_PHRASES}}"},
+
+    {"type": "h2", "texte": "Messages clés"},
+    {"type": "puces", "items": ["{{MESSAGE_CLE_1}}", "{{MESSAGE_CLE_2}}", "{{MESSAGE_CLE_3}}"]},
+    {"type": "h3", "texte": "Formulations à éviter"},
+    {"type": "puces", "items": ["{{A_EVITER_1}}", "{{A_EVITER_2}}"]},
+    {"type": "consigne", "texte": "Exemples : une compatibilité non vérifiée, un qualificatif non prouvé (« le meilleur », « le seul »), un terme juridique inexact."},
+
+    {"type": "h2", "texte": "Idées de contenus"},
+    {"type": "tableau", "entetes": ["Angle", "Format conseillé", "Ce qu'on montre"], "lignes": [
+      ["Prise en main", "{{FORMAT_1}}", "{{MONTRER_1}}"],
+      ["Avant / après", "{{FORMAT_2}}", "{{MONTRER_2}}"],
+      ["Astuce ou défi", "{{FORMAT_3}}", "{{MONTRER_3}}"],
+      ["Coulisses", "{{FORMAT_4}}", "{{MONTRER_4}}"]
+    ]},
+    {"type": "consigne", "texte": "Adapter les angles au produit ; supprimer les lignes qui ne s'appliquent pas."},
+
+    {"type": "h2", "texte": "À montrer, à éviter à l'écran"},
+    {"type": "puces", "items": ["À montrer : {{A_MONTRER}}", "À éviter : {{A_NE_PAS_MONTRER}}"]},
+
+    {"type": "h2", "texte": "Liens, mots-clés et mentions"},
+    {"type": "puces", "items": ["Site : {{SITE}}", "Comptes à mentionner : {{HANDLES}}", "Hashtags : {{HASHTAGS}}", "Lien suivi ou code : {{LIEN_SUIVI}}"]},
+
+    {"type": "h2", "texte": "Mentions obligatoires"},
+    {"type": "puces", "items": ["Signaler clairement tout partenariat, produit offert ou contenu rémunéré, selon les règles du pays et de la plateforme.", "Présenter les fonctions d'IA comme telles.", "{{MENTION_SPECIFIQUE}}"]},
+
+    {"type": "h2", "texte": "Contact créateurs"},
+    {"type": "para", "texte": "{{CONTACT_CREATEURS}} · {{EMAIL_CREATEURS}}"},
+
+    {"type": "saut"},
+
+    {"type": "etiquette", "texte": "QUESTIONS-RÉPONSES"},
+    {"type": "titre", "texte": "{{PRODUIT_NOM}} en questions"},
+    {"type": "qr", "question": "Qu'est-ce que {{PRODUIT_NOM}} ?", "reponse": "{{REPONSE_QUOI}}"},
+    {"type": "qr", "question": "À qui s'adresse-t-il ?", "reponse": "{{REPONSE_POUR_QUI}}"},
+    {"type": "qr", "question": "Combien ça coûte ?", "reponse": "{{REPONSE_PRIX}}"},
+    {"type": "qr", "question": "Sur quoi fonctionne-t-il ?", "reponse": "{{REPONSE_PLATEFORMES}}"},
+    {"type": "qr", "question": "Que deviennent mes données ?", "reponse": "{{REPONSE_DONNEES}}"},
+    {"type": "qr", "question": "Qu'est-ce qui le distingue ?", "reponse": "{{REPONSE_DIFFERENCE}}"},
+    {"type": "qr", "question": "Qu'est-ce qui arrive ensuite ?", "reponse": "{{REPONSE_FEUILLE_DE_ROUTE}}"},
+    {"type": "consigne", "texte": "Six à huit questions. Remplacer celles qui ne concernent pas le produit."}
+  ]
+}
