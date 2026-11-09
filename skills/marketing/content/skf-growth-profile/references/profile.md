@@ -48,7 +48,7 @@ be `validated` with hypotheses left in it: the owner accepts them as working ass
 | `maxNewContactsPerWeek` | ceiling of new people added to the CRM per week (default 15) |
 | `maxFirstMessagesPerWeek` | ceiling of first messages the owner is asked to approve per week (default 5) |
 | `sender` | `{ channel: "gmail"/"manual", account, address }` or `null` when not decided; with `null`, drafts are delivered as text to paste |
-| `crm` | `{ type: "hubspot", projectProperty, value }` or `{ type: "none" }`; `projectProperty` is the CRM property that keeps projects apart |
+| `crm` | `{ type: "hubspot", projectProperty, value, account? }` or `{ type: "none" }`; `projectProperty` is the CRM property that keeps projects apart; `account` names the connector account that writes without a per-write confirmation (for example a Composio alias) |
 
 ### `measurement`
 
