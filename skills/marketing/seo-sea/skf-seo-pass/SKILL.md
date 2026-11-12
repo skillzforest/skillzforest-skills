@@ -65,8 +65,10 @@ Skip when `sources.searchConsole.via` is `none`.
    - by `query` and `page` (row limit 1000);
    - by `page`;
    - by `query` and `country`, to tell which language serves which search.
-3. For each article or page published more than 7 days ago and never seen in the results, inspect the URL: indexed
-   or not. A page not indexed goes in the report (the owner asks for indexing); do not rewrite it for that.
+3. **Indexing of every sitemap URL**, at every pass: follow `../skf-seo-audit/references/indexing.md` (inspect each
+   URL, `indexing.py`, upsert one `indexing:<cause>` action per cause, close the causes that are gone). This is the
+   « Pages » report of Search Console, rebuilt: never leave a URL « détectée » or « explorée, non indexée » without
+   a cause and an action.
 
 Keep the useful raw rows (query, page, impressions, clicks, CTR, position) for the report.
 
@@ -88,6 +90,12 @@ These are signs of demand, not volumes: say so in the report.
 
 Keep only searches tied to what the product really does (`site.pitch`, `topics.target`). Rank the opportunities (an `agent` action of the tracker counts as an opportunity even without impressions):
 
+0. **An open `indexing:*` action for the agent** (`P1` first, then the cause covering the most URLs): a page Google
+   does not index brings nothing, whatever its title. It comes before every other opportunity and before any
+   article. Deleting pages (another brand's, duplicates, pages with no reason to exist) is a valid fix: remove the
+   files, routes, sitemap entries, hreflang and internal links together, and list every deleted URL in the pull
+   request. When the fix needs a file of `repo.protected`, the action is the owner's (`claude:fix` lets the fix task
+   do it): take the next one.
 1. **A page with impressions but few clicks** (position 3 to 20, CTR well below the site's average): rewrite its
    title and description with the words of the search and a reason to click, never promising what the page does
    not hold. If the page does not really answer the search, add or sharpen the heading or paragraph that does.
@@ -155,7 +163,7 @@ facts and the limits.
 5. Notify (`notify.channel`, `connectors.md`) when `notify.when` is `every-pass`, or when it is `on-change` and a
    pull request or a recommendation was made. Subject: `SEO <site.name>: <title of the change>`. Body: the summary,
    the change in two or three lines, and the link to the pull request or the deck.
-6. Final answer, in `style.reportLanguage`: what you found, what you changed or recommend, the link (or why there
+6. Final answer, in `style.reportLanguage`: the line « Indexation : N/M pages indexées » and its causes, what you found, what you changed or recommend, the link (or why there
    is none), and anything the owner must do (pages to submit for indexing, a connector to renew).
 
 ## Speed
@@ -173,7 +181,8 @@ it is not installed, say so and write nothing).
 ## Scorecard
 
 At every pass, even when nothing else is done: update the site's score out of 100 as
-`../skf-seo-audit/references/scorecard.md` says, and give its first line in the pass report and the final answer.
+`../skf-seo-audit/references/scorecard.md` says, with `--indexing <indexed>,<inspected>` from this pass's indexing
+check, and give its first line and the indexing line in the pass report and the final answer.
 
 ## Owner actions
 

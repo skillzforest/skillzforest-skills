@@ -4,7 +4,7 @@
 Usage:
     python3 scorecard.py --site "Example" --crawl crawl.json [--pagespeed pagespeed.csv] \
         [--actions P1,P2,P3] [--sc clicks,impressions,position] [--sc-prev clicks,impressions,position] \
-        [--previous previous.json] [--lang fr|en] [--out scorecard.json]
+        [--indexing indexed,total] [--previous previous.json] [--lang fr|en] [--out scorecard.json]
 
 Score (out of 100, parts without data are left out and the rest scaled up):
     technical  /50  pages without SEO problems, from the crawl (high 1, medium 0.4, low 0.1 per finding, per page;
@@ -15,6 +15,9 @@ Status: red under 60 or with an open P1, orange under 80, green otherwise.
 Search Console figures (28 days) are shown with their change but are not part of the score: a young site has none.
 They give the visibility stage instead, shown next to the score: starting (under 100 impressions in 28 days),
 growing (under 1,000), established — a sound site nobody finds yet is not "good SEO".
+
+Indexing (--indexing, from indexing.py: sitemap URLs indexed out of those inspected) is shown with its change since
+the previous card; it is not part of the score either.
 
 Prints the Markdown card (for the scorecard issue body), then writes the JSON (embedded in the card as a comment, so
 the next pass and the digest can read it back). Standard library only.
@@ -38,7 +41,7 @@ TEXT = {
         "actions": "Actions ouvertes", "sc": "Search Console (28 j)", "clicks": "clics", "impressions": "impressions",
         "position": "position moyenne", "pages": "pages vérifiées", "clean": "sans problème", "since": "depuis le",
         "status": {"green": "🟢 bon", "orange": "🟠 à surveiller", "red": "🔴 à corriger"}, "none": "pas de données",
-        "updated": "Mis à jour par la passe SEO du",
+        "updated": "Mis à jour par la passe SEO du", "indexing": "Indexation", "indexed": "pages indexées",
         "visibility": "Visibilité", "stages": {"starting": "🌱 démarrage", "growing": "📈 en progression", "established": "✅ installée"},
     },
     "en": {
@@ -46,7 +49,7 @@ TEXT = {
         "actions": "Open actions", "sc": "Search Console (28 days)", "clicks": "clicks", "impressions": "impressions",
         "position": "average position", "pages": "pages checked", "clean": "without problems", "since": "since",
         "status": {"green": "🟢 good", "orange": "🟠 to watch", "red": "🔴 to fix"}, "none": "no data",
-        "updated": "Updated by the SEO pass of",
+        "updated": "Updated by the SEO pass of", "indexing": "Indexing", "indexed": "pages indexed",
         "visibility": "Visibility", "stages": {"starting": "🌱 starting", "growing": "📈 growing", "established": "✅ established"},
     },
 }
@@ -109,6 +112,7 @@ def main():
     parser.add_argument("--actions", default="0,0,0", help="open tracker actions: P1,P2,P3")
     parser.add_argument("--sc", help="Search Console, last 28 days: clicks,impressions,position")
     parser.add_argument("--sc-prev", help="Search Console, the 28 days before: clicks,impressions,position")
+    parser.add_argument("--indexing", help="sitemap URLs indexed,inspected (indexing.py)")
     parser.add_argument("--previous", help="previous scorecard JSON (to show the change)")
     parser.add_argument("--lang", default="fr", choices=sorted(TEXT))
     parser.add_argument("--date", default=datetime.date.today().isoformat())
@@ -154,6 +158,8 @@ def main():
         delta = f" ({change} {t['since']} {previous.get('date')})"
     stage = None if not sc else "starting" if sc[1] < 100 else "growing" if sc[1] < 1000 else "established"
     data["visibility"] = stage
+    idx = triple(args.indexing, (int, int)) if args.indexing else None
+    data["indexing"] = {"indexed": idx[0], "total": idx[1]} if idx else None
     data["summary"] = f"{t['status'][status]} {score}/100{delta}" + (f" · {t['visibility']} {t['stages'][stage]}" if stage else "")
 
     none = t["none"]
@@ -179,6 +185,13 @@ def main():
         )
     else:
         lines.append(f"| {t['sc']} | {none} |")
+    if idx:
+        before = (previous or {}).get("indexing") or {}
+        change = ""
+        if before.get("indexed") is not None:
+            diff = idx[0] - before["indexed"]
+            change = f" (▲ +{diff})" if diff > 0 else f" (▼ {diff})" if diff < 0 else " (=)"
+        lines.append(f"| {t['indexing']} | {idx[0]}/{idx[1]} {t['indexed']}{change} |")
     lines += ["", f"_{t['updated']} {args.date}._", f"<!-- {MARKER}: {json.dumps(data, ensure_ascii=False)} -->"]
     card = "\n".join(lines)
 

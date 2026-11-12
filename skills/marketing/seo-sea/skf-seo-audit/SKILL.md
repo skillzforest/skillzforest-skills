@@ -66,6 +66,10 @@ Read the findings with judgement before reporting them:
   say which tool generates them, since their fix lives there.
 - A title shared by two language versions is a translation left undone, not a duplicate in the usual sense: say so.
 - `sitemap-missing` or `page-error` on the home page: stop and report it first, everything else depends on it.
+- A page whose title carries another brand than `site.name` (« … — Likyly » on datatoform.com) does not belong to
+  the site: it is filed for deletion (`indexing.md`, cause `foreign-brand`), even when its files are protected.
+- A sitemap page that the site's menu and footer never link to is either worth a link or not worth keeping: say
+  which, page by page; duplicates and other brands' pages are deleted, not linked.
 
 ## 2. Speed (`sources.pagespeed`)
 
@@ -86,8 +90,10 @@ Last 90 days ending 3 days ago, read only:
 - searches by impressions, by language (`query` + `country`), split into those matching `topics.target` and the
   rest;
 - sitemaps (`LIST_SITEMAPS`): submitted, errors, pages discovered;
-- URL inspection of the home page and of 3 to 10 important pages that get no impressions: indexed, crawled when,
-  canonical chosen by Google.
+- **indexing of every sitemap URL**, as [`references/indexing.md`](references/indexing.md) says: the URL Inspection
+  API on each URL rebuilds the « Pages » report (indexed, discovered, crawled, unknown…), and `scripts/indexing.py`
+  groups the URLs that are not indexed by cause (errors, noindex, canonical, another brand's pages, duplicates,
+  orphans, crawled but dropped, awaiting crawl) into one action per cause.
 
 ## 4. Demand and competition
 
@@ -107,7 +113,8 @@ them.
 Score each finding and gap by **impact** (how much search traffic it blocks or could bring) and **effort** (one field,
 one page, a template, a new article). Order:
 
-1. Blocking: site or pages not indexable, errors, sitemap missing, `noindex` by mistake, canonical pointing away.
+1. Blocking: site or pages not indexable, errors, sitemap missing, `noindex` by mistake, canonical pointing away,
+   and every `indexing:*` cause that keeps a fifth of the sitemap or more out of Google.
 2. Wide and cheap: a template issue repeated on many pages (missing descriptions, `hreflang`, `lang`).
 3. Pages with impressions and few clicks (titles and descriptions).
 4. Content gaps worth an article.
@@ -126,7 +133,7 @@ one page, a template, a new article). Order:
    comment saying so.
 3. **Scorecard**: once the actions are in the tracker, publish the site's first scorecard (or the new one) exactly as
    [`references/scorecard.md`](references/scorecard.md) says, with this audit's crawl — the watch or the passes then
-   update it, so the owner follows one number from audit to audit. Put its first line at the top of the report's summary.
+   update it, so the owner follows one number from audit to audit. Pass `--indexing <indexed>,<inspected>`. Put its first line at the top of the report's summary.
 4. **Deck** (`advise.deliverable`, `connectors.md`: Google Slides, or the Excel workbook of the one-shot audit), in
    mode `advise` always, in mode `repo` when the owner wants one:
    title, the site in five figures, the top 5 fixes (problem, why it matters, what to do), the content gaps, the

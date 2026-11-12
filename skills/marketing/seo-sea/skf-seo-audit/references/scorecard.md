@@ -12,7 +12,7 @@ below are relative to the `skf-seo-audit` folder.
    the issue labeled `seo-scorecard`; sheet: the tab `Scorecard`). Save its body to `/tmp/previous.md`.
 5. `python3 scripts/scorecard.py --site <site.name> --crawl /tmp/crawl.json --pagespeed <paths.reports>pagespeed.csv
    --actions <P1,P2,P3> [--sc <clicks,impressions,position> --sc-prev <…>] --previous /tmp/previous.md
-   --lang <style.reportLanguage>` prints the card: a score out of 100 (technical /50, speed /25, open actions /25),
+   [--indexing <indexed>,<inspected>] --lang <style.reportLanguage>` (indexing from `indexing.py`, `indexing.md`) prints the card: a score out of 100 (technical /50, speed /25, open actions /25),
    a status 🟢 / 🟠 / 🔴 and the change since the previous card.
 6. Publish it, never on the site's base branch:
    - GitHub issues: one issue per site, title `📊 Tableau de bord SEO — <site.name>` (in `style.reportLanguage`),
