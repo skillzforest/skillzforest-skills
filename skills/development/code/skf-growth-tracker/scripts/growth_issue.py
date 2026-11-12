@@ -168,6 +168,9 @@ def fields_doc(board, item_id, assignments):
     return {"query": "mutation { " + " ".join(parts) + " }"}
 
 
+BOT_MARK = "<!-- growth-bot -->"
+
+
 def author_of(comment):
     user = comment.get("user") or comment.get("author") or {}
     if isinstance(user, dict):
@@ -180,6 +183,8 @@ def decision(comments, owner):
         return c.get("created_at") or c.get("createdAt") or ""
     for comment in sorted(comments, key=when, reverse=True):
         if (author_of(comment) or "").lower() != owner.lower():
+            continue
+        if BOT_MARK in (comment.get("body") or ""):
             continue
         match = DECISION_RE.match(comment.get("body") or "")
         if match:
@@ -201,6 +206,7 @@ def selftest():
         {"user": {"login": "someone"}, "body": "APPROUVER", "created_at": "2026-11-09T10:00:00Z"},
         {"user": {"login": "owner"}, "body": "REPORTER : après le salon", "created_at": "2026-11-08T10:00:00Z"},
         {"user": {"login": "owner"}, "body": "Merci", "created_at": "2026-11-09T11:00:00Z"},
+        {"user": {"login": "owner"}, "body": "APPROUVER pour envoi ?\n<!-- growth-bot -->", "created_at": "2026-11-09T12:00:00Z"},
     ]
     got = decision(comments, "owner")
     assert got["decision"] == "POSTPONE" and got["note"] == "après le salon", got
