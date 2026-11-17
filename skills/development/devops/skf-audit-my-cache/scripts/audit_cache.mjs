@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// skf-check-my-cache — audits the HTTP cache policy of a website, as an anonymous visitor sees it.
+// skf-audit-my-cache — audits the HTTP cache policy of a website, as an anonymous visitor sees it.
 //
 // From a start URL: follows the redirects, reads the page, finds every file it loads (styles, scripts and the
 // modules they import, preloads, pictures, icons, fonts, CSS url()), a few other pages of the site, and asks each
@@ -8,7 +8,7 @@
 // second visit downloads again today.
 //
 // Node 18+, standard library only.
-//   node check_cache.mjs <url> [--pages 3] [--max 150] [--json report.json] [--md report.md] [--api /api/x,/api/y]
+//   node audit_cache.mjs <url> [--pages 3] [--max 150] [--json report.json] [--md report.md] [--api /api/x,/api/y]
 //
 // Exit code: 0 (report written), 2 (the start URL could not be read).
 
@@ -21,13 +21,13 @@ const args = process.argv.slice(2);
 const opt = (name, def) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : def; };
 const START = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--')));
 if (!START) {
-  console.error('Usage: node check_cache.mjs <url> [--pages 3] [--max 150] [--json out.json] [--md out.md] [--api /path,/path]');
+  console.error('Usage: node audit_cache.mjs <url> [--pages 3] [--max 150] [--json out.json] [--md out.md] [--api /path,/path]');
   process.exit(2);
 }
 const PAGES = Number(opt('pages', 3));
 const MAX = Number(opt('max', 150));
 const API = (opt('api', '') || '').split(',').map((s) => s.trim()).filter(Boolean);
-const UA = 'Mozilla/5.0 (compatible; skf-check-my-cache/1.0)';
+const UA = 'Mozilla/5.0 (compatible; skf-audit-my-cache/1.0)';
 const ENCODINGS = 'gzip, deflate, br';
 
 // ---------- HTTP ----------
@@ -296,20 +296,63 @@ for (const e of all) for (const [code, sev, words] of e.verdicts) {
 const sorted = Object.values(findings).sort((a, b) => ORDER[a.severity] - ORDER[b.severity] || b.bytes - a.bytes);
 const firstVisit = [...pageEntries.slice(0, 1), ...files].reduce((s, e) => s + e.bytes, 0);
 const second = [...pageEntries.slice(0, 1), ...files].reduce((s, e) => s + e.second.cost, 0);
+// ---------- Scores ----------
+// Six KPIs out of 100, then one score (weighted) and a grade. Each KPI is measured on the site's own answers
+// (third-party files are listed, not scored); a KPI with nothing to measure is left out of the total.
+const ok200 = (e) => e.status === 200;
+const ownPages = pageEntries.filter(ok200);
+const ownAssets = own.filter((e) => ok200(e) && !e.api);
+const pct = (num, den) => (den ? Math.round((100 * num) / den) : null);
+const sum = (list, f) => list.reduce((s, e) => s + f(e), 0);
+const has = (e, ...codes) => e.verdicts.some(([c]) => codes.includes(c));
+const TEXT_KINDS = new Set(['html', 'js', 'css', 'api', 'data', 'other']);
+const textual = [...ownPages, ...own.filter(ok200)].filter((e) => TEXT_KINDS.has(e.kind) && e.bytes > 1024);
+const KPI = [
+  { id: 'repeatVisit', name: 'Repeat visit reuse', weight: 30,
+    what: 'share of the first visit\'s bytes NOT downloaded again on a second visit within the hour',
+    score: firstVisit ? Math.max(0, 100 - Math.round((100 * second) / firstVisit)) : null },
+  { id: 'validators', name: 'Validators and 304', weight: 20,
+    what: 'own pages and files that have an ETag or Last-Modified AND answer 304 when unchanged',
+    score: pct([...ownPages, ...ownAssets].filter((e) => e.revalidated === 304).length, ownPages.length + ownAssets.length) },
+  { id: 'versioning', name: 'Versioned file names', weight: 15,
+    what: 'bytes of own scripts, styles, fonts and pictures whose name changes with their content',
+    score: pct(sum(ownAssets.filter((e) => e.versioned), (e) => e.bytes), sum(ownAssets, (e) => e.bytes)) },
+  { id: 'lifetimes', name: 'Right lifetimes', weight: 15,
+    what: 'own answers kept for a fitting time: versioned → long, unversioned → short or revalidated, pages → revalidated',
+    score: pct([...ownPages, ...ownAssets].filter((e) => !has(e, 'NO_VALIDATOR', 'NO_STORE_ASSET', 'LONG_UNVERSIONED', 'VERSIONED_SHORT', 'NO_CACHE_HEADER', 'HTML_LONG')).length, ownPages.length + ownAssets.length) },
+  { id: 'compression', name: 'Compression', weight: 10,
+    what: 'own text answers over 1 KB sent compressed (gzip, br or zstd)',
+    score: pct(textual.filter((e) => e.encoding).length, textual.length) },
+  { id: 'safety', name: 'Safety', weight: 10,
+    what: 'no session in a shared cache, no stale pages after a deploy, no API cache mixing signed-in and anonymous',
+    score: Math.max(0, 100 - 60 * all.filter((e) => has(e, 'PUBLIC_WITH_COOKIE')).length - 25 * all.filter((e) => has(e, 'HTML_LONG', 'API_CACHE_UNKEYED', 'LONG_UNVERSIONED') && ['html', 'js', 'css', 'api'].includes(e.kind)).length) },
+];
+const status = (s) => (s === null ? 'n/a' : s >= 85 ? 'good' : s >= 60 ? 'to improve' : 'critical');
+for (const k of KPI) k.status = status(k.score);
+const scored = KPI.filter((k) => k.score !== null);
+let overall = scored.length ? Math.round(sum(scored, (k) => k.score * k.weight) / sum(scored, (k) => k.weight)) : 0;
+// A session that can leak caps the score, whatever the rest.
+if (all.some((e) => has(e, 'PUBLIC_WITH_COOKIE'))) overall = Math.min(overall, 39);
+const grade = overall >= 90 ? 'A' : overall >= 75 ? 'B' : overall >= 60 ? 'C' : overall >= 40 ? 'D' : 'E';
+const score = { overall, grade, status: status(overall), kpis: KPI };
+
 const report = {
   start: START, landing: landing.url, checkedAt: new Date().toISOString(),
   redirects: hops.slice(0, -1).map((h) => ({ url: h.url, status: h.status, cacheControl: h.headers['cache-control'] || null, location: h.headers.location })),
   server: landing.headers.server || null, cdn: pageEntries[0]?.cdn || null,
   totals: { pages: pageEntries.length, files: files.length, ownFiles: own.length, firstVisitBytes: firstVisit, secondVisitBytes: second },
-  byKind, findings: sorted,
+  score, byKind, findings: sorted,
   entries: all.map(({ cc, ...e }) => e),
 };
 
 // ---------- Output ----------
 
 const md = [];
-md.push(`# Cache report — ${landing.url}`, '', `Checked ${report.checkedAt} as an anonymous visitor. Server: ${report.server ?? '?'}${report.cdn ? `, CDN: ${report.cdn}` : ''}.`, '');
+md.push(`# Cache audit — ${landing.url}`, '', `Checked ${report.checkedAt} as an anonymous visitor. Server: ${report.server ?? '?'}${report.cdn ? `, CDN: ${report.cdn}` : ''}.`, '');
 if (report.redirects.length) md.push(`Redirects: ${report.redirects.map((r) => `${r.status} ${r.url} (${r.cacheControl ?? 'no Cache-Control'})`).join(' → ')} → ${landing.url}`, '');
+md.push(`## Score: ${overall}/100 — grade ${grade} (${status(overall)})`, '', '| KPI | Score | Status | Weight | What is measured |', '|---|---|---|---|---|');
+for (const k of KPI) md.push(`| ${k.name} | ${k.score === null ? '—' : `${k.score} %`} | ${k.status} | ${k.weight} | ${k.what} |`);
+md.push('', 'Grades: A ≥ 90, B ≥ 75, C ≥ 60, D ≥ 40, E below. A cookie in a shared cache caps the score at 39.', '');
 md.push(`**First visit** (home page + its files): ${kb(firstVisit)} transferred. **Second visit within the hour**: ${kb(second)} downloaded again (${firstVisit ? Math.round((100 * second) / firstVisit) : 0} %).`, '');
 md.push('## Policy by type (own files)', '', '| Type | Files | Size | 2nd visit | Policies seen |', '|---|---|---|---|---|');
 for (const [k, v] of Object.entries(byKind)) md.push(`| ${k} | ${v.count} | ${kb(v.bytes)} | ${kb(v.secondVisit)} | ${Object.entries(v.policies).map(([p, n]) => `\`${p}\` ×${n}`).join('<br>')} |`);

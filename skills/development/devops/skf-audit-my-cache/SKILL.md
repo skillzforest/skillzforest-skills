@@ -1,28 +1,32 @@
 ---
-name: skf-check-my-cache
+name: skf-audit-my-cache
 description: >-
-  Audite la politique de cache HTTP d'un site web — pages HTML, scripts,
-  styles, images, polices, réponses d'API, redirections — telle qu'un visiteur
-  anonyme la reçoit et telle qu'un visiteur connecté devrait la recevoir :
+  Audit noté de la politique de cache HTTP d'un site web : une note sur 100,
+  une lettre (A à E) et six indicateurs chiffrés avec leur statut (réutilisation
+  à la deuxième visite, validateurs et 304, noms de fichiers versionnés, durées
+  adaptées, compression, sécurité). Examine les pages HTML, scripts, styles,
+  images, polices, réponses d'API et redirections telles qu'un visiteur
+  anonyme les reçoit et qu'un visiteur connecté devrait les recevoir :
   fichiers versionnés ou non, durée de conservation, validateurs ETag et
   Last-Modified et réponses 304, compression, cookies sur des réponses
   partagées. Mesure ce qu'une deuxième visite retélécharge, retrouve dans le
   code ou la configuration du serveur (Caddy, nginx, Apache, Express, Next.js,
   Vercel, Netlify, Cloudflare) l'origine de chaque règle, puis propose une
   politique cible, anonyme et connecté, avec les correctifs prêts à appliquer.
-  À utiliser dès que l'utilisateur demande quel est le cache de son site, si
+  À utiliser dès que l'utilisateur demande un audit ou une note de cache, quel
+  est le cache de son site, si
   son site se met bien en cache, pourquoi tout se recharge à chaque visite,
   pourquoi les visiteurs voient une ancienne version après une mise en ligne,
   veut améliorer le cache ou les en-têtes Cache-Control, ou lance
-  /skf-check-my-cache.
+  /skf-audit-my-cache.
 argument-hint: "[url du site] [--api /chemin,/chemin] [--pages 3]"
 allowed-tools: Read, Grep, Glob, Bash(node:*), Bash(curl:*), Bash(ls:*), Bash(git:*)
 ---
 
-# Check my cache
+# Audit my cache
 
-Objectif : dire clairement **quelle politique de cache le site applique
-aujourd'hui**, ce que ça coûte au visiteur qui revient, ce qui est risqué
+Objectif : **noter** la politique de cache du site (note sur 100, lettre,
+six indicateurs), dire clairement **quelle politique il applique aujourd'hui**, ce que ça coûte au visiteur qui revient, ce qui est risqué
 (anciens fichiers après une mise en ligne, session servie à quelqu'un d'autre),
 et **quoi changer, où**, pour le visiteur anonyme comme pour le visiteur
 connecté.
@@ -30,7 +34,7 @@ connecté.
 Arguments reçus : `$ARGUMENTS`
 
 Dossier de cette skill noté `$K` (utiliser le chemin réel) ; le script est
-`$K/scripts/check_cache.mjs` (Node 18 ou plus, bibliothèque standard, aucun
+`$K/scripts/audit_cache.mjs` (Node 18 ou plus, bibliothèque standard, aucun
 paquet à installer). Répondre dans la langue de l'utilisateur.
 
 ## 0. Le site et son code
@@ -54,7 +58,7 @@ faire l'étape 1 à la main avec `curl -sSI` et `curl -H 'If-None-Match: …'`.
 ## 1. Mesurer, en visiteur anonyme
 
 ```bash
-node "$K/scripts/check_cache.mjs" <url> --pages 3 [--api /api/x,/api/y] \
+node "$K/scripts/audit_cache.mjs" <url> --pages 3 [--api /api/x,/api/y] \
   --json <dossier-temporaire>/cache.json --md <dossier-temporaire>/cache.md
 ```
 
@@ -64,6 +68,26 @@ icônes, polices, `url()` des CSS), 3 autres pages du site, puis interroge
 chaque fichier **deux fois** : normalement, puis avec ses validateurs pour
 voir si le serveur répond 304. Il juge chaque réponse et estime ce qu'une
 **deuxième visite dans l'heure** retélécharge.
+
+**La note** (`score` dans le JSON, en tête du rapport Markdown) : six
+indicateurs sur 100, mesurés sur les réponses du site lui-même (les fichiers
+tiers sont listés, pas notés), chacun avec un statut — **bon** (≥ 85),
+**à améliorer** (≥ 60), **critique** (en dessous) :
+
+| Indicateur | Poids | Ce qui est mesuré |
+|---|---|---|
+| Réutilisation à la 2ᵉ visite | 30 | part des octets de la 1ʳᵉ visite qui ne sont **pas** retéléchargés à une 2ᵉ visite dans l'heure |
+| Validateurs et 304 | 20 | pages et fichiers qui ont un ETag ou Last-Modified **et** répondent 304 quand rien n'a changé |
+| Noms versionnés | 15 | octets des scripts, styles, polices et images dont le nom change avec le contenu |
+| Durées adaptées | 15 | réponses gardées le bon temps : versionné → long, non versionné → court ou revalidé, pages → revalidées |
+| Compression | 10 | réponses texte de plus de 1 Ko envoyées compressées |
+| Sécurité | 10 | pas de session dans un cache partagé, pas de page ou script périmé après une mise en ligne, pas d'API qui mélange connecté et anonyme |
+
+Note globale = moyenne pondérée des indicateurs mesurables ; lettre A ≥ 90,
+B ≥ 75, C ≥ 60, D ≥ 40, E en dessous. Un cookie dans un cache partagé plafonne
+la note à 39, quel que soit le reste. Sur un serveur local, l'indicateur
+Compression est souvent à 0 (c'est le proxy de production qui compresse) :
+le dire plutôt que de le compter comme un défaut.
 
 Les constats (`findings`), du plus grave au moins grave :
 
@@ -158,24 +182,27 @@ complet ; tout ce qui est personnel est `private`.
 
 Dans la langue de l'utilisateur, court et concret :
 
-1. **La politique actuelle en une phrase**, puis le tableau par type
+1. **La note** : note sur 100, lettre et statut global, puis le tableau des
+   six indicateurs (score, statut, une phrase sur ce qui le tire vers le
+   bas). Après des correctifs, donner la note avant → après.
+2. **La politique actuelle en une phrase**, puis le tableau par type
    (HTML, JS, CSS, images, polices, API, redirections) : en-têtes vus,
    validateur, 304 ou non.
-2. **Ce que ça coûte** : poids de la première visite, poids retéléchargé à la
+3. **Ce que ça coûte** : poids de la première visite, poids retéléchargé à la
    deuxième (chiffres du script, confirmés par l'étape 2 si faite).
-3. **Les risques**, du plus grave au moins grave (cookies partagés, fichiers
+4. **Les risques**, du plus grave au moins grave (cookies partagés, fichiers
    périmés après mise en ligne), avec les fichiers concernés.
-4. **Anonyme / connecté** : ce qui est fait aujourd'hui, ce qui devrait l'être
+5. **Anonyme / connecté** : ce qui est fait aujourd'hui, ce qui devrait l'être
    (grille de l'étape 4).
-5. **Les correctifs, par priorité**, chacun avec le fichier et la ligne à
-   modifier (ou l'extrait de configuration pour la pile détectée) et le gain
-   attendu.
+6. **Les correctifs, par priorité**, chacun avec le fichier et la ligne à
+   modifier (ou l'extrait de configuration pour la pile détectée), le gain
+   attendu et **les points de note qu'il rapporte** (indicateur concerné).
 
 Puis proposer de les appliquer. Si l'utilisateur accepte : faire les
 changements, ajouter un test quand le projet en a, relancer le script (et
 l'étape 2) sur l'environnement local, puis sur la production une fois
-déployé, et montrer l'avant/après (poids de la deuxième visite, constats
-disparus). Ne jamais déployer ni modifier une configuration de production
+déployé, et montrer l'avant/après (note et lettre, poids de la deuxième visite,
+constats disparus). Ne jamais déployer ni modifier une configuration de production
 (proxy, CDN) sans accord explicite.
 
 ## Garde-fous
