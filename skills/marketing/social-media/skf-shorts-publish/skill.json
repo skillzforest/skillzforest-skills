@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-shorts-publish",
+  "name": "Shorts Publish",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "marketing",
+  "subcategory": "social-media",
+  "description": "Publishes a rendered short on YouTube Shorts, TikTok, Instagram Reels, X and Bluesky (and LinkedIn, Threads, Facebook): writes a caption per network (YouTube title, hook, hashtags, link, alt text), picks the right video format and cover for each, gets everything approved, then publishes, schedules or drafts it in one go through the Postiz API (self-hosted or Postiz Cloud) — or prepares a manual upload kit with files and ready-to-paste texts. Keeps a send log and reports the published links. Never publishes without explicit approval.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unknown",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

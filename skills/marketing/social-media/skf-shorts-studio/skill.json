@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-shorts-studio",
+  "name": "Shorts Studio",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "marketing",
+  "subcategory": "social-media",
+  "description": "Turns a source kit into a scroll-stopping short video and its cover: picks the angle and hook (problem to solution, before/after, list, express demo, conviction), writes the script screen by screen and gets it approved, then renders with Remotion a 9:16 video (and a 4:5 feed version) in the brand's colors, fonts and logo — product screenshots in phone or browser frames, demo clips, animated numbers, highlighted words, music — plus marketing covers (9:16, 4:5, 1:1, 16:9 thumbnail) with short, punchy titles. Checks every file against each network's limits and reviews the frames before handing over.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unsupported",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unsupported",
+    "perplexity": "unsupported",
+    "chatgpt": "unsupported",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

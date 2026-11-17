@@ -44,6 +44,7 @@ A pack **only references** skills by name — it never embeds a copy of a skill'
 | SEO Blog Autopilot | [`marketing/seo-sea/seo-blog-autopilot/`](marketing/seo-sea/seo-blog-autopilot/pack.json) | `skf-seo-profile`, `skf-seo-setup`, `skf-seo-content-audit`, `skf-seo-article` |
 | SEO Factory | [`marketing/seo-sea/seo-factory/`](marketing/seo-sea/seo-factory/pack.json) | every SEO skill, with the GitHub issue skills |
 | Presales Scoping Pack | [`development/code/presales-scoping/`](development/code/presales-scoping/pack.json) | the 11 `presales-*` skills |
+| Shorts Factory | [`marketing/social-media/shorts-factory/`](marketing/social-media/shorts-factory/pack.json) | `skf-shorts-sources`, `skf-shorts-studio`, `skf-shorts-publish` (ordered) |
 
 ## Building a pack
 

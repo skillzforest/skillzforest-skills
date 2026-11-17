@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "shorts-factory",
+  "name": "Shorts Factory",
+  "publisher": "SkillzForest",
+  "category": "marketing",
+  "subcategory": "social-media",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "From an idea to a published short in three steps: gather the sources (website brand and screenshots, documents, cloud folders, videos, sounds), produce a scroll-stopping vertical video and its marketing covers with Remotion in the brand's own look, then write one caption per network and publish or schedule on YouTube Shorts, TikTok, Instagram Reels, X and Bluesky through Postiz — or get a ready-to-upload kit. Built to show off a SaaS or illustrate an idea in 15 to 35 seconds; nothing invented, nothing published without approval.",
+  "tags": ["short-video", "youtube-shorts", "tiktok", "instagram-reels", "x", "bluesky", "remotion", "video-cover", "thumbnail", "saas-marketing", "brand", "postiz", "social-media"],
+  "skills": ["skf-shorts-sources", "skf-shorts-studio", "skf-shorts-publish"],
+  "ordered": true
+}

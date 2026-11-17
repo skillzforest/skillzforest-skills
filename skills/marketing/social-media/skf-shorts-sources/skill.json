@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "skf-shorts-sources",
+  "name": "Shorts Sources",
+  "publisher": "SkillzForest",
+  "version": "0.1.0",
+  "category": "marketing",
+  "subcategory": "social-media",
+  "description": "Gathers everything a short promo video needs: asks which networks (YouTube Shorts, TikTok, Instagram Reels, X, Bluesky), the idea and the call to action, then which sources to use — website, documents, cloud folders (Google Drive, SharePoint, OneDrive, Dropbox), video and sound folders. Reads the website's brand (colors, fonts, logo, tone) and takes desktop and mobile screenshots, inventories media with sizes, durations and licences, extracts sourced facts and writes a validated source kit for skf-shorts-studio. Invents nothing.",
+  "compatibility": {
+    "claude-code": "native",
+    "claude-ai": "unknown",
+    "codex": "unknown",
+    "gemini": "unknown",
+    "mistral": "unknown",
+    "perplexity": "unsupported",
+    "chatgpt": "unknown",
+    "cursor": "unknown",
+    "opencode": "unknown"
+  }
+}

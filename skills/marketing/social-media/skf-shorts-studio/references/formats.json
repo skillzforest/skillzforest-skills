@@ -1,0 +1,53 @@
+{
+  "_comment": "Video specs per platform, as published by the platforms up to 2025. Limits move: check the live rules (Postiz: GET /integration-settings/{id}) before an unusual upload. render_short.py checks every rendered file against this table.",
+  "master": {
+    "format": "9x16", "width": 1080, "height": 1920, "fps": 30, "codec": "h264", "audioCodec": "aac",
+    "recommendedSeconds": [15, 35], "hardMaxSeconds": 60
+  },
+  "platforms": {
+    "youtube": {
+      "label": "YouTube Shorts", "video": "9x16", "maxSeconds": 180, "maxBytes": 256000000000,
+      "cover": "Choisie dans la vidéo (application mobile) ; l'API accepte une miniature personnalisée, pas toujours affichée sur un Short. La 1re image doit donc valoir une cover.",
+      "coverFiles": ["thumb-16x9.jpg"],
+      "notes": "Vertical ou carré, ≤ 3 min → classé Short automatiquement. Titre ≤ 100 caractères (≈ 60 utiles), #Shorts facultatif."
+    },
+    "tiktok": {
+      "label": "TikTok", "video": "9x16", "maxSeconds": 600, "maxBytes": 4000000000,
+      "cover": "Une image de la vidéo, choisie à l'envoi (application) ; par API, un instant de la vidéo. La 1re image doit donc valoir une cover.",
+      "coverFiles": [],
+      "notes": "Zone d'interface : bas 440 px (légende, musique), droite 150 px (boutons). Légende ≤ 2 200 caractères."
+    },
+    "instagram": {
+      "label": "Instagram Reels", "video": "9x16", "maxSeconds": 180, "maxBytes": 300000000,
+      "cover": "Image de couverture importée (1080×1920) ; la grille du profil la recadre au centre (3:4, ex-4:5).",
+      "coverFiles": ["cover-9x16.jpg"],
+      "notes": "Garder titre et visuel dans le carré central (y 420–1500). Légende ≤ 2 200 caractères, 30 hashtags max (3 à 5 conseillés)."
+    },
+    "x": {
+      "label": "X", "video": "9x16", "altVideo": "4x5", "maxSeconds": 140, "maxBytes": 512000000,
+      "cover": "1re image de la vidéo.",
+      "coverFiles": [],
+      "notes": "2 min 20 s pour un compte standard. Le 4:5 occupe mieux le fil sur ordinateur. 280 caractères."
+    },
+    "bluesky": {
+      "label": "Bluesky", "video": "9x16", "altVideo": "4x5", "maxSeconds": 180, "maxBytes": 100000000,
+      "cover": "1re image de la vidéo.",
+      "coverFiles": [],
+      "notes": "100 Mo, 3 min. 300 caractères ; texte alternatif de la vidéo conseillé."
+    },
+    "linkedin": {
+      "label": "LinkedIn", "video": "4x5", "altVideo": "9x16", "maxSeconds": 600, "maxBytes": 5000000000,
+      "cover": "Miniature importable sur ordinateur.",
+      "coverFiles": ["cover-4x5.jpg"],
+      "notes": "Le 4:5 ou le 1:1 se lit mieux dans le fil. Sous-titres incrustés indispensables (lecture sans son)."
+    },
+    "threads": {
+      "label": "Threads", "video": "9x16", "maxSeconds": 300, "maxBytes": 1000000000,
+      "cover": "1re image de la vidéo.", "coverFiles": [], "notes": "500 caractères."
+    },
+    "facebook": {
+      "label": "Facebook Reels", "video": "9x16", "maxSeconds": 90, "maxBytes": 1000000000,
+      "cover": "Image de couverture importée.", "coverFiles": ["cover-9x16.jpg"], "notes": "Reels ≤ 90 s."
+    }
+  }
+}
