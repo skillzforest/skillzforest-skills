@@ -51,6 +51,8 @@ export const sceneSchema = z.discriminatedUnion("type", [
     type: z.literal("hook"),
     text: z.string(),
     highlight: z.string().optional(),
+    logo: z.boolean().default(false), // the brand's logo above the words: who is speaking, from frame 0
+    kicker: z.string().optional(), // small line above the words: "NOUVELLE MISSION", "NOUVEAU"…
     emoji: z.string().optional(),
     media: mediaSchema.optional(), // dimmed background
   }),

@@ -42,7 +42,10 @@ const Hook: React.FC<SceneProps<"hook">> = ({ scene, brand, frames }) => {
   const { width, height, boxW, boxH } = useBox();
   // Readable on frame 0: the platforms take their automatic thumbnail there.
   const breathe = interpolate(frame, [0, frames], [1, 1.05], clamp);
-  const size = fitText(brand, scene.text, { box: boxW / 1.05, lines: 5, max: width * 0.16, highlight: scene.highlight, height: boxH * (scene.emoji ? 0.62 : 0.8) });
+  const logoH = scene.logo ? width * 0.1 : 0;
+  const kickerSize = scene.kicker ? Math.round(width * 0.048) : 0;
+  const room = (scene.emoji ? 0.62 : 0.8) * boxH - logoH * 1.6 - kickerSize * 2;
+  const size = fitText(brand, scene.text, { box: boxW / 1.05, lines: 5, max: width * 0.16, highlight: scene.highlight, height: room });
   return (
     <>
       {scene.media && scene.media.frame === "full" ? (
@@ -58,6 +61,16 @@ const Hook: React.FC<SceneProps<"hook">> = ({ scene, brand, frames }) => {
         </AbsoluteFill>
       ) : null}
       <Box gap={size * 0.4}>
+        {scene.logo && (
+          <div style={{ marginBottom: logoH * 0.3 }}>
+            <Logo brand={brand} size={logoH} />
+          </div>
+        )}
+        {scene.kicker && (
+          <div style={{ fontFamily: brand.fonts.body, fontWeight: 800, fontSize: kickerSize, color: brand.colors.accentText, background: brand.colors.accent, padding: `${kickerSize * 0.3}px ${kickerSize * 0.7}px`, borderRadius: kickerSize * 0.3, textTransform: "uppercase", letterSpacing: kickerSize * 0.1, transform: "rotate(-2deg)" }}>
+            {scene.kicker}
+          </div>
+        )}
         <Emoji emoji={scene.emoji} size={size * 1.2} still />
         <div style={{ transform: `scale(${breathe})` }}>
           <RichText text={scene.text} highlight={scene.highlight} brand={brand} size={size} />

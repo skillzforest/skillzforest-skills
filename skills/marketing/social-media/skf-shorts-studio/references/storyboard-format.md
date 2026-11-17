@@ -102,7 +102,11 @@ reprendre du kit), `trimBefore` (secondes sautées au début d'une vidéo), `foc
 
 Une espace insécable (U+00A0) garde des mots sur la même ligne (« 6 juin 1944 ») ; un
 `highlight` d'un ou deux mots laisse le texte plus grand qu'une phrase entière surlignée, qui doit
-tenir sur une ligne.
+tenir sur une ligne. Pas d'élision collée au mot surligné (« d'Utah Beach » s'affiche « d' Utah
+Beach ») : reformuler (« à Utah Beach »).
+
+`hook` : `logo: true` met le logo de la marque au-dessus de l'accroche, `kicker` une étiquette
+(« Nouvelle mission ») : la marque et la nouveauté se lisent dès l'image 0.
 
 ## Cover
 
