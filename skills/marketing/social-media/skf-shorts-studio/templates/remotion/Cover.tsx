@@ -36,14 +36,25 @@ export const Cover: React.FC<ShortProps> = (raw) => {
   const boxW = width - safe.left - safe.right;
   const kickerSize = Math.round(width * (format === "16x9" ? 0.026 : 0.045));
   const badgeSize = Math.round(width * (format === "16x9" ? 0.026 : 0.042));
-  const visual = cover.visual;
+  // frame "full": the visual is the whole background (a game or film still), the title over a veil.
+  const backdrop = cover.visual?.frame === "full" ? cover.visual : undefined;
+  const visual = backdrop ? undefined : cover.visual;
+  const Backdrop: React.FC<{ veil: string }> = ({ veil }) =>
+    backdrop ? (
+      <AbsoluteFill>
+        <MediaView media={{ ...backdrop, zoom: "none" }} brand={brand} width={width} height={height} durationInFrames={1} still bare />
+        <AbsoluteFill style={{ background: veil }} />
+      </AbsoluteFill>
+    ) : (
+      <Background brand={brand} still />
+    );
 
   if (format === "16x9") {
     const textW = visual ? width * 0.56 : boxW;
     const size = fitText(brand, cover.title, { box: textW, lines: 3, max: height * 0.22, highlight: cover.highlight, height: (height - safe.top - safe.bottom) * 0.68 });
     return (
       <AbsoluteFill style={{ backgroundColor: brand.colors.bg, overflow: "hidden" }}>
-        <Background brand={brand} still />
+        <Backdrop veil={`linear-gradient(90deg, ${alpha(brand.colors.bg, 0.85)}, ${alpha(brand.colors.bg, 0.55)} 45%, transparent 75%)`} />
         {visual && (
           <div style={{ position: "absolute", right: width * 0.05, top: height * 0.12, transform: "rotate(6deg)" }}>
             <MediaView media={{ ...visual, zoom: "none" }} brand={brand} width={visual.frame === "phone" ? height * 0.5 : width * 0.34} height={visual.frame === "phone" ? height * 1.02 : height * 0.62} durationInFrames={1} still />
@@ -69,7 +80,7 @@ export const Cover: React.FC<ShortProps> = (raw) => {
   const visualTop = titleZone.top + titleZone.height + height * 0.02;
   return (
     <AbsoluteFill style={{ backgroundColor: brand.colors.bg, overflow: "hidden" }}>
-      <Background brand={brand} still />
+      <Backdrop veil={`linear-gradient(180deg, ${alpha(brand.colors.bg, 0.7)}, ${alpha(brand.colors.bg, 0.5)} 30%, ${alpha(brand.colors.bg, 0.5)} 70%, ${alpha(brand.colors.bg, 0.15)})`} />
       <div style={{ position: "absolute", top: format === "9x16" ? 290 : safe.top, left: 0, right: 0, display: "flex", justifyContent: "center" }}>
         <Logo brand={brand} size={width * 0.075} />
       </div>

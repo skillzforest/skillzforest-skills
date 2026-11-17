@@ -30,7 +30,7 @@ HERE = Path(__file__).resolve().parent.parent
 TEMPLATES = HERE / "templates" / "remotion"
 FORMATS = json.loads((HERE / "references" / "formats.json").read_text())
 DEPS = ["remotion@4.0.532", "@remotion/cli@4.0.532", "react@19.2.0", "react-dom@19.2.0", "zod@4.5.4"]  # zod: the exact version this Remotion expects
-PROPS_KEYS = ("language", "brand", "scenes", "music", "voice", "progressBar", "cover")
+PROPS_KEYS = ("language", "brand", "scenes", "music", "voice", "sounds", "progressBar", "cover")
 SIZES = {"9x16": (1080, 1920), "4x5": (1080, 1350), "1x1": (1080, 1080), "16x9": (1280, 720)}
 FPS = 30
 

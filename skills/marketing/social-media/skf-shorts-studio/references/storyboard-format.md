@@ -72,12 +72,17 @@ Toutes ont `duration` (secondes, 0,6 à 15). 2 à 12 scènes.
 | `reveal` | `tagline` | logo qui surgit avec une onde, phrase de marque |
 | `cta` | `text`, `button`, `url?` | appel à l'action, bouton qui pulse, logo |
 
-`media` : `file`, `kind` (`image` ou `video`), `frame` (`phone`, `browser`, `none`), `zoom`
+`media` : `file`, `kind` (`image` ou `video`), `frame` (`phone`, `browser`, `none`, `full`), `zoom`
 (`in`, `out`, `none`), `fit` (`cover`, `contain`), `aspect` (largeur / hauteur du fichier, à
-reprendre du kit), `trimBefore` (secondes sautées au début d'une vidéo).
+reprendre du kit), `trimBefore` (secondes sautées au début d'une vidéo), `focusX` / `focusY`
+(0 à 1, 0,5 par défaut : la partie du fichier gardée quand il est recadré).
 
 - Capture mobile → `frame: "phone"` ; capture desktop → `frame: "browser"` ; vidéo paysage
   → `frame: "none"` avec `aspect` : elle passe en pleine largeur sur un fond flou d'elle-même.
+- Images de jeu, de vol, de film → `frame: "full"` : le plan occupe tout l'écran, recadré dans le
+  fichier (une capture 16:9 devient un plan 9:16 : `focusX` place la fenêtre sur le sujet), la
+  légende passe en haut sur un voile. Dans un `hook`, le plan reste lumineux sous le texte. Un
+  plan 16:9 dont le sens tient à toute sa largeur (un titre incrusté) reste en `frame: "none"`.
 - Les vidéos sont muettes dans le short : le son vient de `music` (et `voice`).
 - Une vidéo source doit couvrir toute sa scène : `trimBefore + duration` ≤ durée du fichier
   (dans le kit), sinon la fin de la scène se fige ou se vide.
@@ -88,8 +93,19 @@ reprendre du kit), `trimBefore` (secondes sautées au début d'une vidéo).
   fondu d'entrée et de sortie automatiques.
 - `voice` (facultatif) : une voix off enregistrée (`file`, `volume`) ; la musique baisse
   alors d'elle-même.
+- `sounds` (facultatif) : bruitages et morceaux posés sur la ligne de temps, `[{ file, at, volume,
+  trimBefore, duration }]` (`at` en secondes depuis le début du short) : une explosion calée sur
+  l'impact, une ambiance sous quelques scènes, ou une musique montée en deux morceaux (le corps,
+  puis le coup final du morceau sur l'appel à l'action) à la place de `music`.
+
+## Texte
+
+Une espace insécable (U+00A0) garde des mots sur la même ligne (« 6 juin 1944 ») ; un
+`highlight` d'un ou deux mots laisse le texte plus grand qu'une phrase entière surlignée, qui doit
+tenir sur une ligne.
 
 ## Cover
 
 `title` (2 à 5 mots), `highlight` (mots du titre sur le bloc d'accent), `kicker` (petite ligne
-au-dessus), `badge` (1–2 mots), `visual` (même objet que `media`).
+au-dessus), `badge` (1–2 mots), `visual` (même objet que `media` ; `frame: "full"` en fait le fond
+entier de la cover, sous un voile : une image de jeu ou de film).

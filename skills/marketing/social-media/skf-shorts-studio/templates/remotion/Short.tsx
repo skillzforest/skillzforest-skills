@@ -45,12 +45,18 @@ const Hook: React.FC<SceneProps<"hook">> = ({ scene, brand, frames }) => {
   const size = fitText(brand, scene.text, { box: boxW / 1.05, lines: 5, max: width * 0.16, highlight: scene.highlight, height: boxH * (scene.emoji ? 0.62 : 0.8) });
   return (
     <>
-      {scene.media && (
+      {scene.media && scene.media.frame === "full" ? (
+        // Footage that sells by itself (a game, a flight): kept bright, a veil only behind the words.
+        <AbsoluteFill>
+          <MediaView media={scene.media} brand={brand} width={width} height={height} durationInFrames={frames} bare />
+          <AbsoluteFill style={{ background: `linear-gradient(180deg, ${alpha(brand.colors.bg, 0.15)}, ${alpha(brand.colors.bg, 0.6)} 35%, ${alpha(brand.colors.bg, 0.6)} 65%, ${alpha(brand.colors.bg, 0.2)})` }} />
+        </AbsoluteFill>
+      ) : scene.media ? (
         <AbsoluteFill style={{ opacity: 0.45 }}>
           <MediaView media={{ ...scene.media, frame: "none" }} brand={brand} width={width} height={height} durationInFrames={frames} />
           <AbsoluteFill style={{ background: `linear-gradient(180deg, ${alpha(brand.colors.bg, 0.7)}, ${alpha(brand.colors.bg, 0.4)} 50%, ${alpha(brand.colors.bg, 0.85)})` }} />
         </AbsoluteFill>
-      )}
+      ) : null}
       <Box gap={size * 0.4}>
         <Emoji emoji={scene.emoji} size={size * 1.2} still />
         <div style={{ transform: `scale(${breathe})` }}>
@@ -97,6 +103,7 @@ const MediaScene: React.FC<SceneProps<"media">> = ({ scene, brand, frames }) => 
     h = Math.min(availH, m.aspect ? w / m.aspect : w * 1.3);
     if (m.aspect && h === availH) w = h * m.aspect;
   }
+  if (m.frame === "full") return <FullMedia scene={scene} brand={brand} frames={frames} capSize={capSize} />;
   const bleed = m.frame === "none" && (m.aspect ?? 0) > 1.05;
   if (bleed) {
     w = width;
@@ -124,6 +131,26 @@ const MediaScene: React.FC<SceneProps<"media">> = ({ scene, brand, frames }) => 
       >
         <MediaView media={m} brand={brand} width={w} height={h} durationInFrames={frames} bare={bleed} />
       </div>
+    </AbsoluteFill>
+  );
+};
+
+// The footage on the whole screen, the caption over a veil at the top (above the platforms' buttons).
+const FullMedia: React.FC<SceneProps<"media"> & { capSize: number }> = ({ scene, brand, frames, capSize }) => {
+  const frame = useCurrentFrame();
+  const { width, height, safe, boxW } = useBox();
+  const caption = scene.caption ?? "";
+  return (
+    <AbsoluteFill>
+      <MediaView media={scene.media} brand={brand} width={width} height={height} durationInFrames={frames} bare />
+      {caption && (
+        <>
+          <AbsoluteFill style={{ background: `linear-gradient(180deg, ${alpha(brand.colors.bg, 0.75)}, ${alpha(brand.colors.bg, 0.35)} 28%, transparent 42%)` }} />
+          <div style={{ position: "absolute", top: safe.top, left: safe.left, width: boxW, display: "flex", justifyContent: "center", textAlign: "center" }}>
+            <RichText text={caption} highlight={scene.highlight} brand={brand} size={capSize} appear={interpolate(frame, [0, 10], [0.2, 1], clamp)} />
+          </div>
+        </>
+      )}
     </AbsoluteFill>
   );
 };
@@ -324,7 +351,7 @@ const ProgressBar: React.FC<{ brand: Brand; total: number }> = ({ brand, total }
 export const Short: React.FC<ShortProps> = (raw) => {
   // Remotion checks props against the schema but passes them as given: apply the defaults.
   const props = useMemo(() => shortSchema.parse(raw), [raw]);
-  const { brand, scenes, music, voice, progressBar, language } = props;
+  const { brand, scenes, music, voice, sounds, progressBar, language } = props;
   useBrandFonts(brand);
   const total = totalFrames(scenes);
   let from = 0;
@@ -354,6 +381,11 @@ export const Short: React.FC<ShortProps> = (raw) => {
         />
       )}
       {voice && <Audio src={src(voice.file)} volume={voice.volume} />}
+      {sounds.map((s, i) => (
+        <Sequence key={`sfx${i}`} from={Math.round(s.at * 30)} durationInFrames={s.duration ? Math.round(s.duration * 30) : undefined} name={`sound ${s.file}`}>
+          <Audio src={src(s.file)} trimBefore={Math.round(s.trimBefore * 30)} volume={s.volume} />
+        </Sequence>
+      ))}
     </AbsoluteFill>
   );
 };

@@ -246,11 +246,15 @@ type Part = { text: string; kind: "plain" | "highlight" | "strike" };
 const toUnits = (parts: Part[]) => {
   const units: { w: string; kind: Part["kind"] }[] = [];
   for (const p of parts) {
-    const pieces = p.kind === "plain" ? p.text.split(/\s+/).filter(Boolean) : [p.text.trim()];
-    for (const w of pieces) {
-      if (/^[?!:;.,…»)]+$/.test(w) && units.length) units[units.length - 1].w += "\u00A0" + w;
+    // A no-break space (U+00A0) keeps words on one line: « 6 juin 1944 ».
+    const pieces = p.kind === "plain" ? p.text.split(/[^\S\u00A0]+/).filter(Boolean) : [p.text.trim()];
+    pieces.forEach((w, i) => {
+      // Punctuation stays with the word before it: after a space in the text (French « ? », « : ») with a
+      // no-break space, right after a marked phrase (« bombe. ») with none.
+      const tight = i === 0 && p.kind === "plain" && !/^\s/.test(p.text);
+      if (/^[?!:;.,…»)]+$/.test(w) && units.length) units[units.length - 1].w += (tight ? "" : "\u00A0") + w;
       else units.push({ w, kind: p.kind });
-    }
+    });
   }
   return units;
 };
@@ -289,18 +293,20 @@ export const MediaView: React.FC<{
   const frame = useCurrentFrame();
   const progress = still ? 0.5 : interpolate(frame, [0, durationInFrames], [0, 1], clamp);
   const scale = media.zoom === "in" ? 1 + 0.12 * progress : media.zoom === "out" ? 1.12 - 0.12 * progress : 1;
+  const focus = `${media.focusX * 100}% ${media.focusY * 100}%`;
+  const fill: React.CSSProperties = { width: "100%", height: "100%", objectFit: media.fit, objectPosition: focus, transform: `scale(${scale})`, transformOrigin: focus };
   const inner =
     media.kind === "video" ? (
       <OffthreadVideo
         src={src(media.file)}
         muted
         trimBefore={Math.round(media.trimBefore * FPS)}
-        style={{ width: "100%", height: "100%", objectFit: media.fit, transform: `scale(${scale})` }}
+        style={fill}
       />
     ) : (
       <Img
         src={src(media.file)}
-        style={{ width: "100%", height: "100%", objectFit: media.fit, transform: `scale(${scale})` }}
+        style={fill}
       />
     );
 
@@ -359,7 +365,7 @@ export const MediaView: React.FC<{
       </div>
     );
   }
-  if (bare) return <div style={{ width, height, overflow: "hidden" }}>{inner}</div>;
+  if (bare || media.frame === "full") return <div style={{ width, height, overflow: "hidden" }}>{inner}</div>;
   return (
     <div
       style={{

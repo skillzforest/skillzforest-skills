@@ -29,13 +29,17 @@ export const brandSchema = z.object({
 export const mediaSchema = z.object({
   file: z.string(),
   kind: z.enum(["image", "video"]),
-  frame: z.enum(["phone", "browser", "none"]).default("none"),
+  // full: the whole screen, cropped from the file (a 16:9 game capture becomes a 9:16 shot).
+  frame: z.enum(["phone", "browser", "none", "full"]).default("none"),
   zoom: z.enum(["in", "out", "none"]).default("in"),
   fit: z.enum(["cover", "contain"]).default("cover"),
   // width / height of the file (kit.json assets): frames a landscape clip without cropping it.
   aspect: z.number().positive().optional(),
   // Video only: seconds skipped at the start of the clip.
   trimBefore: z.number().min(0).default(0),
+  // Which part of the file stays when it is cropped (fit cover): 0 left/top, 0.5 centre, 1 right/bottom.
+  focusX: z.number().min(0).max(1).default(0.5),
+  focusY: z.number().min(0).max(1).default(0.5),
 });
 
 const base = { duration: z.number().min(0.6).max(15) }; // seconds
@@ -115,6 +119,18 @@ export const shortSchema = z.object({
     })
     .optional(),
   voice: z.object({ file: z.string(), volume: z.number().min(0).max(2).default(1) }).optional(),
+  // Sound effects placed on the timeline: an explosion on an impact, an ambience under a scene.
+  sounds: z
+    .array(
+      z.object({
+        file: z.string(),
+        at: z.number().min(0), // seconds from the start of the short
+        volume: z.number().min(0).max(2).default(1),
+        trimBefore: z.number().min(0).default(0),
+        duration: z.number().positive().optional(), // seconds; the whole file otherwise
+      }),
+    )
+    .default([]),
   progressBar: z.boolean().default(true),
   cover: coverSchema,
 });
