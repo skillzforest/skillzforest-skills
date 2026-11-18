@@ -10,7 +10,9 @@ the state between runs. Scheduled runs start with no memory: what is not in the 
 ├── projects/<project-id>/
 │   ├── growth.json                 the project's growth profile (references/profile.md)
 │   ├── intel/YYYY-Www.md           market intelligence, one file per ISO week (skf-market-intel)
+│   ├── strategy/channel-map.md     communication and distribution channels, their places and kept actions
 │   ├── strategy/channels.md        channel scores (skf-channel-strategy)
+│   ├── strategy/actions.json       scored actions, their tracking, window, result and verdict
 │   ├── strategy/plan-30d.md        0 to 30 day plan
 │   ├── strategy/plan-90d.md        30 to 90 day plan
 │   ├── strategy/decisions.md       decision log, newest first (skf-growth-tracker)
