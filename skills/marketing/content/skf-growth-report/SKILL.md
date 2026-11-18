@@ -32,6 +32,10 @@ Projects: every `projects/<id>/growth.json` of the workspace, unless the request
    - `measurement.other` sources (registries, GitHub stars and release downloads, licence counts);
    - pipeline counts from the CRM (project property) and the tracker;
    - operations from the tracker: decisions asked and answered, Effort of done items.
+   - **actions**: for every record of `strategy/actions.json` in status `running`, measure its window with its own
+     tracking (PostHog filtered on its `utm_campaign`, the goal event, the store or registry counter, the published
+     URL); when the window is over, write `result` and `verdict` (action-scoring of `skf-channel-strategy`) and set
+     status `measured`; commit the updated `actions.json`. Fill `byChannel` from these results.
    Write `metrics/YYYY-Www.json` per project.
 2. **Read** the week's intelligence files, campaign calendars, pipeline files and strategy plans.
 3. **Write** `reports/weekly/YYYY-Www.md` (format file). Decisions to take come from the items in Status Decision,

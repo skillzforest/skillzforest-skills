@@ -3,7 +3,7 @@
   "id": "skf-campaign-studio",
   "name": "Campaign Studio",
   "publisher": "SkillzForest",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "category": "marketing",
   "subcategory": "content",
   "description": "Turns approved opportunities into ready-to-use campaigns: brief, master message and variants, posts per channel (or through skf-social-compose), video script and storyboard, visual briefs, press release and press kit, publication calendar with UTM links. Distribution mode checks approvals, prevents duplicates, prepares the manual pack or the scheduled post and records published URLs. Never publishes without approval.",

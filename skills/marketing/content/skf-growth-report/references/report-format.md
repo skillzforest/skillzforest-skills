@@ -13,7 +13,8 @@
   ],
   "pipeline": { "qualified": 0, "proposed": 0, "approved": 0, "sent": 0, "replies": 0, "conversations": 0, "meetings": 0, "opportunities": 0 },
   "operations": { "decisionsAsked": 0, "decisionsAnswered": 0, "approved": 0, "experimentsRunning": 0, "experimentsConcluded": 0, "ownerMinutesEstimate": null },
-  "byChannel": [ { "channel": "bluesky", "posts": 0, "clicks": null, "signups": null } ]
+  "byChannel": [ { "family": "communication", "channel": "bluesky", "actionsRunning": 0, "actionsMeasured": 0, "visitors": null, "goalEvents": null } ],
+  "actions": [ { "id": "channel:romkade:reddit-sbcgaming-demo", "status": "running", "day": 6, "window": 14, "visitors": 12, "goalEvents": 3, "source": "PostHog utm_campaign=reddit-sbcgaming-demo" } ]
 }
 ```
 
@@ -40,7 +41,9 @@ Alerte : <une seule, ou « rien »>
    the issue.
 3. **Par projet**: KPI table (value, previous, change, source), what moved and why (facts), what was done, what is
    prepared, the next step.
-4. **Expériences**: running, concluded (result against the stop criterion), next.
+4. **Actions et expériences**: per project, the actions running (day of window, metric so far), the actions measured
+   this week with their verdict against the success threshold and stop criterion, and per family (communication,
+   distribution) which channels produced results.
 5. **Arbitrages proposés**: where the owner's time and any budget should go next week, between projects, with the
    reason.
 6. **Données manquantes**: metrics not measured and what would make them measurable.

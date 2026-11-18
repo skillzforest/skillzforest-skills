@@ -3,7 +3,7 @@
   "id": "skf-growth-profile",
   "name": "Growth Profile",
   "publisher": "SkillzForest",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "category": "marketing",
   "subcategory": "content",
   "description": "Writes the growth profile every skf-growth skill reads: audiences, personas, B2B ideal customer profile, 30 and 90 day goals with their metrics, allowed channels and existing accounts, outreach limits and CRM, open questions. Built from the site and the SEO profile, hypotheses marked, validated by the owner through a pull request. Also holds the shared guardrails, workspace layout and profile validator.",

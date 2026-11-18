@@ -3,10 +3,10 @@
   "id": "skf-channel-strategy",
   "name": "Channel Strategy",
   "publisher": "SkillzForest",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "category": "marketing",
   "subcategory": "content",
-  "description": "Maps and scores a project's distribution channels with a fixed grid (reach, fit, goal impact, owner effort, cost, platform constraints, measured results), decides launch, test, strengthen, reduce, watch or drop, sets formats, frequencies and bounded experiments with stop criteria, and writes the 30 and 90 day plans. Structuring choices go to the owner as tracker decisions; monthly review against measured results.",
+  "description": "Detects a project's communication and distribution channels down to the places where an action can happen, scores channels and the concrete actions inside each one, makes every action measurable (UTM, events, store counters) and records it so its impact is measured after its window; decides launch, test, strengthen, reduce, watch or drop and writes the 30 and 90 day plans. Structuring choices and public actions go to the owner as tracker decisions.",
   "compatibility": {
     "claude-code": "native",
     "claude-ai": "unknown",
