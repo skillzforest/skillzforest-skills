@@ -19,6 +19,9 @@ Rules for every text:
 - The SEO profile's `style.rules` and the growth profile's `constraints` apply (brand spelling, words to avoid).
 - Each post fits its platform's current limits (read on the platform's help page during the run when unsure).
 - Links carry UTM parameters: `utm_source=<channel>&utm_medium=<social|email|press|community>&utm_campaign=<slug>`.
+  When the post or send carries out an action of `strategy/actions.json`, `utm_campaign` is that action's
+  `tracking.utm_campaign` and `utm_content` its place; the Publication item names the action id, and the action's
+  status becomes `running` with its launch date when the owner reports it published.
 - A post for a community follows that community's self-promotion rules (link in `brief.md`); when the rules forbid
   it, there is no post for that place.
 - The owner's quote in a press release is a proposal marked « à valider »; never attribute words to anyone else.
